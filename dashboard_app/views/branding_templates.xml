@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================
+         De-brand Odoo: strip "Powered by Odoo" promotion everywhere.
+         ============================================================ -->
+    <template id="baha_brand_promotion" inherit_id="web.brand_promotion">
+        <xpath expr="//div[hasclass('o_brand_promotion')]" position="replace"/>
+    </template>
+
+    <!-- ============================================================
+         Replace the centered Odoo login card with our full-screen
+         two-column shell (form on the right/RTL, hero on the left).
+         Also overrides the page title (removes the "Odoo" tab name).
+         ============================================================ -->
+    <template id="baha_login_layout" inherit_id="web.login_layout">
+        <xpath expr="//t[@t-set='no_footer']" position="after">
+            <t t-set="title">المكتب الاستراتيجي لتطوير منطقة الباحة</t>
+        </xpath>
+        <xpath expr="//div[hasclass('container')]" position="replace">
+            <div class="o_baha_login" dir="rtl">
+                <div class="o_baha_login__form">
+                    <div class="o_baha_login__form-inner">
+                        <t t-out="0"/>
+                    </div>
+                </div>
+                <div class="o_baha_login__hero">
+                    <img class="o_baha_login__logo"
+                         src="/dashboard_app/website_logo"
+                         alt="المكتب الاستراتيجي لتطوير منطقة الباحة"
+                         onerror="this.style.display='none'"/>
+                    <div class="o_baha_login__hero-overlay">
+                        <h2 class="o_baha_login__hero-title">تدري وش يميز الباحة؟</h2>
+                        <div class="o_baha_login__cats">
+                            <span class="o_baha_login__cat">الرياضة و المغامرة<img class="o_baha_login__cat-ico" src="/dashboard_app/static/img/cats/cat_sports.svg" alt=""/></span>
+                            <span class="o_baha_login__cat">الطبيعة<img class="o_baha_login__cat-ico" src="/dashboard_app/static/img/cats/cat_nature.svg" alt=""/></span>
+                            <span class="o_baha_login__cat">الثقافة و التراث<img class="o_baha_login__cat-ico" src="/dashboard_app/static/img/cats/cat_culture.svg" alt=""/></span>
+                            <span class="o_baha_login__cat">الصحة و العناية الطبية<img class="o_baha_login__cat-ico" src="/dashboard_app/static/img/cats/cat_health.svg" alt=""/></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+    </template>
+
+</odoo>

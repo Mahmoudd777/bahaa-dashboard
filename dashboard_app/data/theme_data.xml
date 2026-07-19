@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Ready-made theme palettes. Pick one per user (or per dashboard), or
+         override with custom colors on the user form. -->
+    <record id="theme_brown" model="dashboard.theme">
+        <field name="name">بني (تنفيذي)</field>
+        <field name="sequence">1</field>
+        <field name="primary">#5C4B43</field>
+        <field name="primary_dark">#473932</field>
+        <field name="accent">#00AB9D</field>
+        <field name="pattern">brown</field>
+    </record>
+
+    <record id="theme_teal" model="dashboard.theme">
+        <field name="name">أخضر (عام)</field>
+        <field name="sequence">2</field>
+        <field name="primary">#00AB9D</field>
+        <field name="primary_dark">#00897E</field>
+        <field name="accent">#F0974F</field>
+        <field name="pattern">aqua</field>
+    </record>
+
+    <record id="theme_blue" model="dashboard.theme">
+        <field name="name">أزرق ملكي</field>
+        <field name="sequence">3</field>
+        <field name="primary">#1B4F8C</field>
+        <field name="primary_dark">#143D6E</field>
+        <field name="accent">#F0A93B</field>
+        <field name="pattern">none</field>
+    </record>
+
+    <record id="theme_maroon" model="dashboard.theme">
+        <field name="name">عنابي</field>
+        <field name="sequence">4</field>
+        <field name="primary">#7A1F2B</field>
+        <field name="primary_dark">#5C1721</field>
+        <field name="accent">#C9A24B</field>
+        <field name="pattern">none</field>
+    </record>
+</odoo>

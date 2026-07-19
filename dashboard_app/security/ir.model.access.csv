@@ -1,0 +1,16 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_dashboard_dashboard_user,dashboard.dashboard.user,model_dashboard_dashboard,base.group_user,1,0,0,0
+access_dashboard_dashboard_manager,dashboard.dashboard.manager,model_dashboard_dashboard,base.group_system,1,1,1,1
+access_dashboard_section_user,dashboard.section.user,model_dashboard_section,base.group_user,1,0,0,0
+access_dashboard_section_manager,dashboard.section.manager,model_dashboard_section,base.group_system,1,1,1,1
+access_dashboard_component_user,dashboard.component.user,model_dashboard_component,base.group_user,1,0,0,0
+access_dashboard_component_manager,dashboard.component.manager,model_dashboard_component,base.group_system,1,1,1,1
+access_dashboard_theme_user,dashboard.theme.user,model_dashboard_theme,base.group_user,1,0,0,0
+access_dashboard_theme_manager,dashboard.theme.manager,model_dashboard_theme,base.group_system,1,1,1,1
+access_dashboard_import_user,dashboard.import.user,model_dashboard_import,base.group_user,1,1,1,0
+access_dashboard_import_manager,dashboard.import.manager,model_dashboard_import,base.group_system,1,1,1,1
+access_dashboard_dashboard_portal,dashboard.dashboard.portal,model_dashboard_dashboard,base.group_portal,1,0,0,0
+access_dashboard_section_portal,dashboard.section.portal,model_dashboard_section,base.group_portal,1,0,0,0
+access_dashboard_component_portal,dashboard.component.portal,model_dashboard_component,base.group_portal,1,0,0,0
+access_dashboard_theme_portal,dashboard.theme.portal,model_dashboard_theme,base.group_portal,1,0,0,0
+access_dashboard_import_portal,dashboard.import.portal,model_dashboard_import,base.group_portal,1,1,1,0

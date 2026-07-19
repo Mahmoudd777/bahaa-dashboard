@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- White-label: rename the default company so the backend tab title
+         and navbar no longer read "My Company" / Odoo defaults. -->
+    <!-- `website_logo` is seeded in Python (post_init_hook _set_company_website_logo):
+         the XML base64/file loader rasterises SVG to a blank white bitmap. The
+         standard `logo` is left untouched (back-office + PDF reports). -->
+    <record id="base.main_company" model="res.company">
+        <field name="name">المكتب الاستراتيجي لتطوير منطقة الباحة</field>
+    </record>
+</odoo>

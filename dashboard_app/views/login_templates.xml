@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================
+         Arabic / RTL login form matching the Figma design.
+         Keeps the real /web/login <form> + csrf so auth still works;
+         only relabels fields, restyles the button, adds heading/footer.
+         ============================================================ -->
+    <template id="baha_login" inherit_id="web.login">
+
+        <!-- Welcome heading above the form -->
+        <xpath expr="//form" position="before">
+            <div class="o_baha_login__head">
+                <h1 class="o_baha_login__title">اهلا بكم <span class="o_baha_login__wave">👋</span></h1>
+                <p class="o_baha_login__subtitle">لوحة تحكم المكتب الإستراتيجي لتطوير منطقة الباحة</p>
+            </div>
+        </xpath>
+
+        <!-- Username field -->
+        <xpath expr="//label[@for='login']" position="replace">
+            <label for="login" class="form-label">اسم المستخدم</label>
+        </xpath>
+        <xpath expr="//input[@id='login']" position="attributes">
+            <attribute name="placeholder">اسم المستخدم</attribute>
+        </xpath>
+
+        <!-- Password field -->
+        <xpath expr="//label[@for='password']" position="replace">
+            <label for="password" class="form-label">كلمة المرور</label>
+        </xpath>
+        <xpath expr="//input[@id='password']" position="attributes">
+            <attribute name="placeholder">كلمة المرور</attribute>
+        </xpath>
+
+        <!-- Submit button -->
+        <xpath expr="//button[hasclass('btn-primary')]" position="replace">
+            <button type="submit" class="btn o_baha_login__submit">تسجيل الدخول</button>
+        </xpath>
+
+        <!-- Footer links -->
+        <xpath expr="//form" position="after">
+            <div class="o_baha_login__footer">
+                <a href="#">الشروط والأحكام</a>
+                <span>·</span>
+                <a href="#">سياسة الخصوصية</a>
+                <span>·</span>
+                <span class="o_baha_login__copy">© جميع الحقوق محفوظة للمكتب الإستراتيجي لتطوير منطقة الباحة</span>
+            </div>
+        </xpath>
+
+    </template>
+
+</odoo>

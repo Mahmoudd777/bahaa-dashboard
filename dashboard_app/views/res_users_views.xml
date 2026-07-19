@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_users_form_dashboard" model="ir.ui.view">
+        <field name="name">res.users.form.dashboard</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page name="dashboard" string="لوحة التحكم">
+                    <div class="oe_button_box" invisible="not id or not dashboard_access">
+                        <button name="action_open_user_dashboard" type="object"
+                                class="btn-primary" icon="fa-external-link"
+                                string="فتح وتحرير لوحة هذا المستخدم"
+                                groups="base.group_system"/>
+                    </div>
+                    <group>
+                        <field name="dashboard_access" widget="boolean_toggle"/>
+                        <field name="dashboard_edit_access" widget="boolean_toggle"
+                               invisible="not dashboard_access"
+                               groups="base.group_system"/>
+                    </group>
+                    <group invisible="not dashboard_access">
+                        <group string="اللوحة والترحيب">
+                            <field name="dashboard_id"
+                                   options="{'no_create': True}"/>
+                            <field name="dashboard_welcome_text"
+                                   placeholder="حياك الله سعادة الرئيس التنفيذي"/>
+                        </group>
+                        <group string="السمة (الألوان)">
+                            <field name="dashboard_theme_id"
+                                   invisible="dashboard_custom_theme"
+                                   options="{'no_create': True}"/>
+                            <field name="dashboard_custom_theme" widget="boolean_toggle"/>
+                            <field name="dashboard_color_primary" widget="color"
+                                   invisible="not dashboard_custom_theme"/>
+                            <field name="dashboard_color_accent" widget="color"
+                                   invisible="not dashboard_custom_theme"/>
+                        </group>
+                    </group>
+                    <group invisible="not dashboard_access" string="التبويبات والمكوّنات الظاهرة" col="1">
+                        <field name="dashboard_hidden_section_ids" invisible="1"/>
+                        <field name="dashboard_hidden_component_ids" widget="dashboard_layout_editor" nolabel="1"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

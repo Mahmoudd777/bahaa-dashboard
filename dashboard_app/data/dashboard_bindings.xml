@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- =====================================================================
+         Bind seeded dashboard components to the albaha_* data providers.
+         Only the data_source + source change; the seed config (colors, titles,
+         layout) is untouched, so the design stays identical. Components not
+         listed here keep rendering from seed (banners, single gauges/cards,
+         summaries, forecasts, completion-by-year, alert panels).
+         ===================================================================== -->
+
+    <!-- objectives gauges (gauge_grid) -->
+    <record id="ceo_objectives" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">objectives_gauges</field>
+    </record>
+
+    <!-- pillars performance (bar_h) -->
+    <record id="ceo_pillars" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">pillars_bar</field>
+    </record>
+    <record id="ceo_ind_pillars" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">pillars_bar</field>
+    </record>
+    <record id="vp_pillars" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">pillars_bar</field>
+    </record>
+
+    <!-- programs progress (bar_h / bar_h_planned) -->
+    <record id="gen_bar_programs" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">programs_planned</field>
+    </record>
+    <record id="ceo_bar_planned" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">programs_planned</field>
+    </record>
+    <record id="ceo_ind_variance" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">programs_planned</field>
+    </record>
+    <record id="vp_variance" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">programs_planned</field>
+    </record>
+
+    <!-- KPI grid + KPI tables -->
+    <record id="ceo_kpi_grid" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">kpi_grid</field>
+    </record>
+    <record id="ceo_ov_kpitable" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">kpi_table</field>
+    </record>
+    <record id="vp_kpitable" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">kpi_table</field>
+    </record>
+
+    <!-- technical / regional indicators (semi_grid) -->
+    <record id="ceo_tech_kpis" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">regional_semi</field>
+    </record>
+
+    <!-- initiatives tables (data_table) -->
+    <record id="ceo_initiatives" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">initiatives_table</field>
+    </record>
+    <record id="ceo_ind_fullinit" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">initiatives_table</field>
+    </record>
+    <record id="vp_initiatives" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">initiatives_table</field>
+    </record>
+
+    <!-- risk register (data_table) + risk cards (list_cards) -->
+    <record id="ceo_risk_table" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">risks_table</field>
+    </record>
+    <record id="vp_riskreg" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">risks_table</field>
+    </record>
+    <record id="gen_risks" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">risks_cards</field>
+    </record>
+    <record id="ceo_risks" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">risks_cards</field>
+    </record>
+
+    <!-- budget split bars -->
+    <record id="gen_budget" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">budget_split</field>
+    </record>
+    <record id="ceo_budget" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">budget_split</field>
+    </record>
+    <record id="ceo_ind_budget" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">budget_split</field>
+    </record>
+    <record id="vp_budget" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">budget_split</field>
+    </record>
+    <record id="vp_budget2" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">budget_split</field>
+    </record>
+
+    <!-- investments stat cards -->
+    <record id="gen_stat_invest" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">investments_stat</field>
+    </record>
+    <record id="ceo_invest" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">investments_stat</field>
+    </record>
+    <record id="ceo_ind_invest" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">investments_stat</field>
+    </record>
+    <record id="vp_invest" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">investments_stat</field>
+    </record>
+    <record id="vp_invest2" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">investments_stat</field>
+    </record>
+
+    <!-- strategic goals lists -->
+    <record id="gen_goals" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">goals_list</field>
+    </record>
+    <record id="ceo_goals" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">goals_list</field>
+    </record>
+
+    <!-- individual semicircle gauges (General) -> Nth regional indicator -->
+    <record id="gen_semi_1" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">regional_semi_one:0</field>
+    </record>
+    <record id="gen_semi_2" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">regional_semi_one:1</field>
+    </record>
+    <record id="gen_semi_3" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">regional_semi_one:2</field>
+    </record>
+    <record id="gen_semi_4" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">regional_semi_one:3</field>
+    </record>
+    <record id="gen_semi_5" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">regional_semi_one:4</field>
+    </record>
+
+    <!-- individual objective gauge cards (VP) -> Nth objective -->
+    <record id="vp_g1" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">objective_one:0</field>
+    </record>
+    <record id="vp_g2" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">objective_one:1</field>
+    </record>
+    <record id="vp_g3" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">objective_one:2</field>
+    </record>
+    <record id="vp_g4" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">objective_one:3</field>
+    </record>
+
+    <!-- strategy completion stat -->
+    <record id="gen_stat_strategy" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">strategy_stat</field>
+    </record>
+
+    <!-- forecast bars (probability of hitting target) -->
+    <record id="ceo_risk_forecast" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">kpi_forecast_bar</field>
+    </record>
+    <record id="vp_forecast" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">kpi_forecast_bar</field>
+    </record>
+
+    <!-- operational alert panels -->
+    <record id="ceo_ov_alerts" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">alerts</field>
+    </record>
+    <record id="vp_alerts" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">alerts</field>
+    </record>
+
+    <!-- ===== Phase 2: remaining summary / count / series widgets ===== -->
+
+    <!-- banners: live date (greeting/role are welcome chrome, not demo data) -->
+    <record id="gen_banner" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">banner</field>
+    </record>
+    <record id="ceo_banner" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">banner</field>
+    </record>
+    <record id="vp_banner" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">banner</field>
+    </record>
+
+
+    <!-- path indicators panel (ratios) -->
+    <record id="ceo_path" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">path_indicators</field>
+    </record>
+
+    <!-- quality/risk summary panel (counts) -->
+    <record id="ceo_ov_summary" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">quality_summary</field>
+    </record>
+
+    <!-- initiative status-count panel (CEO) -->
+    <record id="ceo_risk_summary" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">initiative_status_counts</field>
+    </record>
+
+    <!-- VP individual status-count cards -->
+    <record id="vp_sum1" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">status_count_one:0</field>
+    </record>
+    <record id="vp_sum2" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">status_count_one:1</field>
+    </record>
+    <record id="vp_sum3" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">status_count_one:2</field>
+    </record>
+    <record id="vp_sum4" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">status_count_one:3</field>
+    </record>
+
+    <!-- strategy completion stat -->
+    <record id="ceo_compl_stat" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">completion_stat</field>
+    </record>
+
+    <!-- completion-by-year (bar_v) -->
+    <record id="gen_bar_years" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">completion_by_year</field>
+    </record>
+    <record id="ceo_compl_bar" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">completion_by_year</field>
+    </record>
+
+    <!-- decisions / actions list_cards -->
+    <record id="ceo_actions" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">decisions_cards</field>
+    </record>
+
+    <!-- meetings list_cards -->
+    <record id="ceo_risk_meetings" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">meetings_cards</field>
+    </record>
+    <record id="vp_meetings" model="dashboard.component">
+        <field name="data_source">model</field><field name="source">meetings_cards</field>
+    </record>
+</odoo>

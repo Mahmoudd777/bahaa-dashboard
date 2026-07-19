@@ -1,0 +1,2435 @@
+// ============================================================
+//  Al-Baha strategic dashboard — themed via --dash-* CSS vars
+//  (set inline from the server theme palette). Brown <-> teal
+//  is purely a variable swap; no styles are theme-specific.
+// ============================================================
+
+// Lock restricted (portal / non-internal) users to the dashboard only:
+// hide the Odoo navbar so they cannot navigate elsewhere. Internal users
+// (admin / employees) keep the navbar and full Odoo access — the body class
+// is only added by the Dashboard component for non-internal users.
+body.o_baha_locked {
+    .o_main_navbar { display: none !important; }
+    .o_action_manager { top: 0 !important; }
+}
+
+// Frontend website page wrapper (portal users open the dashboard here)
+.o_baha_dashboard_page {
+    min-height: 100vh;
+    background: var(--dash-bg-tertiary, #f5f5f5);
+    .o_baha_dash { min-height: 100vh; }
+}
+
+.o_baha_dash {
+    --dash-primary: #5c4b43;
+    --dash-accent: #00ab9d;
+    --dash-success: #00ab9d;
+    --dash-warning: #f0974f;
+    --dash-danger: #ff5147;
+    --dash-delayed: #fc0000;
+    --dash-text-primary: #181d27;
+    --dash-text-secondary: #414651;
+    --dash-bg-tertiary: #f5f5f5;
+    --dash-border: #d5d7da;
+
+    direction: rtl;
+    font-family: "Tajawal", "STC Forward", "SST Arabic", "Segoe UI", system-ui, sans-serif;
+    background: var(--dash-bg-tertiary);
+    height: 100%;
+    min-height: 100%;
+    // full-bleed: no outer margin/padding around the dashboard
+    padding: 0;
+    color: var(--dash-text-primary);
+    overflow: auto;
+
+    &__loading,
+    &__empty {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        height: 60vh;
+        color: var(--dash-text-secondary);
+        font-size: 18px;
+    }
+
+    // pull the content up so the first cards peek above the brown header skirt
+    &__section { margin: -34px 0 0; position: relative; z-index: 1; }
+
+    // 12-column CSS grid in view and edit — --grid-x/y + --span/--rows place cards.
+    &__grid {
+        --row-h: 72px;
+        --grid-gap: 16px;
+        display: grid;
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+        // FIXED rows (not auto) so a card of R rows is exactly R*row-h + gaps —
+        // identical to the Gridstack editor's fixed cellHeight. This is what
+        // keeps view and edit pixel-aligned (no auto-expand shifting cards).
+        grid-auto-rows: var(--row-h);
+        align-items: stretch;
+        gap: var(--grid-gap);
+        padding: 16px;
+
+        &--edit {
+            position: relative;
+            align-items: start;
+        }
+    }
+
+    &__cell {
+        min-width: 0;
+        grid-column: calc(var(--grid-x, 0) + 1) / span var(--span, 12);
+        grid-row: calc(var(--grid-y, 0) + 1) / span var(--rows, 1);
+        // Exact height for the card's row span; content is clipped to it so a
+        // card never pushes its neighbours (same rule the editor enforces).
+        height: calc(var(--rows, 1) * var(--row-h) + max(0, var(--rows, 1) - 1) * var(--grid-gap));
+        overflow: hidden;
+        border-radius: 14px;
+
+        .o_baha_card,
+        .o_baha_panel {
+            height: 100%;
+            box-sizing: border-box;
+        }
+    }
+
+    // two-column composition (sidebar + main). RTL: the side column (first
+    // child) sits on the right. Only used when a section has main/side units.
+    &__cols {
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+        padding: 16px;
+
+        .o_baha_dash__grid { padding: 0; }
+    }
+}
+.o_baha_col {
+    min-width: 0;
+
+    &--side { flex: 0 0 34%; max-width: 34%; }
+    &--main { flex: 1 1 0; }
+}
+
+// ---- Grouping panel (titled box wrapping an inner grid of widgets) ----
+.o_baha_panel {
+    background: #ffffff;
+    border: 1px solid #E8E8E8;
+    border-radius: 4px;
+    padding: 20px 24px;
+    height: auto;
+    box-shadow: none;
+
+    &__head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 14px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid #EFEFF0;   // subtle divider line under the title
+    }
+    &__title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #141315;
+    }
+    &__headtools {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        font-size: 16px;
+    }
+    &__menu, &__expand { cursor: pointer; color: #454445; opacity: 0.6; }
+    &__grid {
+        --inner-row-h: 72px;
+        display: grid;
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+        grid-auto-rows: minmax(var(--inner-row-h), auto);
+        grid-auto-flow: dense;   // backfill gaps left by hidden inner components
+        gap: 12px;
+        align-items: start;
+
+        .o_baha_panel__inner_cell {
+            min-width: 0;
+            align-self: start;
+            grid-column: calc(var(--grid-x, 0) + 1) / span var(--span, 12);
+            grid-row: calc(var(--grid-y, 0) + 1) / span var(--rows, 1);
+            min-height: calc(var(--rows, 1) * var(--inner-row-h));
+        }
+    }
+
+    // mini-cards inside a panel are lighter than standalone cards
+    .o_baha_card { box-shadow: none; }
+}
+
+// ---- Composite panels: gauge grid + stat grid + kpi grid ----
+.o_baha_gaugegrid__grid,
+.o_baha_statgrid__grid,
+.o_baha_kpigrid__grid,
+.o_baha_semigrid__grid {
+    display: grid;
+    gap: 12px;
+}
+
+// stat card: label + small icon inline at the top (مؤشرات قياس المسار)
+.o_baha_stat__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+.o_baha_stat__icon {
+    flex: 0 0 auto;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9px;
+    font-size: 15px;
+    color: var(--dash-text-secondary);
+    background: #ffffff;
+    border: 1px solid var(--dash-border);
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+}
+
+// ---- مؤشرات قياس المسار (stat_grid cards) — matched to Figma spec ----
+.o_baha_statgrid {
+    .o_baha_stat {
+        background: #FAFAFA;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius: 4px;
+        box-shadow: none;
+        padding: 16px 24px;
+        gap: 12px;
+    }
+    .o_baha_stat { align-items: stretch; }      // stack: icon (top) → label → value row
+    .o_baha_stat__label { font-size: 16px; font-weight: 500; color: #141315; line-height: 1.5; text-align: right; }
+    .o_baha_stat__icon {            // exact Figma SVG, sits above the words (right-aligned)
+        align-self: flex-start;     // RTL start = right edge
+        width: 24px; height: 24px;
+        margin-bottom: 2px;
+        background: transparent; border: none; box-shadow: none;
+        color: #141315; font-size: 22px;       // fallback for FA-icon summary cards
+        svg { width: 24px; height: 24px; display: block; }
+    }
+    .o_baha_stat__row {
+        display: flex;
+        align-items: baseline;
+        justify-content: flex-start;   // group value + trend together on the right (RTL)
+        gap: 10px;
+    }
+    // all numbers the same size (numerator + "/target"); only the unit is smaller
+    .o_baha_stat__value {
+        font-size: 28px; font-weight: 700; white-space: nowrap;
+        .o_baha_val__head { color: #141315; }
+        .o_baha_val__tail { color: #141315; font-size: 28px; font-weight: 700; }
+        small { color: #141315; font-size: 16px; font-weight: 600; margin-inline-start: 2px; }
+    }
+    // status color applies to the numerator AND the trend (so they match)
+    .o_baha_val--ok   .o_baha_val__head, .o_baha_val--ok small { color: var(--dash-accent); }
+    .o_baha_val--warn .o_baha_val__head { color: var(--dash-warning); }
+    .o_baha_val--bad  .o_baha_val__head { color: var(--dash-danger); }
+
+    .o_baha_stat--big { align-items: stretch; justify-content: flex-start; text-align: right;
+        .o_baha_stat__value { font-size: 28px; } }
+
+    .o_baha_trend { font-size: 13px; gap: 5px; font-weight: 600; }
+    .o_baha_trend__badge {
+        width: 16px; height: 16px; border-radius: 100px;
+        display: inline-flex; align-items: center; justify-content: center;
+        font-size: 8px;
+    }
+    .o_baha_trend--ok   { color: var(--dash-accent); .o_baha_trend__badge { background: #E7F7ED; color: var(--dash-accent); } }
+    .o_baha_trend--warn { color: var(--dash-warning); .o_baha_trend__badge { background: #FDF1E7; color: var(--dash-warning); } }
+    .o_baha_trend--bad  { color: var(--dash-danger);  .o_baha_trend__badge { background: #FDECEC; color: var(--dash-danger); } }
+    .o_baha_val--target .o_baha_val__head { color: var(--dash-primary); }   // الهدف = brown
+
+    // bare metrics row (مؤشر اكتمال الاستراتيجية header): no cards, right-aligned pair
+    &.o_baha_statgrid--bare {
+        border: none; background: transparent; box-shadow: none; padding: 0; height: auto;
+        .o_baha_statgrid__grid { display: flex; justify-content: flex-start; gap: 40px; }   // RTL start = right
+        .o_baha_stat { background: transparent; border: none; padding: 0; gap: 6px; flex: 0 0 auto; }
+        .o_baha_stat__label { font-size: 14px; font-weight: 400; color: #636264; }
+        .o_baha_stat__value { font-size: 28px; font-weight: 500; }
+    }
+}
+
+// ---- تقييم الاهداف الاستراتيجية الـ 11 (gauge_grid "Small Metric Cards") ----
+.o_baha_gaugegrid {
+    &__grid { gap: 16px; }
+    .o_baha_gauge {
+        background: rgba(243, 243, 247, 0.2);
+        border: 1px solid #E8E8E8;
+        border-radius: 2px;
+        box-shadow: none;
+        padding: 12px 10px;
+        gap: 12px;
+        align-items: center;
+        flex-direction: row-reverse;   // ring on the right; label/trend to its left, right-aligned
+    }
+    .o_baha_gauge__info { gap: 10px; align-items: flex-start; flex: 1 1 auto; }   // RTL start = right (next to ring)
+    .o_baha_gauge__label { font-size: 14px; font-weight: 500; color: #000000; text-align: right; }
+    .o_baha_gauge__ring { width: 50px; height: 50px; }
+    .o_baha_gauge__track { stroke: rgba(23, 6, 69, 0.1); }
+    .o_baha_gauge__pct { font-size: 13px; color: #000000; small { font-size: 9px; } }
+    .o_baha_trend { font-size: 12px; gap: 4px; font-weight: 500; align-items: center; }
+    .o_baha_gauge__since { color: #636264; }
+    .o_baha_trend__pct { font-weight: 600; }
+    .o_baha_trend__badge {
+        width: 16px; height: 16px; border-radius: 100px;
+        display: inline-flex; align-items: center; justify-content: center; font-size: 8px;
+    }
+    .o_baha_trend--up   { .o_baha_trend__pct { color: #11B14B; } .o_baha_trend__badge { background: #E7F7ED; color: #11B14B; } }
+    .o_baha_trend--down { .o_baha_trend__pct { color: var(--dash-danger); } .o_baha_trend__badge { background: #FDECEC; color: var(--dash-danger); } }
+}
+
+// ---- Filter chip + card tools (e.g. الركيزة dropdown) ----
+.o_baha_card__tools {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 16px;
+
+    .o_baha_panel__menu, .o_baha_panel__expand { cursor: pointer; color: #454445; opacity: 0.6; }
+}
+.o_baha_chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border: 1px solid var(--dash-border);
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--dash-text-secondary);
+    background: #fff;
+}
+
+// ---- Status legend chips (مسار صحيح / في خطر / متأخر) ----
+.o_baha_legend {
+    display: flex;
+    gap: 14px;
+    font-size: 12px;
+    color: var(--dash-text-secondary);
+
+    &__item { display: flex; align-items: center; gap: 5px; }
+    &__dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        display: inline-block;
+        &--ok { background: var(--dash-success, #00ab9d); }
+        &--risk { background: var(--dash-warning, #f0974f); }
+        &--late { background: var(--dash-danger, #ff5147); }
+    }
+}
+
+@media (max-width: 1100px) {
+    .o_baha_dash__cols { flex-direction: column; }
+    .o_baha_col--side { flex-basis: auto; max-width: none; width: 100%; }
+}
+
+// ---- Tab bar (sections) ----
+.o_baha_tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 14px 16px 0;
+}
+.o_baha_tab {
+    border: 1px solid var(--dash-border);
+    background: #fff;
+    color: var(--dash-text-secondary);
+    border-radius: 8px;
+    padding: 9px 20px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:hover { border-color: var(--dash-primary); color: var(--dash-primary); }
+    &--active {
+        background: var(--dash-primary);
+        border-color: var(--dash-primary);
+        color: #fff;
+    }
+}
+
+// ---- Generic card ----
+.o_baha_card {
+    background: #ffffff;
+    border: 1px solid var(--dash-border);
+    border-radius: 4px;
+    padding: 16px;
+    height: 100%;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+
+    &__head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding-bottom: 12px;
+        margin-bottom: 16px;
+        border-bottom: 1px solid #E8E8E8;     // light line under the title
+    }
+    &__title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #141315;
+    }
+    &__tools {
+        display: flex; align-items: center; gap: 14px; font-size: 16px;
+        .o_baha_panel__menu, .o_baha_panel__expand { cursor: pointer; color: #454445; opacity: 0.6; }
+    }
+}
+
+// ---- Trend indicator ----
+.o_baha_trend {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    &--up { color: var(--dash-success); }
+    &--down { color: var(--dash-danger); }
+}
+
+// ---- Header (two-tier app banner) ----
+.o_baha_header {
+    position: relative;
+    background: var(--dash-primary);
+    border-radius: 0; // full-bleed, flush to the top/sides
+    overflow: visible;
+    color: #fff;
+
+    // ---- tier 1: avatar (left) | down-triangle pattern | logo (right) ----
+    &__top {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 16px 28px;
+        min-height: 76px;
+        // row of large downward triangles in a darker shade (theme-agnostic)
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='90'%3E%3Cpolygon points='0,0 54,0 27,40' fill='%23000000' fill-opacity='0.10'/%3E%3C/svg%3E");
+        background-size: 54px 90px;
+        background-repeat: repeat-x;
+        background-position: top center;
+    }
+
+    &__logo {
+        flex: 0 0 auto;
+        position: relative;
+        z-index: 2;
+        img { max-height: 56px; max-width: 300px; width: auto; object-fit: contain; display: block; }
+    }
+
+    // ---- two-tone orange triangle divider between the two tiers ----
+    // A solid orange band with a row of darker-coral down-triangles on top
+    // (the gaps form up-triangles in the band color) — no transparency.
+    &__triangles {
+        height: 16px;
+        background-color: #f4894e;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='16'%3E%3Cpolygon points='0,0 22,0 11,16' fill='%23ff5630'/%3E%3C/svg%3E");
+        background-size: 22px 16px;
+        background-repeat: repeat-x;
+        background-position: top center;
+    }
+
+    // ---- tier 2: date selector (left) | welcome + last-update (right) ----
+    &__row2 {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 18px 28px 52px;   // extra brown "skirt" for the cards to overlap into
+    }
+
+    &__welcome { flex: 1 1 auto; text-align: right; }
+    &__greeting { font-size: 22px; font-weight: 800; }
+    &__wave { margin-inline-start: 4px; }
+    &__update {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 13px;
+        opacity: 0.9;
+        margin-top: 4px;
+    }
+    &__dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--dash-warning);
+        display: inline-block;
+    }
+
+    // user / avatar + logout menu (tier 1, left)
+    &__user {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        user-select: none;
+        z-index: 2;
+    }
+    &__avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        border: 2px solid rgba(255, 255, 255, 0.7);
+        object-fit: cover;
+    }
+    &__caret { font-size: 12px; opacity: 0.9; }
+
+    &__menu {
+        position: absolute;
+        top: calc(100% + 10px);
+        // avatar sits at the far screen edge — open the menu INTO the screen
+        inset-inline-end: 0;
+        width: 190px;
+        background: #fff;
+        color: var(--dash-text-primary);
+        border-radius: 10px;
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+        padding: 6px;
+        z-index: 60;
+    }
+    &__menu-name {
+        font-weight: 700;
+        font-size: 13px;
+        padding: 8px 10px;
+        color: var(--dash-text-primary);
+        border-bottom: 1px solid var(--dash-border);
+        margin-bottom: 4px;
+    }
+    &__menu-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 10px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--dash-text-secondary);
+        cursor: pointer;
+        i { color: var(--dash-primary); width: 16px; text-align: center; }
+        &:hover { background: var(--dash-bg-tertiary); }
+    }
+    &__menu-sep {
+        height: 1px;
+        background: var(--dash-border);
+        margin: 4px 0;
+    }
+    &__logout {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 10px;
+        border-radius: 8px;
+        background: rgba(255, 86, 48, 0.10);
+        color: var(--dash-danger);
+        font-weight: 600;
+        font-size: 13px;
+        text-decoration: none;
+        &:hover { background: rgba(255, 86, 48, 0.18); color: var(--dash-danger); }
+    }
+
+    // tier-2 left controls: tabs + calendar date pill (all on the LEFT, one row)
+    &__controls {
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    // section tabs hosted inside the brown header (active = teal, inactive = white)
+    &__tabs {
+        display: flex;
+        gap: 2px;
+        border-radius: 6px;
+        overflow: hidden;
+        .o_baha_tab {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            height: 48px;
+            padding: 0 16px;
+            border: 1px solid transparent;
+            border-radius: 0;
+            box-shadow: none;
+            background: #fff;
+            color: #000;
+            font-size: 14px;
+            font-weight: 500;
+            white-space: nowrap;
+            .o_baha_tab__ico { display: inline-flex; line-height: 0; svg { width: 20px; height: 20px; display: block; } }
+            &:hover { background: var(--dash-primary-dark); color: #fff; border-color: rgba(255, 255, 255, 0.55); }
+            &--active {
+                background: var(--dash-accent);
+                color: #fff;
+                border-color: rgba(255, 255, 255, 0.55);
+                &:hover { background: var(--dash-accent); color: #fff; }
+            }
+        }
+    }
+
+    // ---- calendar date pill (whole pill clickable → native date picker) ----
+    &__datepill {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        height: 48px;
+        padding: 0 16px;
+        background: #fff;
+        color: #000;
+        border: 1px solid transparent;   // reserve space so height matches the tabs
+        border-radius: 4px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.15s ease, border-color 0.15s ease;
+        // same effect as the tab buttons beside it (dark-brown + white + border)
+        &:hover {
+            background: var(--dash-primary-dark);
+            border-color: rgba(255, 255, 255, 0.55);
+            .o_baha_header__cal, .o_baha_header__date-label, .o_baha_header__date-caret { color: #fff; }
+        }
+    }
+    &__cal { display: inline-flex; line-height: 0; color: #000; svg { width: 22px; height: 22px; display: block; } }
+    &__date-label { color: #000; white-space: nowrap; }
+    &__date-caret { font-size: 12px; color: #000; }
+    // native input sits invisibly over the whole pill so any click opens the picker
+    .o_baha_header__date-native {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        border: 0;
+        margin: 0;
+        padding: 0;
+        cursor: pointer;
+    }
+
+    // ---- ⋮ import/export dropdown ----
+    &__more { position: relative; flex: 0 0 auto; }
+    &__more-btn {
+        width: 40px;
+        height: 40px;
+        border: 0;
+        border-radius: 8px;
+        background: #fff;
+        color: var(--dash-text-secondary);
+        cursor: pointer;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+        &:hover { color: var(--dash-primary); }
+    }
+    &__more-menu {
+        position: absolute;
+        top: calc(100% + 8px);
+        // button sits near the left edge — open INTO the screen
+        inset-inline-end: 0;
+        min-width: 170px;
+        background: #fff;
+        color: var(--dash-text-primary);
+        border-radius: 10px;
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+        padding: 6px;
+        z-index: 60;
+    }
+    &__more-opt {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: 7px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        i { color: var(--dash-primary); width: 16px; text-align: center; }
+        &:hover { background: var(--dash-bg-tertiary); }
+    }
+}
+
+// ---- Toolbar ----
+.o_baha_toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: #fff;
+    border: 1px solid var(--dash-border);
+    border-radius: 4px;
+    padding: 8px 12px;
+
+    &__period {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border: 1px solid var(--dash-border);
+        border-radius: 4px;
+        padding: 6px 12px;
+        font-size: 13px;
+        color: var(--dash-text-secondary);
+    }
+
+    &__actions { display: flex; gap: 8px; }
+
+    &__btn {
+        border: 1px solid var(--dash-border);
+        background: #fff;
+        border-radius: 4px;
+        padding: 6px 14px;
+        font-size: 13px;
+        color: var(--dash-text-secondary);
+        cursor: pointer;
+
+        &--primary {
+            background: var(--dash-accent);
+            border-color: var(--dash-accent);
+            color: #fff;
+        }
+    }
+}
+
+// ---- Gauge card ----
+.o_baha_gauge {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    &__info { display: flex; flex-direction: column; gap: 6px; }
+    &__label { font-size: 13px; font-weight: 600; color: var(--dash-text-secondary); }
+
+    &__ring {
+        position: relative;
+        width: 72px;
+        height: 72px;
+        flex: 0 0 auto;
+
+        svg { width: 100%; height: 100%; }
+    }
+
+    &__track { fill: none; stroke: #eef0f2; stroke-width: 8; }
+    &__value {
+        fill: none;
+        stroke-width: 8;
+        stroke-linecap: round;
+        transform: rotate(-90deg);
+        transform-origin: 50% 50%;
+        transition: stroke-dashoffset 0.6s ease;
+    }
+
+    &__pct {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        font-weight: 800;
+        color: var(--dash-text-primary);
+        small { font-size: 10px; font-weight: 600; }
+    }
+}
+
+// ---- Stat card ----
+.o_baha_stat {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    &__main { display: flex; flex-direction: column; gap: 8px; }
+    &__numrow { display: flex; align-items: flex-end; gap: 8px; }
+    &__label { font-size: 13px; color: var(--dash-text-secondary); }
+    &__value {
+        font-size: 26px;
+        font-weight: 800;
+        color: var(--dash-text-primary);
+        small { font-size: 14px; font-weight: 600; color: var(--dash-text-secondary); }
+    }
+
+    &--big {
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        .o_baha_stat__main { align-items: center; }
+        .o_baha_stat__value { font-size: 40px; color: var(--dash-accent); }
+    }
+
+    // feature card (الاستثمارات المستقطبة) — teal border + icon badge, horizontal
+    &--feature {
+        flex-direction: row;           // icon (1st) on the right, text hugging it
+        align-items: flex-start;
+        justify-content: flex-start;   // RTL start = right → group packed on the right
+        gap: 20px;
+        text-align: right;
+        border: 1px solid var(--dash-accent);
+        .o_baha_stat__main { align-items: flex-start; gap: 12px; }
+        .o_baha_stat__label { font-size: 18px; font-weight: 700; color: #141315; }
+        .o_baha_stat__value { font-size: 28px; font-weight: 500; color: var(--dash-accent);
+            small { font-size: 16px; color: var(--dash-accent); } }
+        .o_baha_trend { font-size: 12px; gap: 4px; align-items: center; }
+        .o_baha_gauge__since { color: #636264; font-weight: 500; }
+        .o_baha_trend__pct { font-weight: 600; }
+        .o_baha_trend__badge { width: 16px; height: 16px; border-radius: 100px;
+            display: inline-flex; align-items: center; justify-content: center; font-size: 8px; }
+        .o_baha_trend--up   { .o_baha_trend__pct { color: #11B14B; } .o_baha_trend__badge { background: #E7F7ED; color: #11B14B; } }
+        .o_baha_trend--down { .o_baha_trend__pct { color: var(--dash-danger); } .o_baha_trend__badge { background: #FDECEC; color: var(--dash-danger); } }
+        .o_baha_stat__ficon {
+            flex: 0 0 auto; width: 48px; height: 48px; border-radius: 3px;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(0, 171, 157, 0.2); color: var(--dash-accent); font-size: 24px;
+        }
+    }
+}
+
+// ---- Progress card ----
+.o_baha_progress {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    &__head { display: flex; justify-content: space-between; font-size: 13px; }
+    &__label { color: var(--dash-text-secondary); font-weight: 600; }
+    &__value { font-weight: 800; }
+
+    &__track {
+        height: 12px;
+        border-radius: 999px;
+        background: #edeff1;
+        overflow: hidden;
+    }
+    &__fill { height: 100%; border-radius: 999px; }
+    &__hint { font-size: 11px; color: var(--dash-text-secondary); }
+}
+
+// ---- Horizontal bar chart ----
+.o_baha_barh {
+    &__rows { display: flex; flex-direction: column; gap: 14px; }
+    &__row { display: flex; align-items: center; gap: 20px; }
+    &__label { flex: 0 0 170px; font-size: 14px; color: #000000; text-align: right; line-height: 1.4; }
+    &__track { flex: 1 1 auto; position: relative; height: 20px; background: #E2E8F0; border-radius: 2px; }
+    &__fill { position: absolute; right: 0; top: 0; height: 100%; border-radius: 4px; min-width: 22px; }
+    &__val {
+        position: absolute; left: 8px; top: 50%; transform: translateY(-50%);
+        font-size: 14px; font-weight: 400; color: #ffffff; z-index: 1;
+    }
+}
+
+// ---- Vertical bar chart (with percentage Y-axis) ----
+.o_baha_barv {
+    &__plot { display: flex; gap: 10px; }
+    &__yaxis {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 200px;
+        padding-bottom: 22px;     // align "20%" near the bar baseline (label row)
+        font-size: 10px;
+        color: var(--dash-text-tertiary);
+        white-space: nowrap;
+    }
+    &__cols {
+        flex: 1 1 auto;
+        direction: ltr;                 // 2030 (first item) on the left, like the design
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-around;
+        gap: 10px;
+        height: 200px;
+        padding-bottom: 22px;
+        // dashed horizontal gridlines every 20%
+        background-image: repeating-linear-gradient(to top, transparent 0 calc(20% - 1px), transparent calc(20% - 1px) 20%);
+        background: linear-gradient(#D6D6D6 1px, transparent 1px) 0 0 / 100% 20% repeat-y;
+    }
+    &__col {
+        flex: 1 1 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-end;
+        height: 100%;
+        gap: 6px;
+        z-index: 1;
+    }
+    &__bars { display: flex; align-items: flex-end; justify-content: center; gap: 3px; height: 100%; width: 100%; }
+    &__bar { width: 8px; min-height: 4px; border-radius: 2px 2px 0 0; }
+    &__label { font-size: 11px; color: var(--dash-text-tertiary); }
+}
+
+// ---- Data table ----
+.o_baha_table {
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { padding: 10px 12px; text-align: right; border-bottom: 1px solid var(--dash-border); }
+    th { color: var(--dash-text-secondary); font-weight: 700; background: #fafbfc; }
+    &__row--delayed {
+        background: rgba(252, 0, 0, 0.06);
+        border-right: 3px solid var(--dash-delayed);
+        td:first-child { font-weight: 600; }
+    }
+}
+
+// ============================================================
+//  Import wizard — modern modal (custom, not Odoo Dialog chrome)
+// ============================================================
+.o_baha_modal__backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(17, 24, 39, 0.5);
+    backdrop-filter: blur(3px);
+}
+
+.o_baha_modal {
+    direction: rtl;
+    width: 92vw;
+    max-width: 560px;
+    max-height: 88vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.28);
+    font-family: "Tajawal", "STC Forward", "SST Arabic", "Segoe UI", system-ui, sans-serif;
+    animation: o_baha_modal_in 0.18s ease-out;
+
+    &__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 18px 22px;
+        border-bottom: 1px solid var(--dash-border, #d5d7da);
+    }
+    &__title { margin: 0; font-size: 18px; font-weight: 800; color: var(--dash-text-primary, #181d27); }
+    &__close {
+        border: 0;
+        background: transparent;
+        font-size: 18px;
+        color: #9aa0a6;
+        cursor: pointer;
+        &:hover { color: #111827; }
+    }
+
+    &__body { padding: 22px; overflow: auto; }
+
+    &__footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 16px 22px;
+        border-top: 1px solid var(--dash-border, #d5d7da);
+    }
+    &__footer-right { display: flex; align-items: center; gap: 10px; }
+}
+
+@keyframes o_baha_modal_in {
+    from { opacity: 0; transform: translateY(12px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.o_baha_detail_backdrop {
+    background:
+        radial-gradient(circle at 20% 12%, rgba(0, 171, 157, 0.18), transparent 34%),
+        radial-gradient(circle at 82% 82%, rgba(92, 75, 67, 0.24), transparent 36%),
+        rgba(17, 24, 39, 0.42);
+    backdrop-filter: blur(9px) saturate(1.1);
+}
+
+.o_baha_detail_modal {
+    width: 94vw;
+    max-width: 920px;
+    background: rgba(255, 255, 255, 0.86);
+    border: 1px solid rgba(255, 255, 255, 0.72);
+    box-shadow: 0 28px 80px rgba(24, 29, 39, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(18px);
+
+    &__header {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.42));
+    }
+    &__eyebrow {
+        margin-bottom: 4px;
+        color: var(--dash-accent, #00ab9d);
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.02em;
+    }
+    &__subtitle {
+        margin-top: 6px;
+        color: var(--dash-text-tertiary, #535862);
+        font-size: 13px;
+        font-weight: 600;
+    }
+    &__headtools {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    &__body {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+    }
+    &__state {
+        min-height: 220px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        color: var(--dash-text-secondary, #414651);
+        font-weight: 700;
+
+        &--error { color: var(--dash-danger, #ff5147); }
+    }
+}
+
+.o_baha_detail_summary {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+
+    &__card {
+        padding: 16px;
+        border: 1px solid rgba(213, 215, 218, 0.72);
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.72);
+        box-shadow: 0 10px 28px rgba(24, 29, 39, 0.06);
+
+        strong {
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+            margin-top: 8px;
+            color: var(--dash-text-primary, #181d27);
+            font-size: 26px;
+            line-height: 1;
+            font-weight: 900;
+        }
+        small {
+            font-size: 12px;
+            color: var(--dash-text-tertiary, #535862);
+        }
+    }
+    &__label {
+        color: var(--dash-text-tertiary, #535862);
+        font-size: 12px;
+        font-weight: 700;
+    }
+}
+
+.o_baha_detail_sections {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.o_baha_detail_section,
+.o_baha_detail_text,
+.o_baha_detail_table {
+    padding: 16px;
+    border: 1px solid rgba(213, 215, 218, 0.72);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.62);
+
+    h4 {
+        margin: 0 0 12px;
+        color: var(--dash-text-primary, #181d27);
+        font-size: 14px;
+        font-weight: 900;
+    }
+}
+
+.o_baha_detail_section {
+    dl {
+        display: grid;
+        gap: 10px;
+        margin: 0;
+    }
+    dl > div {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(213, 215, 218, 0.62);
+
+        &:last-child {
+            padding-bottom: 0;
+            border-bottom: 0;
+        }
+    }
+    dt {
+        color: var(--dash-text-tertiary, #535862);
+        font-size: 12px;
+        font-weight: 700;
+    }
+    dd {
+        margin: 0;
+        color: var(--dash-text-primary, #181d27);
+        font-size: 13px;
+        font-weight: 800;
+        text-align: left;
+    }
+}
+
+.o_baha_detail_text {
+    p {
+        margin: 0;
+        color: var(--dash-text-secondary, #414651);
+        line-height: 1.7;
+    }
+}
+
+.o_baha_detail_table {
+    overflow: auto;
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12px;
+    }
+    th,
+    td {
+        padding: 10px 12px;
+        border-bottom: 1px solid rgba(213, 215, 218, 0.72);
+        text-align: right;
+        white-space: nowrap;
+    }
+    th {
+        color: var(--dash-text-secondary, #414651);
+        font-weight: 800;
+        background: rgba(255, 255, 255, 0.62);
+    }
+}
+
+.o_baha_lines_modal {
+    max-width: 1040px;
+}
+
+.o_baha_lines_table {
+    padding: 0;
+
+    table {
+        min-width: 720px;
+    }
+
+    th,
+    td {
+        vertical-align: middle;
+    }
+
+    &__action {
+        width: 64px;
+        text-align: center !important;
+    }
+}
+
+.o_baha_line_open {
+    width: 32px;
+    height: 32px;
+    border: 1px solid rgba(0, 171, 157, 0.34);
+    border-radius: 10px;
+    background: rgba(0, 171, 157, 0.1);
+    color: var(--dash-accent, #00ab9d);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+
+    &:hover {
+        transform: translateY(-1px);
+        background: rgba(0, 171, 157, 0.16);
+        box-shadow: 0 8px 18px rgba(0, 171, 157, 0.16);
+    }
+}
+
+.o_baha_lines_modal__hint {
+    margin-top: 10px;
+    color: var(--dash-text-secondary, #414651);
+    font-size: 12px;
+}
+
+@media (max-width: 760px) {
+    .o_baha_detail_summary,
+    .o_baha_detail_sections {
+        grid-template-columns: 1fr;
+    }
+}
+
+.o_baha_import_modal {
+    max-width: 640px;
+}
+
+.o_baha_import_targets {
+    &__hint {
+        margin: 0 0 14px;
+        color: var(--dash-text-secondary, #414651);
+        font-size: 14px;
+    }
+    &__empty {
+        color: var(--dash-text-tertiary, #717680);
+        text-align: center;
+        padding: 24px;
+    }
+    &__grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        max-height: 360px;
+        overflow: auto;
+    }
+}
+
+.o_baha_import_target {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 12px 14px;
+    border: 1px solid var(--dash-border, #d5d7da);
+    border-radius: 12px;
+    background: #fff;
+    cursor: pointer;
+    text-align: right;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+
+    &:hover {
+        border-color: var(--dash-accent, #00ab9d);
+        background: rgba(0, 171, 157, 0.04);
+    }
+    &--active {
+        border-color: var(--dash-accent, #00ab9d);
+        box-shadow: 0 0 0 2px rgba(0, 171, 157, 0.18);
+        background: rgba(0, 171, 157, 0.08);
+    }
+    &__label {
+        font-weight: 800;
+        color: var(--dash-text-primary, #181d27);
+        font-size: 14px;
+    }
+    &__model {
+        font-size: 11px;
+        color: var(--dash-text-tertiary, #717680);
+        direction: ltr;
+        text-align: left;
+        width: 100%;
+    }
+}
+
+.o_baha_import_selected {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: rgba(0, 171, 157, 0.06);
+    font-size: 14px;
+
+    &__label { color: var(--dash-text-secondary, #414651); }
+    &__model {
+        direction: ltr;
+        color: var(--dash-text-tertiary, #717680);
+        font-size: 12px;
+    }
+    &__change { margin-right: auto; }
+}
+
+.o_baha_advanced_template {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 14px;
+    padding: 16px;
+    border: 1px solid rgba(0, 171, 157, 0.26);
+    border-radius: 14px;
+    background: linear-gradient(135deg, rgba(0, 171, 157, 0.1), rgba(255, 255, 255, 0.86));
+
+    &__icon {
+        flex: 0 0 42px;
+        width: 42px;
+        height: 42px;
+        display: grid;
+        place-items: center;
+        border-radius: 12px;
+        color: #1d7a44;
+        background: rgba(255, 255, 255, 0.86);
+        font-size: 22px;
+    }
+    &__content {
+        min-width: 0;
+
+        h4 {
+            margin: 0 0 8px;
+            color: var(--dash-text-primary, #181d27);
+            font-size: 15px;
+            font-weight: 900;
+        }
+        p {
+            margin: 0;
+            color: var(--dash-text-secondary, #414651);
+            font-size: 13px;
+            line-height: 1.7;
+        }
+    }
+}
+
+.o_baha_import_columns {
+    p {
+        margin: 0 0 8px;
+        color: var(--dash-text-secondary, #414651);
+        font-size: 13px;
+        font-weight: 800;
+    }
+    &__list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        max-height: 150px;
+        overflow: auto;
+    }
+    span {
+        padding: 6px 10px;
+        border-radius: 999px;
+        color: var(--dash-text-secondary, #414651);
+        background: #f6f8fa;
+        border: 1px solid var(--dash-border, #d5d7da);
+        font-size: 12px;
+        font-weight: 700;
+    }
+}
+
+.o_baha_import_result {
+    text-align: center;
+    padding: 24px 12px;
+
+    i { font-size: 42px; margin-bottom: 12px; }
+    h4 { margin: 0 0 8px; font-size: 18px; }
+    p { margin: 0; color: var(--dash-text-secondary, #414651); }
+
+    &--ok i { color: var(--dash-success, #00ab9d); }
+    &--error i { color: var(--dash-danger, #ff5147); }
+}
+
+.o_baha_import_errors {
+    margin-top: 16px;
+    text-align: right;
+    font-size: 13px;
+
+    ul {
+        margin: 8px 0 0;
+        padding: 0 18px 0 0;
+        max-height: 180px;
+        overflow: auto;
+    }
+    li { margin-bottom: 4px; color: var(--dash-danger, #ff5147); }
+}
+
+@media (max-width: 560px) {
+    .o_baha_import_targets__grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.o_baha_dropzone {
+    border: 2px dashed var(--dash-border, #d5d7da);
+    border-radius: 12px;
+    padding: 34px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    background: #fbfcfd;
+
+    &:hover { border-color: var(--dash-accent, #00ab9d); }
+    &--active { border-color: var(--dash-accent, #00ab9d); background: rgba(0, 171, 157, 0.06); }
+
+    &__icon { font-size: 34px; color: var(--dash-accent, #00ab9d); margin-bottom: 10px; }
+    &__title { font-size: 15px; font-weight: 700; color: var(--dash-text-primary, #181d27); }
+    &__hint { font-size: 12px; color: var(--dash-text-tertiary, #717680); margin-top: 4px; }
+}
+
+.o_baha_filelist {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 16px;
+
+    &__item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        background: #f6f8fa;
+        border: 1px solid var(--dash-border, #d5d7da);
+        border-radius: 8px;
+    }
+    &__icon { color: #1d7a44; font-size: 18px; }
+    &__name { flex: 1 1 auto; font-size: 13px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    &__size { font-size: 12px; color: var(--dash-text-tertiary, #717680); }
+    &__remove {
+        border: 0; background: transparent; color: #9aa0a6; cursor: pointer;
+        &:hover { color: var(--dash-danger, #ff5147); }
+    }
+}
+
+.o_baha_btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 0;
+    border-radius: 8px;
+    padding: 10px 18px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &--primary {
+        background: var(--dash-accent, #00ab9d);
+        color: #fff;
+        &:hover { filter: brightness(0.95); }
+        &:disabled { opacity: 0.5; cursor: not-allowed; }
+    }
+    &--ghost {
+        background: #fff;
+        color: var(--dash-text-secondary, #414651);
+        border: 1px solid var(--dash-border, #d5d7da);
+        &:hover { border-color: var(--dash-accent, #00ab9d); color: var(--dash-accent, #00ab9d); }
+    }
+    &--text {
+        background: transparent;
+        color: var(--dash-text-secondary, #414651);
+        &:hover { color: #111827; }
+    }
+    &--danger {
+        background: var(--dash-danger, #ff5147);
+        color: #fff;
+        &:hover { filter: brightness(0.95); }
+    }
+}
+
+// ============================================================
+//  Phase 3 widgets — badges, tags, and the new component types
+// ============================================================
+
+// shared badge / tag / in-cell bar
+.o_baha_badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+    &--high { background: var(--dash-danger); }
+    &--mid { background: var(--dash-warning); }
+    &--low { background: var(--dash-success); }
+    &--none { background: #9aa0a6; }
+}
+.o_baha_tag {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--dash-text-secondary);
+    border: 1px solid var(--dash-border);
+    background: #fff;
+}
+.o_baha_cellbar {
+    display: flex; align-items: center; gap: 8px;
+    &__track { flex: 1 1 auto; height: 8px; background: #edeff1; border-radius: 999px; overflow: hidden; min-width: 60px; }
+    &__fill { height: 100%; border-radius: 999px; }
+    &__val { font-size: 12px; font-weight: 700; flex: 0 0 auto; }
+}
+
+// semicircle gauge
+.o_baha_semi {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    &__label { font-size: 13px; font-weight: 600; color: var(--dash-text-secondary); text-align: center; }
+    &__chart { position: relative; width: 140px; }
+    svg { width: 100%; height: auto; }
+    &__track { fill: none; stroke: #eef0f2; stroke-width: 9; stroke-linecap: round; }
+    &__value { fill: none; stroke-width: 9; stroke-linecap: round; transition: stroke-dashoffset 0.6s ease; }
+    &__big { position: absolute; left: 0; right: 0; bottom: 2px; text-align: center; font-size: 20px; font-weight: 800; color: var(--dash-text-primary);
+        small { font-size: 11px; } }
+    &__scale { display: flex; justify-content: space-between; width: 140px; font-size: 11px; color: var(--dash-text-tertiary); }
+}
+
+// KPI gauge card
+.o_baha_kpi {
+    &__top { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
+    &__name { font-size: 13px; font-weight: 700; color: var(--dash-text-primary); }
+    &__body { display: flex; align-items: center; gap: 12px; }
+    &__ring { width: 60px; height: 60px; flex: 0 0 auto; }
+    &__nums { display: flex; flex-direction: column; gap: 2px; }
+    &__cur { font-size: 20px; font-weight: 800; color: var(--dash-text-primary); }
+    &__target { font-size: 11px; color: var(--dash-text-tertiary); }
+}
+
+// budget split bar
+.o_baha_split {
+    &__bar { display: flex; height: 34px; border-radius: 8px; overflow: hidden; }
+    &__seg { display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #fff; white-space: nowrap; }
+    &__seg--spent { background: var(--dash-danger); }
+    &__seg--rem { background: #6b6b6b; }
+    &__legend { display: flex; gap: 16px; margin-top: 10px; font-size: 12px; color: var(--dash-text-secondary); }
+}
+.o_baha_dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-inline-end: 4px;
+    &--spent { background: var(--dash-danger); } &--rem { background: #6b6b6b; } }
+
+// planned-vs-actual horizontal bars
+.o_baha_barhp {
+    &__rows { display: flex; flex-direction: column; gap: 14px; }
+    &__row { display: flex; align-items: center; gap: 10px; }
+    &__label { flex: 0 0 150px; font-size: 12px; color: var(--dash-text-secondary); }
+    &__track { flex: 1 1 auto; position: relative; height: 10px; }
+    &__plan { position: absolute; inset: 0; background: #d9dbde; border-radius: 999px; }
+    &__fill { position: absolute; inset-inline-start: 0; top: 0; bottom: 0; border-radius: 999px; }
+    &__budget { flex: 0 0 auto; font-size: 11px; font-weight: 700; color: var(--dash-success); white-space: nowrap; }
+}
+
+// goals list
+.o_baha_goals {
+    &__row {
+        display: flex; align-items: center; gap: 12px;
+        background: rgba(243, 243, 247, 0.2);
+        border: 1px solid #E8E8E8; border-radius: 2px;
+        padding: 12px 10px; margin-bottom: 16px;
+        &:last-child { margin-bottom: 0; }
+    }
+    &__ring { position: relative; width: 50px; height: 50px; flex: 0 0 auto;
+        svg { width: 100%; height: 100%; }
+        .o_baha_gauge__track { stroke: rgba(23, 6, 69, 0.1); }
+        .o_baha_gauge__pct { font-size: 13px; color: #000; small { font-size: 9px; } } }
+    &__text { flex: 1 1 auto; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+    &__label { font-size: 14px; font-weight: 500; color: #000000; text-align: right; }
+    .o_baha_trend { font-size: 12px; gap: 4px; align-items: center; font-weight: 500; }
+    .o_baha_gauge__since { color: #636264; }
+    .o_baha_trend__pct { font-weight: 600; }
+    .o_baha_trend__badge { width: 16px; height: 16px; border-radius: 100px; display: inline-flex; align-items: center; justify-content: center; font-size: 8px; }
+    .o_baha_trend--up   { .o_baha_trend__pct { color: #11B14B; } .o_baha_trend__badge { background: #E7F7ED; color: #11B14B; } }
+    .o_baha_trend--down { .o_baha_trend__pct { color: var(--dash-danger); } .o_baha_trend__badge { background: #FDECEC; color: var(--dash-danger); } }
+}
+
+// list cards (risk / actions)
+.o_baha_listcards {
+    &__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+    &__headmain { display: flex; align-items: center; gap: 8px; }
+    &__count { background: var(--dash-bg-tertiary); border-radius: 999px; padding: 1px 9px; font-size: 12px; font-weight: 700; }
+    &__item { padding: 12px 14px; border-radius: 8px; margin-bottom: 10px; background: #fafbfc; border-inline-start: 3px solid var(--dash-border);
+        &--high { background: rgba(255,81,71,0.06); border-inline-start-color: var(--dash-danger); }
+        &--mid { background: rgba(240,151,79,0.06); border-inline-start-color: var(--dash-warning); }
+        &--low { background: rgba(0,171,157,0.06); border-inline-start-color: var(--dash-success); } }
+    &__row1 { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
+    &__date { font-size: 11px; color: var(--dash-text-tertiary); margin-inline-start: auto; }
+    &__title { font-size: 13px; font-weight: 700; color: var(--dash-text-primary); }
+    &__decision { font-size: 12px; color: var(--dash-text-secondary); margin-top: 4px; }
+}
+
+// alerts panel
+.o_baha_alerts {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    &__group {
+        background: rgba(243, 243, 247, 0.2);
+        border: 1px solid #E8E8E8;
+        border-radius: 2px;
+        padding: 12px 16px;
+        display: flex; flex-direction: column; gap: 12px;
+    }
+    &__ghead {
+        display: flex; align-items: center; justify-content: space-between; gap: 12px;
+        cursor: pointer;
+        border-radius: 4px;
+        &:focus-visible {
+            outline: 2px solid var(--dash-accent, #00ab9d);
+            outline-offset: 4px;
+        }
+    }
+    &__gtitle {
+        display: flex; align-items: center; gap: 10px;
+        font-size: 14px; font-weight: 500;
+        i { font-size: 16px; }
+    }
+    &__chevron { color: #000; opacity: .8; font-size: 18px; transition: transform 0.15s ease; }
+    &__divider { height: 0; border-top: 1px solid #E8E8E8; }
+    &__list { display: flex; flex-direction: column; gap: 10px; }
+    &__item { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 14px; }
+    &__name { display: flex; align-items: center; gap: 8px; color: #000; opacity: .5; font-weight: 500; }
+    &__meta { color: #000; font-weight: 500; }
+    &__dot { width: 8px; height: 8px; border-radius: 50%; flex: none; display: inline-block; }
+}
+
+// ============================================================
+//  Micro-interactions + chart polish (entrance handled by anim.js/GSAP)
+// ============================================================
+
+// Hover lift applies to the individual CARD blocks (the inner widgets), not the
+// grouping panel — so hovering a panel reacts per inner card, not as one big box.
+// Cards wrap the GSAP-animated cells, so they carry no inline transform and the
+// hover transform applies cleanly.
+.o_baha_card {
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+// Only the small metric cards react (the "inner blocks"). Container widgets
+// (tables, lists, charts, alerts, goals, budget, etc.) stay put — their own
+// inner rows/groups handle interaction.
+.o_baha_gauge,
+.o_baha_kpi,
+.o_baha_semi,
+.o_baha_stat {
+    will-change: transform;
+    &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 26px rgba(20, 19, 21, 0.10);
+        border-color: rgba(20, 19, 21, 0.14);
+    }
+}
+
+// A grouped panel (stats + chart bundled, e.g. مؤشر اكتمال الاستراتيجية) is a
+// container — it does not lift, and neither do its inner cards. Kept calm.
+.o_baha_panel--group .o_baha_card:hover {
+    transform: none;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    border-color: var(--dash-border);
+}
+
+// Gauge rings: smooth their draw + a soft glow; lift the ring slightly on hover.
+.o_baha_gauge__value,
+.o_baha_semi__value { will-change: stroke-dashoffset; filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.10)); }
+.o_baha_gauge__ring { transition: transform 0.2s ease; }
+.o_baha_card:hover .o_baha_gauge__ring { transform: scale(1.04); }
+
+// Bars/progress: rounded + will-change for the grow tween.
+.o_baha_barh__fill,
+.o_baha_barhp__fill,
+.o_baha_progress__fill,
+.o_baha_cellbar__fill,
+.o_baha_split__seg { will-change: transform; border-radius: 6px; }
+.o_baha_barv__bar { will-change: transform; border-radius: 4px 4px 0 0; }
+
+// Table rows: highlight on hover.
+.o_baha_table tbody tr { transition: background 0.15s ease; }
+.o_baha_table tbody tr:hover { background: rgba(20, 19, 21, 0.035); }
+.o_baha_table__row--clickable {
+    cursor: pointer;
+
+    &:hover {
+        background: rgba(0, 171, 157, 0.07) !important;
+    }
+    &:focus-visible {
+        outline: 2px solid var(--dash-accent, #00ab9d);
+        outline-offset: -2px;
+        background: rgba(0, 171, 157, 0.09);
+    }
+}
+
+.o_baha_clickable {
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+
+    &:hover {
+        background: rgba(0, 171, 157, 0.06);
+    }
+    &:focus-visible {
+        outline: 2px solid var(--dash-accent, #00ab9d);
+        outline-offset: 2px;
+    }
+}
+
+.o_baha_clickable--card {
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 22px rgba(20, 19, 21, 0.1);
+    }
+}
+
+.o_baha_barh__row.o_baha_clickable,
+.o_baha_barhp__row.o_baha_clickable,
+.o_baha_barv__col.o_baha_clickable {
+    border-radius: 6px;
+
+    &:hover {
+        background: rgba(0, 171, 157, 0.06);
+    }
+}
+
+.o_baha_alerts__item.o_baha_clickable {
+    border-radius: 6px;
+
+    &:hover {
+        background: rgba(0, 171, 157, 0.06);
+    }
+}
+
+// List-card rows: subtle lift.
+.o_baha_listcards__item { transition: transform 0.15s ease, box-shadow 0.15s ease; }
+.o_baha_listcards__item:hover { transform: translateX(-3px); }
+
+// Goals list: each of the 4 goal rows reacts individually (the outer card itself
+// does not lift — its rows are the interactive blocks).
+.o_baha_goals__row {
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+    will-change: transform;
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(20, 19, 21, 0.08);
+        border-color: rgba(20, 19, 21, 0.16);
+    }
+}
+// Base goals card never lifts — only its rows react.
+.o_baha_card.o_baha_goals:hover {
+    transform: none;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    border-color: var(--dash-border);
+}
+
+// Alerts panel: each grouped block (مؤشرات بدون مالك / مبادرات بتأخر / توقع تحقيق)
+// reacts individually; the outer card itself does not lift.
+.o_baha_alerts__group {
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+    will-change: transform;
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(20, 19, 21, 0.08);
+        border-color: rgba(20, 19, 21, 0.16);
+    }
+}
+// Base alerts card never lifts — only its groups react.
+.o_baha_card.o_baha_alerts:hover {
+    transform: none;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    border-color: var(--dash-border);
+}
+
+// Buttons / dropdown items: press feedback.
+.o_baha_tab:active,
+.o_baha_header__datepill:active,
+.o_baha_toolbar__btn:active { transform: scale(0.97); }
+.o_baha_header__menu-item,
+.o_baha_header__more-opt { transition: background 0.15s ease, transform 0.12s ease; }
+.o_baha_header__menu-item:active,
+.o_baha_header__more-opt:active { transform: scale(0.98); }
+
+// ---- header date filter (3 modes) ----
+.o_baha_header__filter { position: relative; display: inline-flex; align-items: center; gap: 8px; }
+.o_baha_filterpill {
+    position: relative; display: inline-flex; align-items: center; gap: 8px;
+    height: 48px; padding: 0 14px; background: #fff; color: #000;
+    border: 1px solid transparent; border-radius: 4px; font-size: 13px; font-weight: 500;
+    cursor: pointer; white-space: nowrap;
+    transition: background .15s ease, border-color .15s ease;
+    .fa { font-size: 12px; }
+    &:hover { background: var(--dash-primary-dark); border-color: rgba(255, 255, 255, 0.55); color: #fff; }
+}
+.o_baha_filter__menu {
+    position: absolute; top: calc(100% + 6px); inset-inline-end: 0; z-index: 50;
+    background: #fff; border-radius: 6px; min-width: 150px; padding: 6px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16); color: #000;
+}
+.o_baha_filter__opt {
+    padding: 8px 10px; border-radius: 4px; font-size: 13px; cursor: pointer;
+    &:hover { background: #f3f3f3; }
+    &--active { background: var(--dash-accent); color: #fff; }
+}
+.o_baha_filter__quarters { display: inline-flex; align-items: center; gap: 4px; }
+.o_baha_qbtn {
+    height: 48px; min-width: 40px; padding: 0 10px; border: 1px solid transparent;
+    background: #fff; color: #000; border-radius: 4px; font-weight: 600; font-size: 13px;
+    cursor: pointer; transition: background .15s ease;
+    &:hover { background: var(--dash-primary-dark); color: #fff; }
+    &--active { background: var(--dash-accent); color: #fff; }
+}
+.o_baha_filter__year { color: #fff; font-weight: 600; font-size: 13px; padding-inline: 4px; }
+.o_baha_filter__yearsel {
+    height: 48px; padding: 0 10px; border: 1px solid transparent; border-radius: 4px;
+    background: #fff; color: #000; font-weight: 600; font-size: 13px; cursor: pointer;
+    &:hover { border-color: rgba(255, 255, 255, 0.55); }
+}
+
+// Respect users who ask for less motion: kill transitions + any lingering filters.
+@media (prefers-reduced-motion: reduce) {
+    .o_baha_dash *,
+    .o_baha_dash *::before,
+    .o_baha_dash *::after {
+        transition: none !important;
+        animation: none !important;
+    }
+    .o_baha_card:hover,
+    .o_baha_panel:hover,
+    .o_baha_listcards__item:hover { transform: none; }
+}
+
+// ============================================================
+//  Flatpickr calendar — themed to the brand (rendered on <body>,
+//  so these are top-level, not scoped under .o_baha_dash).
+// ============================================================
+.flatpickr-calendar {
+    font-family: "Tajawal", "STC Forward", "SST Arabic", system-ui, sans-serif;
+    border-radius: 12px;
+    border: 1px solid #E8E8E8;
+    box-shadow: 0 14px 36px rgba(20, 19, 21, 0.18);
+    animation: o_baha_modal_in 0.16s ease-out;
+}
+.flatpickr-months,
+.flatpickr-weekdays { background: transparent; }
+.flatpickr-months .flatpickr-month,
+.flatpickr-current-month input.cur-year,
+.flatpickr-current-month .flatpickr-monthDropdown-months { color: #5C4B43; font-weight: 700; }
+.flatpickr-weekday { color: #00AB9D; font-weight: 700; }
+// month label + injected year dropdown, side by side, each sized to content
+// (the backend flatpickr theme makes this a flex row, which stretched the
+// year <select> to full width and overlapped the month — pin both to auto).
+.flatpickr-current-month {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+.flatpickr-current-month .cur-month {
+    flex: 0 0 auto;
+    margin: 0;
+    width: auto !important;
+}
+// !important: the backend (web client) has global form/select CSS that forces
+// width:100% on <select>, which stretched this to full width and overlapped
+// the month. The frontend (user1's /dashboard) has no such rule, hence it was
+// only broken in admin.
+.flatpickr-current-month .o_baha_year_select {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: max-content !important;
+    display: inline-block !important;
+    height: auto !important;
+    box-shadow: none !important;
+    color: #5C4B43;
+    font-weight: 700;
+    background: transparent;
+    border: 0;
+    border-radius: 6px;
+    padding: 0 2px;
+    margin: 0;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: inherit;
+    -webkit-appearance: none;
+    appearance: none;
+    text-align: center;
+    text-align-last: center;
+    &:hover { background: rgba(0, 171, 157, 0.12); }
+    &:focus { outline: none; }
+}
+.flatpickr-months .flatpickr-prev-month:hover svg,
+.flatpickr-months .flatpickr-next-month:hover svg { fill: #00AB9D; }
+.flatpickr-day {
+    border-radius: 8px;
+    color: #141315;
+    &:hover { background: rgba(0, 171, 157, 0.12); border-color: transparent; }
+    &.today { border-color: #00AB9D; }
+    &.selected,
+    &.selected:hover,
+    &.startRange,
+    &.endRange {
+        background: #5C4B43;
+        border-color: #5C4B43;
+        color: #fff;
+    }
+    &.flatpickr-disabled,
+    &.prevMonthDay,
+    &.nextMonthDay { color: rgba(20, 19, 21, 0.32); }
+}
+
+// ---- Dashboard layout edit mode ----
+.o_baha_dash__section--edit {
+    .o_baha_card,
+    .o_baha_edit_cell__body {
+        pointer-events: none;
+    }
+
+    .o_baha_edit_cell__chrome,
+    .o_baha_edit_cell__handle,
+    .o_baha_edit_cell__resize_edge {
+        pointer-events: auto;
+    }
+}
+
+.o_baha_dash__grid--edit {
+    position: relative;
+    min-height: 240px;
+    align-items: start;
+    grid-auto-rows: minmax(var(--row-h), auto);
+    background-image: repeating-linear-gradient(
+        to left,
+        rgba(0, 171, 157, 0.04) 0,
+        rgba(0, 171, 157, 0.04) calc((100% - 11 * var(--grid-gap)) / 12),
+        transparent calc((100% - 11 * var(--grid-gap)) / 12),
+        transparent calc((100% - 11 * var(--grid-gap)) / 12 + var(--grid-gap))
+    );
+
+    > .o_baha_dash__cell.o_baha_edit_cell {
+        align-self: start;
+        height: auto;
+        min-height: calc(var(--rows, 1) * var(--row-h) + max(0, var(--rows, 1) - 1) * var(--grid-gap, 16px));
+        max-height: none;
+        overflow: visible;
+
+        .o_baha_card,
+        .o_baha_panel {
+            height: auto;
+            min-height: calc(var(--rows, 1) * var(--row-h));
+        }
+    }
+
+    .o_baha_dash__cell {
+        min-width: 0;
+    }
+
+    &.o_baha_edit_grid--dragging {
+        cursor: grabbing;
+    }
+
+    .o_baha_edit_row_insert {
+        position: absolute;
+        left: 16px;
+        right: 16px;
+        height: 4px;
+        margin-top: -2px;
+        border-radius: 4px;
+        background: var(--dash-accent, #00ab9d);
+        box-shadow: 0 0 0 3px rgba(0, 171, 157, 0.18);
+        pointer-events: none;
+        z-index: 15;
+    }
+
+    .o_baha_edit_drop_preview {
+        grid-column: calc(var(--grid-x, 0) + 1) / span var(--span, 12);
+        grid-row: calc(var(--grid-y, 0) + 1) / span var(--rows, 1);
+        height: var(
+            --preview-h,
+            calc(var(--rows, 1) * var(--row-h) + max(0, var(--rows, 1) - 1) * var(--grid-gap, 16px))
+        );
+        min-height: var(
+            --preview-h,
+            calc(var(--rows, 1) * var(--row-h) + max(0, var(--rows, 1) - 1) * var(--grid-gap, 16px))
+        );
+        border: 2px solid rgba(0, 171, 157, 0.75);
+        border-radius: 14px;
+        background: rgba(0, 171, 157, 0.12);
+        box-shadow:
+            inset 0 0 0 2px rgba(255, 255, 255, 0.65),
+            0 12px 28px rgba(0, 171, 157, 0.22);
+        pointer-events: none;
+        z-index: 10;
+    }
+
+    .o_baha_edit_cell__body {
+        flex: 1 1 auto;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: visible;
+        height: auto;
+
+        > .o_baha_card,
+        > .o_baha_panel,
+        > .o_baha_alerts {
+            flex: 1 1 auto;
+            height: auto;
+            min-height: calc(var(--rows, 1) * var(--row-h));
+            max-height: none;
+            overflow: visible;
+        }
+    }
+
+    .o_baha_panel__grid {
+        grid-auto-rows: minmax(var(--inner-row-h, 72px), auto);
+        align-items: start;
+
+        .o_baha_panel__inner_cell {
+            height: auto;
+            min-height: calc(var(--rows, 1) * var(--inner-row-h, 72px));
+        }
+    }
+}
+
+.o_baha_edit_fab {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    z-index: 1200;
+    width: 52px;
+    height: 52px;
+    border: none;
+    border-radius: 50%;
+    background: var(--dash-accent, #00ab9d);
+    color: #fff;
+    box-shadow: 0 10px 28px rgba(0, 171, 157, 0.35);
+    cursor: pointer;
+    font-size: 18px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 14px 32px rgba(0, 171, 157, 0.42);
+    }
+}
+
+.o_baha_edit_toolbar {
+    position: fixed;
+    left: 50%;
+    bottom: 24px;
+    z-index: 1201;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 18px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.94);
+    border: 1px solid var(--dash-border, #d5d7da);
+    box-shadow: 0 16px 40px rgba(24, 29, 39, 0.18);
+    backdrop-filter: blur(12px);
+
+    &__hint {
+        color: var(--dash-text-secondary, #414651);
+        font-size: 13px;
+        font-weight: 700;
+        white-space: nowrap;
+
+        &--warn {
+            color: var(--dash-warning, #f0974f);
+        }
+    }
+    &__actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+}
+
+// ============================================================
+//  Edit mode — Gridstack.js grid (drag / resize / float)
+// ============================================================
+.o_baha_gs_mode {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid var(--dash-border, #d5d7da);
+    background: #fff;
+    color: var(--dash-text-secondary, #414651);
+    border-radius: 8px;
+    padding: 9px 13px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    &:hover { border-color: var(--dash-accent, #00ab9d); }
+    &--free {
+        background: var(--dash-accent, #00ab9d);
+        color: #fff;
+        border-color: var(--dash-accent, #00ab9d);
+    }
+}
+
+.o_baha_dash__section--edit .o_baha_gs { background: transparent; }
+
+// The edit cell IS the view cell — identical padding/content. Gridstack owns
+// position; the card inside renders exactly like view mode.
+.o_baha_gs_item > .o_baha_gs_cell {
+    background: transparent;
+    border: 0;
+    padding: 0;
+    overflow: hidden;
+    cursor: move;
+}
+
+// Light editable affordance: subtle outline on hover + a corner size chip.
+.o_baha_gs_item {
+    transition: filter 0.12s ease;
+    &:hover > .o_baha_gs_cell { outline: 2px dashed rgba(0, 171, 157, 0.55); outline-offset: 2px; border-radius: 14px; }
+    &:hover .o_baha_gs_tag { opacity: 1; }
+}
+.o_baha_gs_tag {
+    position: absolute;
+    top: 6px;
+    inset-inline-start: 6px;
+    z-index: 6;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 2px 8px;
+    border-radius: 8px;
+    background: var(--dash-accent, #00ab9d);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    box-shadow: 0 2px 6px rgba(24, 29, 39, 0.18);
+    opacity: 0;
+    transition: opacity 0.12s ease;
+    pointer-events: none;
+    user-select: none;
+}
+
+// dashed drop placeholder — clean single outline, no jitter
+.grid-stack > .grid-stack-placeholder > .placeholder-content {
+    background: rgba(0, 171, 157, 0.10);
+    border: 2px dashed var(--dash-accent, #00ab9d);
+    border-radius: 14px;
+    margin: 8px;
+}
+.o_baha_gs_item.ui-draggable-dragging,
+.o_baha_gs_item.grid-stack-item.ui-resizable-resizing { opacity: 0.95; z-index: 40; }
+
+// banner shown when an admin is viewing/editing ANOTHER user's dashboard
+.o_baha_asuser {
+    position: sticky;
+    top: 0;
+    z-index: 1300;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: var(--dash-accent, #00ab9d);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(24, 29, 39, 0.15);
+}
+
+// remove (×) button on each edit card — shown on hover
+.o_baha_gs_remove {
+    position: absolute;
+    top: 6px;
+    inset-inline-end: 6px;
+    z-index: 8;
+    width: 24px;
+    height: 24px;
+    border: 0;
+    border-radius: 50%;
+    background: var(--dash-danger, #ff5147);
+    color: #fff;
+    font-size: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.12s ease;
+    box-shadow: 0 2px 6px rgba(24, 29, 39, 0.2);
+    &:hover { filter: brightness(0.92); }
+}
+.o_baha_gs_item:hover .o_baha_gs_remove { opacity: 1; }
+
+// remove (×) on a tab, edit mode only
+.o_baha_tab__remove {
+    margin-inline-start: 6px;
+    font-size: 11px;
+    opacity: 0.75;
+    cursor: pointer;
+    &:hover { opacity: 1; color: var(--dash-danger, #ff5147); }
+}
+
+.o_baha_gs_add--on {
+    background: var(--dash-accent, #00ab9d);
+    color: #fff;
+    border-color: var(--dash-accent, #00ab9d);
+}
+
+// "+ add" panel listing removed cards/tabs
+.o_baha_add_panel {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    inset-inline-end: 0;
+    min-width: 260px;
+    max-width: 360px;
+    max-height: 320px;
+    overflow: auto;
+    background: #fff;
+    border: 1px solid var(--dash-border, #d5d7da);
+    border-radius: 12px;
+    box-shadow: 0 16px 40px rgba(24, 29, 39, 0.18);
+    padding: 12px;
+    text-align: right;
+
+    &__title {
+        font-weight: 800;
+        font-size: 13px;
+        color: var(--dash-primary, #5c4b43);
+        margin-bottom: 8px;
+    }
+    &__label {
+        font-size: 11px;
+        color: var(--dash-text-tertiary, #717680);
+        margin: 8px 2px 4px;
+        font-weight: 700;
+    }
+    &__empty {
+        font-size: 12px;
+        color: var(--dash-text-tertiary, #717680);
+        padding: 8px 2px;
+    }
+}
+.o_baha_add_item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    border: 1px solid var(--dash-border, #d5d7da);
+    background: #fff;
+    border-radius: 8px;
+    padding: 8px 10px;
+    margin-bottom: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--dash-text-secondary, #414651);
+    cursor: pointer;
+    transition: all 0.12s ease;
+    &:hover {
+        border-color: var(--dash-accent, #00ab9d);
+        background: rgba(0, 171, 157, 0.06);
+    }
+    i { color: var(--dash-accent, #00ab9d); }
+    span {
+        flex: 1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+.o_baha_edit_cell {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border: 0;
+    border-radius: 14px;
+    background: transparent;
+    padding: 0;
+    box-sizing: border-box;
+    height: auto;
+    min-height: 0;
+    max-height: none;
+    overflow: visible;
+
+    .o_baha_edit_cell__chrome {
+        position: absolute;
+        top: 6px;
+        left: 6px;
+        right: 6px;
+        z-index: 14;
+        margin-bottom: 0;
+    }
+
+    .o_baha_edit_cell__body {
+        position: relative;
+        flex: 1 1 auto;
+        min-height: 0;
+        height: auto;
+        overflow: visible;
+
+        > .o_baha_card,
+        > .o_baha_panel,
+        > .o_baha_alerts {
+            height: auto;
+            min-height: calc(var(--rows, 1) * var(--row-h));
+        }
+    }
+
+    &--dragging {
+        opacity: 0.55;
+    }
+
+    &--drop-target {
+        outline: 2px dashed var(--dash-accent, #00ab9d);
+        outline-offset: 2px;
+    }
+
+    &--drop-before {
+        box-shadow: inset 4px 0 0 var(--dash-accent, #00ab9d);
+    }
+
+    &--drop-after {
+        box-shadow: inset -4px 0 0 var(--dash-accent, #00ab9d);
+    }
+
+    &--resizing {
+        border-color: var(--dash-accent, #00ab9d);
+        box-shadow: 0 0 0 2px rgba(0, 171, 157, 0.15);
+        z-index: 5;
+        flex-shrink: 0;
+        flex-grow: 0;
+    }
+
+    &__frame {
+        position: absolute;
+        inset: 0;
+        border: 2px dashed rgba(0, 171, 157, 0.45);
+        border-radius: 12px;
+        pointer-events: none;
+        z-index: 11;
+    }
+
+    &__chrome {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        padding: 6px 8px;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(0, 171, 157, 0.2);
+        cursor: grab;
+        touch-action: none;
+        user-select: none;
+    }
+    &__handle {
+        color: var(--dash-accent, #00ab9d);
+        cursor: grab;
+        font-size: 14px;
+        pointer-events: auto;
+    }
+    &__label {
+        flex: 1 1 auto;
+        min-width: 0;
+        font-size: 13px;
+        font-weight: 800;
+        color: var(--dash-text-primary, #181d27);
+    }
+    &__span {
+        flex: 0 0 auto;
+        padding: 2px 8px;
+        border-radius: 999px;
+        background: rgba(0, 171, 157, 0.1);
+        color: var(--dash-accent, #00ab9d);
+        font-size: 11px;
+        font-weight: 800;
+        font-variant-numeric: tabular-nums;
+    }
+    &__resize_edge {
+        position: absolute;
+        z-index: 12;
+        touch-action: none;
+        user-select: none;
+        pointer-events: auto;
+        background: rgba(0, 171, 157, 0.45);
+        transition: background 0.12s ease;
+
+        &:hover,
+        .o_baha_edit_cell--resizing & {
+            background: var(--dash-accent, #00ab9d);
+        }
+
+        &--n {
+            top: -4px;
+            left: 8px;
+            right: 8px;
+            height: 8px;
+            cursor: ns-resize;
+            border-radius: 4px 4px 0 0;
+        }
+        &--s {
+            bottom: -4px;
+            left: 8px;
+            right: 8px;
+            height: 8px;
+            cursor: ns-resize;
+            border-radius: 0 0 4px 4px;
+        }
+        &--e {
+            top: 8px;
+            bottom: 8px;
+            right: -4px;
+            width: 8px;
+            cursor: ew-resize;
+            border-radius: 0 4px 4px 0;
+        }
+        &--w {
+            top: 8px;
+            bottom: 8px;
+            left: -4px;
+            width: 8px;
+            cursor: ew-resize;
+            border-radius: 4px 0 0 4px;
+        }
+    }
+
+    &--at-limit-w {
+        outline: 1px solid rgba(255, 152, 0, 0.55);
+    }
+    &--at-limit-h {
+        outline: 1px solid rgba(255, 152, 0, 0.55);
+    }
+
+    &__body {
+        min-width: 0;
+        flex: 1 1 auto;
+        overflow: auto;
+    }
+}
+
+body.o_baha_edit_dragging {
+    cursor: grabbing;
+
+    .o_baha_dash {
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .o_baha_edit_cell__chrome {
+        cursor: grabbing;
+    }
+}
+
+body.o_baha_edit_resizing {
+    user-select: none;
+
+    &[data-baha-resize-axis="n"],
+    &[data-baha-resize-axis="s"] {
+        cursor: ns-resize;
+    }
+    &[data-baha-resize-axis="e"],
+    &[data-baha-resize-axis="w"] {
+        cursor: ew-resize;
+    }
+}
+
+body.o_baha_edit_mode {
+    .o_baha_edit_fab {
+        display: none;
+    }
+}
+
+.o_baha_panel--edit {
+    border-style: dashed;
+}
+
+@media (max-width: 760px) {
+    .o_baha_edit_toolbar {
+        left: 12px;
+        right: 12px;
+        transform: none;
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .o_baha_edit_toolbar__actions {
+        justify-content: stretch;
+        flex-wrap: wrap;
+    }
+}

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Land the admin on the dashboard right after login (home action),
+         and give them the brown CEO dashboard with the brown theme. -->
+    <record id="base.user_admin" model="res.users">
+        <field name="action_id" ref="action_dashboard_main"/>
+        <field name="dashboard_access" eval="True"/>
+        <field name="dashboard_edit_access" eval="True"/>
+        <field name="dashboard_id" ref="dashboard_ceo"/>
+        <field name="dashboard_theme_id" ref="theme_brown"/>
+        <field name="dashboard_welcome_text">حياك الله سعادة الرئيس التنفيذي</field>
+    </record>
+</odoo>

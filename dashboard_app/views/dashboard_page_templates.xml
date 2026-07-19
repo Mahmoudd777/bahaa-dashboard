@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Frontend website page that hosts the dashboard for portal users.
+         Uses web.frontend_layout (no website module dependency) and mounts the
+         dashboard OWL component via the public-components system. No Odoo
+         backend chrome — the dashboard *is* the page. -->
+    <template id="dashboard_page" name="Dashboard Page">
+        <t t-call="web.frontend_layout">
+            <t t-set="no_header" t-value="True"/>
+            <t t-set="no_footer" t-value="True"/>
+            <t t-set="title">لوحة التحكم</t>
+            <div class="o_baha_dashboard_page" dir="rtl">
+                <owl-component name="dashboard_app.dashboard"/>
+            </div>
+        </t>
+    </template>
+
+</odoo>
