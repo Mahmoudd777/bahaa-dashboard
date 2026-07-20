@@ -1,0 +1,72 @@
+<odoo>
+    <record id="view_albaha_sector_form" model="ir.ui.view">
+        <field name="name">albaha.sector.form</field>
+        <field name="model">albaha.sector</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="status"/>
+                            <field name="primary_pillar_id"/>
+                        </group>
+                        <group>
+                            <field name="description" widget="text"/>
+                            <field name="lead_owner_id"/>
+                        </group>
+                    </group>
+                    <group string="Contribution Metrics">
+                        <group>
+                            <field name="contribution_pct_target"/>
+                            <field name="contribution_pct_current"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_albaha_sector_list" model="ir.ui.view">
+        <field name="name">albaha.sector.list</field>
+        <field name="model">albaha.sector</field>
+        <field name="arch" type="xml">
+            <list string="Sectors">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="primary_pillar_id"/>
+                <field name="status"/>
+                <field name="contribution_pct_target"/>
+                <field name="lead_owner_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_albaha_sector_search" model="ir.ui.view">
+        <field name="name">albaha.sector.search</field>
+        <field name="model">albaha.sector</field>
+        <field name="arch" type="xml">
+            <search>
+                <group/>
+                <filter string="Active" name="active_filter" domain="[('status', '=', 'active')]"/>
+                <filter string="On Hold" name="onhold_filter" domain="[('status', '=', 'onhold')]"/>
+                <filter string="Closed" name="closed_filter" domain="[('status', '=', 'closed')]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_albaha_sector" model="ir.actions.act_window">
+        <field name="name">Sectors</field>
+        <field name="res_model">albaha.sector</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Menu Items -->
+    <menuitem 
+        id="menu_albaha_sector" 
+        name="Sectors" 
+        parent="menu_albaha_root" 
+        action="action_albaha_sector" 
+        sequence="40"/>
+</odoo>

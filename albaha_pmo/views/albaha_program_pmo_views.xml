@@ -1,0 +1,76 @@
+<odoo>
+    <record id="view_albaha_program_pmo_list" model="ir.ui.view">
+        <field name="name">albaha.program.pmo.list</field>
+        <field name="model">albaha.program.pmo</field>
+        <field name="arch" type="xml">
+            <list string="Pmos">
+                <field name="name"/>
+                <field name="name_en"/>
+                <field name="code"/>
+                <field name="portfolio_id"/>
+                <field name="manager_id"/>
+                <field name="sector"/>
+                <field name="budget_sar_m"/>
+                <field name="priority"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_albaha_program_pmo_form" model="ir.ui.view">
+        <field name="name">albaha.program.pmo.form</field>
+        <field name="model">albaha.program.pmo</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                        <field name="name"/>
+                        <field name="name_en"/>
+                        <field name="code"/>
+                        <field name="portfolio_id"/>
+                        <field name="manager_id"/>
+                        </group>
+                        <group>
+                        <field name="sector"/>
+                        <field name="budget_sar_m"/>
+                        <field name="priority"/>
+                        <field name="status"/>
+                        </group>
+                    </group>
+                    <group string="Objective">
+                        <field name="objective" nolabel="1"/>
+                    </group>
+                    <group string="Expected Benefit">
+                        <field name="expected_benefit" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_albaha_program_pmo_search" model="ir.ui.view">
+        <field name="name">albaha.program.pmo.search</field>
+        <field name="model">albaha.program.pmo</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="name_en"/>
+                <field name="code"/>
+                <field name="portfolio_id"/>
+                <group>
+                    <filter string="Portfolio Id" name="gb_portfolio_id" context="{'group_by':'portfolio_id'}"/>
+                    <filter string="Manager Id" name="gb_manager_id" context="{'group_by':'manager_id'}"/>
+                    <filter string="Priority" name="gb_priority" context="{'group_by':'priority'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_albaha_program_pmo" model="ir.actions.act_window">
+        <field name="name">Pmos</field>
+        <field name="res_model">albaha.program.pmo</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_albaha_program_pmo" name="Pmos" parent="menu_albaha_pmo_root" action="action_albaha_program_pmo"/>
+</odoo>

@@ -1,0 +1,76 @@
+<odoo>
+    <record id="view_albaha_issue_list" model="ir.ui.view">
+        <field name="name">albaha.issue.list</field>
+        <field name="model">albaha.issue</field>
+        <field name="arch" type="xml">
+            <list string="Issues">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="project_id"/>
+                <field name="parent_risk_id"/>
+                <field name="priority"/>
+                <field name="impact_on"/>
+                <field name="raised_date"/>
+                <field name="resolution_date"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_albaha_issue_form" model="ir.ui.view">
+        <field name="name">albaha.issue.form</field>
+        <field name="model">albaha.issue</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                        <field name="name"/>
+                        <field name="code"/>
+                        <field name="project_id"/>
+                        <field name="parent_risk_id"/>
+                        <field name="priority"/>
+                        <field name="impact_on"/>
+                        </group>
+                        <group>
+                        <field name="raised_date"/>
+                        <field name="resolution_date"/>
+                        <field name="age_days"/>
+                        <field name="owner_id"/>
+                        <field name="escalation_level"/>
+                        <field name="status"/>
+                        </group>
+                    </group>
+                    <group string="Resolution Plan">
+                        <field name="resolution_plan" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_albaha_issue_search" model="ir.ui.view">
+        <field name="name">albaha.issue.search</field>
+        <field name="model">albaha.issue</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="project_id"/>
+                <field name="parent_risk_id"/>
+                <group>
+                    <filter string="Project" name="gb_project_id" context="{'group_by':'project_id'}"/>
+                    <filter string="Parent Risk" name="gb_parent_risk_id" context="{'group_by':'parent_risk_id'}"/>
+                    <filter string="Priority" name="gb_priority" context="{'group_by':'priority'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_albaha_issue" model="ir.actions.act_window">
+        <field name="name">Issues</field>
+        <field name="res_model">albaha.issue</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_albaha_issue" name="Issues" parent="menu_albaha_pmo_risk_root" action="action_albaha_issue"/>
+</odoo>

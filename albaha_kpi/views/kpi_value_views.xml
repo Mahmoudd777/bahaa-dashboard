@@ -1,0 +1,74 @@
+<odoo>
+    <!-- Form View -->
+    <record id="view_albaha_kpi_value_form" model="ir.ui.view">
+        <field name="name">albaha.kpi.value.form</field>
+        <field name="model">albaha.kpi.value</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group string="KPI Reference">
+                            <field name="kpi_id"/>
+                            <field name="period"/>
+                            <field name="period_type"/>
+                            <field name="name"/>
+                        </group>
+                        <group string="Performance Metrics">
+                            <field name="actual_value" widget="monetary"/>
+                            <field name="target_value" widget="monetary"/>
+                            <field name="variance_pct"/>
+                            <field name="rag_status"/>
+                        </group>
+                    </group>
+                    <group string="Reporting Details">
+                        <field name="reported_by"/>
+                        <field name="reported_date"/>
+                        <field name="approved_by"/>
+                        <field name="approval_date"/>
+                        <field name="comment" widget="text"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- List View -->
+    <record id="view_albaha_kpi_value_tree" model="ir.ui.view">
+        <field name="name">albaha.kpi.value.tree</field>
+        <field name="model">albaha.kpi.value</field>
+        <field name="arch" type="xml">
+            <list string="KPI Values">
+                <field name="kpi_id"/>
+                <field name="period"/>
+                <field name="actual_value"/>
+                <field name="target_value"/>
+                <field name="variance_pct"/>
+                <field name="rag_status"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_albaha_kpi_value_search" model="ir.ui.view">
+        <field name="name">albaha.kpi.value.search</field>
+        <field name="model">albaha.kpi.value</field>
+        <field name="arch" type="xml">
+            <search string="KPI Value Search">
+                <group>
+                    <filter string="Period Type" name="by_period_type" context="{'group_by':'period_type'}"/>
+                    <filter string="RAG Status" name="by_rag_status" context="{'group_by':'rag_status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action and Menu -->
+    <record id="action_albaha_kpi_value" model="ir.actions.act_window">
+        <field name="name">KPI Values</field>
+        <field name="res_model">albaha.kpi.value</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_albaha_kpi_values" name="KPI Values" parent="menu_albaha_kpi_root" action="action_albaha_kpi_value" sequence="20"/>
+
+</odoo>

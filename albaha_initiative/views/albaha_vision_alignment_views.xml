@@ -1,0 +1,70 @@
+<odoo>
+    <!-- Form View -->
+    <record id="view_albaha_vision_alignment_form" model="ir.ui.view">
+        <field name="name">albaha.vision.alignment.form</field>
+        <field name="model">albaha.vision.alignment</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group string="Alignment Details">
+                            <field name="initiative_id"/>
+                            <field name="vision_2030_pillar"/>
+                            <field name="vision_objective"/>
+                            <field name="alignment_strength"/>
+                        </group>
+                        <group string="Contribution &amp; Validation">
+                            <field name="contribution_pct"/>
+                            <field name="rationale" widget="html"/>
+                            <field name="validated_by"/>
+                            <field name="validation_date"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- List View -->
+    <record id="view_albaha_vision_alignment_tree" model="ir.ui.view">
+        <field name="name">albaha.vision.alignment.list</field>
+        <field name="model">albaha.vision.alignment</field>
+        <field name="arch" type="xml">
+            <list create="false">
+                <field name="name"/>
+                <field name="initiative_id"/>
+                <field name="vision_2030_pillar"/>
+                <field name="alignment_strength"/>
+                <field name="contribution_pct"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_albaha_vision_alignment_search" model="ir.ui.view">
+        <field name="name">albaha.vision.alignment.search</field>
+        <field name="model">albaha.vision.alignment</field>
+        <field name="arch" type="xml">
+            <search>
+                <group>
+                    <filter string="High Alignment" name="high_align" domain="[('alignment_strength', '=', 'high')]"/>
+                </group>
+                <group>
+                    <field name="initiative_id"/>
+                    <filter string="By Pillar" name="by_pillar"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action and Menu -->
+    <record id="action_albaha_vision_alignment" model="ir.actions.act_window">
+        <field name="name">Vision 2030 Alignment</field>
+        <field name="res_model">albaha.vision.alignment</field>
+        <field name="view_mode">list</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Menu Item -->
+    <menuitem id="menu_albaha_vision_parent" name="Vision 2030 Alignment" parent="menu_albaha_initiative_parent" action="action_albaha_vision_alignment" sequence="30"/>
+</odoo>

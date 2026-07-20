@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_albaha_risk,albaha.risk,model_albaha_risk,base.group_user,1,1,1,1
+access_albaha_issue,albaha.issue,model_albaha_issue,base.group_user,1,1,1,1
+access_albaha_change_request,albaha.change.request,model_albaha_change_request,base.group_user,1,1,1,1
+access_albaha_project_dependency,albaha.project.dependency,model_albaha_project_dependency,base.group_user,1,1,1,1

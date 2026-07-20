@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_albaha_pillar,albaha.pillar user,model_albaha_pillar,base.group_user,1,1,1,1
+access_albaha_objective,albaha.objective user,model_albaha_objective,base.group_user,1,1,1,1
+access_albaha_program,albaha.program user,model_albaha_program,base.group_user,1,1,1,1
+access_albaha_sector,albaha.sector user,model_albaha_sector,base.group_user,1,1,1,1

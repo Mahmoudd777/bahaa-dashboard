@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_albaha_portfolio,albaha.portfolio,model_albaha_portfolio,base.group_user,1,1,1,1
+access_albaha_program_pmo,albaha.program.pmo,model_albaha_program_pmo,base.group_user,1,1,1,1
+access_albaha_project,albaha.project,model_albaha_project,base.group_user,1,1,1,1
+access_albaha_milestone,albaha.milestone,model_albaha_milestone,base.group_user,1,1,1,1

@@ -1,0 +1,72 @@
+<odoo>
+    <record id="view_albaha_milestone_list" model="ir.ui.view">
+        <field name="name">albaha.milestone.list</field>
+        <field name="model">albaha.milestone</field>
+        <field name="arch" type="xml">
+            <list string="Milestones">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="project_id"/>
+                <field name="milestone_type"/>
+                <field name="planned_date"/>
+                <field name="actual_date"/>
+                <field name="status"/>
+                <field name="slippage_days"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_albaha_milestone_form" model="ir.ui.view">
+        <field name="name">albaha.milestone.form</field>
+        <field name="model">albaha.milestone</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                        <field name="name"/>
+                        <field name="code"/>
+                        <field name="project_id"/>
+                        <field name="milestone_type"/>
+                        <field name="planned_date"/>
+                        </group>
+                        <group>
+                        <field name="actual_date"/>
+                        <field name="status"/>
+                        <field name="slippage_days"/>
+                        <field name="weight_pct"/>
+                        <field name="deliverable_ref"/>
+                        </group>
+                    </group>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_albaha_milestone_search" model="ir.ui.view">
+        <field name="name">albaha.milestone.search</field>
+        <field name="model">albaha.milestone</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="project_id"/>
+                <field name="deliverable_ref"/>
+                <group>
+                    <filter string="Project Id" name="gb_project_id" context="{'group_by':'project_id'}"/>
+                    <filter string="Milestone Type" name="gb_milestone_type" context="{'group_by':'milestone_type'}"/>
+                    <filter string="Status" name="gb_status" context="{'group_by':'status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_albaha_milestone" model="ir.actions.act_window">
+        <field name="name">Milestones</field>
+        <field name="res_model">albaha.milestone</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_albaha_milestone" name="Milestones" parent="menu_albaha_pmo_root" action="action_albaha_milestone"/>
+</odoo>

@@ -1,0 +1,73 @@
+<odoo>
+    <record id="view_albaha_deliverable_list" model="ir.ui.view">
+        <field name="name">albaha.deliverable.list</field>
+        <field name="model">albaha.deliverable</field>
+        <field name="arch" type="xml">
+            <list string="Deliverables">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="project_id"/>
+                <field name="category"/>
+                <field name="due_date"/>
+                <field name="accepted_date"/>
+                <field name="quality_score"/>
+                <field name="acceptance_status"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_albaha_deliverable_form" model="ir.ui.view">
+        <field name="name">albaha.deliverable.form</field>
+        <field name="model">albaha.deliverable</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                        <field name="name"/>
+                        <field name="code"/>
+                        <field name="project_id"/>
+                        <field name="category"/>
+                        <field name="due_date"/>
+                        </group>
+                        <group>
+                        <field name="accepted_date"/>
+                        <field name="quality_score"/>
+                        <field name="acceptance_status"/>
+                        <field name="approver_id"/>
+                        </group>
+                    </group>
+                    <group string="Acceptance Criteria">
+                        <field name="acceptance_criteria" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_albaha_deliverable_search" model="ir.ui.view">
+        <field name="name">albaha.deliverable.search</field>
+        <field name="model">albaha.deliverable</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="project_id"/>
+                <field name="category"/>
+                <group>
+                    <filter string="Project" name="gb_project_id" context="{'group_by':'project_id'}"/>
+                    <filter string="Acceptance Status" name="gb_acceptance_status" context="{'group_by':'acceptance_status'}"/>
+                    <filter string="Approver" name="gb_approver_id" context="{'group_by':'approver_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_albaha_deliverable" model="ir.actions.act_window">
+        <field name="name">Deliverables</field>
+        <field name="res_model">albaha.deliverable</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_albaha_deliverable" name="Deliverables" parent="menu_albaha_pmo_delivery_root" action="action_albaha_deliverable"/>
+</odoo>

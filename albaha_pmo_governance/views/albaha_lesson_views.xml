@@ -1,0 +1,75 @@
+<odoo>
+    <record id="view_albaha_lesson_list" model="ir.ui.view">
+        <field name="name">albaha.lesson.list</field>
+        <field name="model">albaha.lesson</field>
+        <field name="arch" type="xml">
+            <list string="Lessons">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="project_id"/>
+                <field name="phase_captured"/>
+                <field name="category"/>
+                <field name="applicability"/>
+                <field name="adopted_as_policy"/>
+                <field name="linked_policy_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_albaha_lesson_form" model="ir.ui.view">
+        <field name="name">albaha.lesson.form</field>
+        <field name="model">albaha.lesson</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                        <field name="name"/>
+                        <field name="code"/>
+                        <field name="project_id"/>
+                        <field name="phase_captured"/>
+                        </group>
+                        <group>
+                        <field name="category"/>
+                        <field name="applicability"/>
+                        <field name="adopted_as_policy"/>
+                        <field name="linked_policy_id"/>
+                        </group>
+                    </group>
+                    <group string="Root Cause">
+                        <field name="root_cause" nolabel="1"/>
+                    </group>
+                    <group string="Recommendation">
+                        <field name="recommendation" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_albaha_lesson_search" model="ir.ui.view">
+        <field name="name">albaha.lesson.search</field>
+        <field name="model">albaha.lesson</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="project_id"/>
+                <field name="category"/>
+                <group>
+                    <filter string="Project" name="gb_project_id" context="{'group_by':'project_id'}"/>
+                    <filter string="Phase Captured" name="gb_phase_captured" context="{'group_by':'phase_captured'}"/>
+                    <filter string="Linked Policy" name="gb_linked_policy_id" context="{'group_by':'linked_policy_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_albaha_lesson" model="ir.actions.act_window">
+        <field name="name">Lessons</field>
+        <field name="res_model">albaha.lesson</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_albaha_lesson" name="Lessons" parent="menu_albaha_pmo_governance_root" action="action_albaha_lesson"/>
+</odoo>

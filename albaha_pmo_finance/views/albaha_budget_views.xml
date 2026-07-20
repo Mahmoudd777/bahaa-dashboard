@@ -1,0 +1,70 @@
+<odoo>
+    <record id="view_albaha_budget_list" model="ir.ui.view">
+        <field name="name">albaha.budget.list</field>
+        <field name="model">albaha.budget</field>
+        <field name="arch" type="xml">
+            <list string="Budgets">
+                <field name="name"/>
+                <field name="project_id"/>
+                <field name="period_year_month"/>
+                <field name="budget_category"/>
+                <field name="approved_amount"/>
+                <field name="committed_amount"/>
+                <field name="actual_spent"/>
+                <field name="remaining_amount"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_albaha_budget_form" model="ir.ui.view">
+        <field name="name">albaha.budget.form</field>
+        <field name="model">albaha.budget</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                        <field name="name"/>
+                        <field name="project_id"/>
+                        <field name="period_year_month"/>
+                        <field name="budget_category"/>
+                        <field name="approved_amount"/>
+                        </group>
+                        <group>
+                        <field name="committed_amount"/>
+                        <field name="actual_spent"/>
+                        <field name="remaining_amount"/>
+                        <field name="variance_pct"/>
+                        <field name="forecast_eac"/>
+                        </group>
+                    </group>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_albaha_budget_search" model="ir.ui.view">
+        <field name="name">albaha.budget.search</field>
+        <field name="model">albaha.budget</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="project_id"/>
+                <field name="period_year_month"/>
+                <field name="budget_category"/>
+                <group>
+                    <filter string="Project" name="gb_project_id" context="{'group_by':'project_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_albaha_budget" model="ir.actions.act_window">
+        <field name="name">Budgets</field>
+        <field name="res_model">albaha.budget</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_albaha_budget" name="Budgets" parent="menu_albaha_pmo_finance_root" action="action_albaha_budget"/>
+</odoo>

@@ -1,0 +1,70 @@
+<odoo>
+    <record id="view_albaha_financial_list" model="ir.ui.view">
+        <field name="name">albaha.financial.list</field>
+        <field name="model">albaha.financial</field>
+        <field name="arch" type="xml">
+            <list string="Financials">
+                <field name="name"/>
+                <field name="project_id"/>
+                <field name="reporting_period"/>
+                <field name="pv_planned_value"/>
+                <field name="ev_earned_value"/>
+                <field name="ac_actual_cost"/>
+                <field name="cpi"/>
+                <field name="spi"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_albaha_financial_form" model="ir.ui.view">
+        <field name="name">albaha.financial.form</field>
+        <field name="model">albaha.financial</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                        <field name="name"/>
+                        <field name="project_id"/>
+                        <field name="reporting_period"/>
+                        <field name="pv_planned_value"/>
+                        <field name="ev_earned_value"/>
+                        <field name="ac_actual_cost"/>
+                        </group>
+                        <group>
+                        <field name="cpi"/>
+                        <field name="spi"/>
+                        <field name="eac"/>
+                        <field name="vac"/>
+                        <field name="burn_rate_monthly"/>
+                        </group>
+                    </group>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_albaha_financial_search" model="ir.ui.view">
+        <field name="name">albaha.financial.search</field>
+        <field name="model">albaha.financial</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="project_id"/>
+                <field name="reporting_period"/>
+                <group>
+                    <filter string="Project" name="gb_project_id" context="{'group_by':'project_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_albaha_financial" model="ir.actions.act_window">
+        <field name="name">Financials</field>
+        <field name="res_model">albaha.financial</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_albaha_financial" name="Financials" parent="menu_albaha_pmo_finance_root" action="action_albaha_financial"/>
+</odoo>

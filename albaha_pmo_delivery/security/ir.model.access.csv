@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_albaha_deliverable,albaha.deliverable,model_albaha_deliverable,base.group_user,1,1,1,1
+access_albaha_schedule_task,albaha.schedule.task,model_albaha_schedule_task,base.group_user,1,1,1,1
+access_albaha_resource,albaha.resource,model_albaha_resource,base.group_user,1,1,1,1
+access_albaha_health,albaha.health,model_albaha_health,base.group_user,1,1,1,1

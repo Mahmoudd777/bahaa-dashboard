@@ -1,0 +1,74 @@
+<odoo>
+    <record id="view_albaha_change_request_list" model="ir.ui.view">
+        <field name="name">albaha.change.request.list</field>
+        <field name="model">albaha.change.request</field>
+        <field name="arch" type="xml">
+            <list string="Requests">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="project_id"/>
+                <field name="cr_type"/>
+                <field name="requested_by"/>
+                <field name="cost_impact_sar_m"/>
+                <field name="schedule_impact_days"/>
+                <field name="approval_status"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_albaha_change_request_form" model="ir.ui.view">
+        <field name="name">albaha.change.request.form</field>
+        <field name="model">albaha.change.request</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                        <field name="name"/>
+                        <field name="code"/>
+                        <field name="project_id"/>
+                        <field name="cr_type"/>
+                        <field name="requested_by"/>
+                        </group>
+                        <group>
+                        <field name="cost_impact_sar_m"/>
+                        <field name="schedule_impact_days"/>
+                        <field name="approval_status"/>
+                        <field name="approved_by_committee"/>
+                        <field name="decision_date"/>
+                        </group>
+                    </group>
+                    <group string="Justification">
+                        <field name="justification" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_albaha_change_request_search" model="ir.ui.view">
+        <field name="name">albaha.change.request.search</field>
+        <field name="model">albaha.change.request</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="project_id"/>
+                <field name="requested_by"/>
+                <group>
+                    <filter string="Project" name="gb_project_id" context="{'group_by':'project_id'}"/>
+                    <filter string="Cr Type" name="gb_cr_type" context="{'group_by':'cr_type'}"/>
+                    <filter string="Approval Status" name="gb_approval_status" context="{'group_by':'approval_status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_albaha_change_request" model="ir.actions.act_window">
+        <field name="name">Requests</field>
+        <field name="res_model">albaha.change.request</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_albaha_change_request" name="Requests" parent="menu_albaha_pmo_risk_root" action="action_albaha_change_request"/>
+</odoo>

@@ -1,0 +1,70 @@
+<odoo>
+    <record id="view_albaha_steerco_list" model="ir.ui.view">
+        <field name="name">albaha.steerco.list</field>
+        <field name="model">albaha.steerco</field>
+        <field name="arch" type="xml">
+            <list string="Steercos">
+                <field name="name"/>
+                <field name="committee_name"/>
+                <field name="meeting_date"/>
+                <field name="decision_type"/>
+                <field name="linked_cr_ref"/>
+                <field name="due_date"/>
+                <field name="accountable_id"/>
+                <field name="execution_status"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_albaha_steerco_form" model="ir.ui.view">
+        <field name="name">albaha.steerco.form</field>
+        <field name="model">albaha.steerco</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                        <field name="name"/>
+                        <field name="committee_name"/>
+                        <field name="meeting_date"/>
+                        <field name="decision_type"/>
+                        </group>
+                        <group>
+                        <field name="linked_cr_ref"/>
+                        <field name="due_date"/>
+                        <field name="accountable_id"/>
+                        <field name="execution_status"/>
+                        </group>
+                    </group>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_albaha_steerco_search" model="ir.ui.view">
+        <field name="name">albaha.steerco.search</field>
+        <field name="model">albaha.steerco</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="committee_name"/>
+                <field name="linked_cr_ref"/>
+                <field name="accountable_id"/>
+                <group>
+                    <filter string="Decision Type" name="gb_decision_type" context="{'group_by':'decision_type'}"/>
+                    <filter string="Accountable" name="gb_accountable_id" context="{'group_by':'accountable_id'}"/>
+                    <filter string="Execution Status" name="gb_execution_status" context="{'group_by':'execution_status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_albaha_steerco" model="ir.actions.act_window">
+        <field name="name">Steercos</field>
+        <field name="res_model">albaha.steerco</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_albaha_steerco" name="Steercos" parent="menu_albaha_pmo_governance_root" action="action_albaha_steerco"/>
+</odoo>

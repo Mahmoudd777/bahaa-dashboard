@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_albaha_initiative,albaha.initiative user,model_albaha_initiative,base.group_user,1,1,1,0
+access_albaha_initiative_progress,albaha.initiative.progress user,model_albaha_initiative_progress,base.group_user,1,1,1,0
+access_albaha_vision_alignment,albaha.vision.alignment user,model_albaha_vision_alignment,base.group_user,1,1,1,0
+access_albaha_dependency,albaha.dependency user,model_albaha_dependency,base.group_user,1,1,1,0

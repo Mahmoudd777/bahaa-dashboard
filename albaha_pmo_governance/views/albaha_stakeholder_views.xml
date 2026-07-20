@@ -1,0 +1,71 @@
+<odoo>
+    <record id="view_albaha_stakeholder_list" model="ir.ui.view">
+        <field name="name">albaha.stakeholder.list</field>
+        <field name="model">albaha.stakeholder</field>
+        <field name="arch" type="xml">
+            <list string="Stakeholders">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="entity_name"/>
+                <field name="role_title"/>
+                <field name="stakeholder_type"/>
+                <field name="influence_level"/>
+                <field name="interest_level"/>
+                <field name="engagement_strategy"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_albaha_stakeholder_form" model="ir.ui.view">
+        <field name="name">albaha.stakeholder.form</field>
+        <field name="model">albaha.stakeholder</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                        <field name="name"/>
+                        <field name="code"/>
+                        <field name="entity_name"/>
+                        <field name="role_title"/>
+                        <field name="stakeholder_type"/>
+                        </group>
+                        <group>
+                        <field name="influence_level"/>
+                        <field name="interest_level"/>
+                        <field name="engagement_strategy"/>
+                        <field name="contact_channel"/>
+                        </group>
+                    </group>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_albaha_stakeholder_search" model="ir.ui.view">
+        <field name="name">albaha.stakeholder.search</field>
+        <field name="model">albaha.stakeholder</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="entity_name"/>
+                <field name="role_title"/>
+                <group>
+                    <filter string="Stakeholder Type" name="gb_stakeholder_type" context="{'group_by':'stakeholder_type'}"/>
+                    <filter string="Influence Level" name="gb_influence_level" context="{'group_by':'influence_level'}"/>
+                    <filter string="Interest Level" name="gb_interest_level" context="{'group_by':'interest_level'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_albaha_stakeholder" model="ir.actions.act_window">
+        <field name="name">Stakeholders</field>
+        <field name="res_model">albaha.stakeholder</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_albaha_stakeholder" name="Stakeholders" parent="menu_albaha_pmo_governance_root" action="action_albaha_stakeholder"/>
+</odoo>

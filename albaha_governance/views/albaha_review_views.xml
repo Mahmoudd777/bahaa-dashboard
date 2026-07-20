@@ -1,0 +1,75 @@
+<odoo>
+    <record id="view_albaha_review_list" model="ir.ui.view">
+        <field name="name">albaha.review.list</field>
+        <field name="model">albaha.review</field>
+        <field name="arch" type="xml">
+            <list string="Reviews">
+                <field name="name"/>
+                <field name="period"/>
+                <field name="entity_type"/>
+                <field name="entity_ref"/>
+                <field name="reviewer_id"/>
+                <field name="review_date"/>
+                <field name="overall_rating"/>
+                <field name="approved"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_albaha_review_form" model="ir.ui.view">
+        <field name="name">albaha.review.form</field>
+        <field name="model">albaha.review</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                        <field name="name"/>
+                        <field name="period"/>
+                        <field name="entity_type"/>
+                        <field name="entity_ref"/>
+                        </group>
+                        <group>
+                        <field name="reviewer_id"/>
+                        <field name="review_date"/>
+                        <field name="overall_rating"/>
+                        <field name="approved"/>
+                        </group>
+                    </group>
+                    <group string="Findings">
+                        <field name="findings" nolabel="1"/>
+                    </group>
+                    <group string="Recommendations">
+                        <field name="recommendations" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_albaha_review_search" model="ir.ui.view">
+        <field name="name">albaha.review.search</field>
+        <field name="model">albaha.review</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="period"/>
+                <field name="entity_ref"/>
+                <field name="reviewer_id"/>
+                <group>
+                    <filter string="Entity Type" name="gb_entity_type" context="{'group_by':'entity_type'}"/>
+                    <filter string="Reviewer" name="gb_reviewer_id" context="{'group_by':'reviewer_id'}"/>
+                    <filter string="Overall Rating" name="gb_overall_rating" context="{'group_by':'overall_rating'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_albaha_review" model="ir.actions.act_window">
+        <field name="name">Reviews</field>
+        <field name="res_model">albaha.review</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_albaha_review" name="Reviews" parent="menu_albaha_governance_root" action="action_albaha_review"/>
+</odoo>

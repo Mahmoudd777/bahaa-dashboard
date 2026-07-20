@@ -1,0 +1,73 @@
+<odoo>
+    <record id="view_albaha_schedule_task_list" model="ir.ui.view">
+        <field name="name">albaha.schedule.task.list</field>
+        <field name="model">albaha.schedule.task</field>
+        <field name="arch" type="xml">
+            <list string="Tasks">
+                <field name="name"/>
+                <field name="project_id"/>
+                <field name="parent_task_id"/>
+                <field name="wbs_code"/>
+                <field name="baseline_start"/>
+                <field name="baseline_finish"/>
+                <field name="actual_start"/>
+                <field name="actual_finish"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_albaha_schedule_task_form" model="ir.ui.view">
+        <field name="name">albaha.schedule.task.form</field>
+        <field name="model">albaha.schedule.task</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                        <field name="name"/>
+                        <field name="project_id"/>
+                        <field name="parent_task_id"/>
+                        <field name="wbs_code"/>
+                        <field name="baseline_start"/>
+                        <field name="baseline_finish"/>
+                        </group>
+                        <group>
+                        <field name="actual_start"/>
+                        <field name="actual_finish"/>
+                        <field name="duration_days"/>
+                        <field name="progress_pct"/>
+                        <field name="is_critical_path"/>
+                        <field name="slack_days"/>
+                        </group>
+                    </group>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_albaha_schedule_task_search" model="ir.ui.view">
+        <field name="name">albaha.schedule.task.search</field>
+        <field name="model">albaha.schedule.task</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="project_id"/>
+                <field name="parent_task_id"/>
+                <field name="wbs_code"/>
+                <group>
+                    <filter string="Project" name="gb_project_id" context="{'group_by':'project_id'}"/>
+                    <filter string="Parent Task" name="gb_parent_task_id" context="{'group_by':'parent_task_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_albaha_schedule_task" model="ir.actions.act_window">
+        <field name="name">Tasks</field>
+        <field name="res_model">albaha.schedule.task</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_albaha_schedule_task" name="Tasks" parent="menu_albaha_pmo_delivery_root" action="action_albaha_schedule_task"/>
+</odoo>

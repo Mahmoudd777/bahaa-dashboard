@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_albaha_budget,albaha.budget,model_albaha_budget,base.group_user,1,1,1,1
+access_albaha_financial,albaha.financial,model_albaha_financial,base.group_user,1,1,1,1
+access_albaha_procurement,albaha.procurement,model_albaha_procurement,base.group_user,1,1,1,1
+access_albaha_contract,albaha.contract,model_albaha_contract,base.group_user,1,1,1,1

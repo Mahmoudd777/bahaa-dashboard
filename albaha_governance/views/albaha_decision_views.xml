@@ -1,0 +1,73 @@
+<odoo>
+    <record id="view_albaha_decision_list" model="ir.ui.view">
+        <field name="name">albaha.decision.list</field>
+        <field name="model">albaha.decision</field>
+        <field name="arch" type="xml">
+            <list string="Decisions">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="committee_id"/>
+                <field name="decision_date"/>
+                <field name="impact_scope"/>
+                <field name="priority"/>
+                <field name="responsible_id"/>
+                <field name="due_date"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_albaha_decision_form" model="ir.ui.view">
+        <field name="name">albaha.decision.form</field>
+        <field name="model">albaha.decision</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                        <field name="name"/>
+                        <field name="code"/>
+                        <field name="committee_id"/>
+                        <field name="decision_date"/>
+                        <field name="impact_scope"/>
+                        </group>
+                        <group>
+                        <field name="priority"/>
+                        <field name="responsible_id"/>
+                        <field name="due_date"/>
+                        <field name="status"/>
+                        </group>
+                    </group>
+                    <group string="Description">
+                        <field name="description" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_albaha_decision_search" model="ir.ui.view">
+        <field name="name">albaha.decision.search</field>
+        <field name="model">albaha.decision</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="committee_id"/>
+                <field name="impact_scope"/>
+                <group>
+                    <filter string="Committee" name="gb_committee_id" context="{'group_by':'committee_id'}"/>
+                    <filter string="Priority" name="gb_priority" context="{'group_by':'priority'}"/>
+                    <filter string="Responsible" name="gb_responsible_id" context="{'group_by':'responsible_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_albaha_decision" model="ir.actions.act_window">
+        <field name="name">Decisions</field>
+        <field name="res_model">albaha.decision</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_albaha_decision" name="Decisions" parent="menu_albaha_governance_root" action="action_albaha_decision"/>
+</odoo>

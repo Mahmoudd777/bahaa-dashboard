@@ -1,0 +1,69 @@
+<odoo>
+    <record id="view_albaha_project_dependency_list" model="ir.ui.view">
+        <field name="name">albaha.project.dependency.list</field>
+        <field name="model">albaha.project.dependency</field>
+        <field name="arch" type="xml">
+            <list string="Dependencys">
+                <field name="name"/>
+                <field name="predecessor_project_id"/>
+                <field name="successor_project_id"/>
+                <field name="dep_type"/>
+                <field name="lag_days"/>
+                <field name="criticality"/>
+                <field name="status"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_albaha_project_dependency_form" model="ir.ui.view">
+        <field name="name">albaha.project.dependency.form</field>
+        <field name="model">albaha.project.dependency</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                        <field name="name"/>
+                        <field name="predecessor_project_id"/>
+                        <field name="successor_project_id"/>
+                        <field name="dep_type"/>
+                        </group>
+                        <group>
+                        <field name="lag_days"/>
+                        <field name="criticality"/>
+                        <field name="status"/>
+                        </group>
+                    </group>
+                    <group string="Impact If Breached">
+                        <field name="impact_if_breached" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_albaha_project_dependency_search" model="ir.ui.view">
+        <field name="name">albaha.project.dependency.search</field>
+        <field name="model">albaha.project.dependency</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="predecessor_project_id"/>
+                <field name="successor_project_id"/>
+                <group>
+                    <filter string="Predecessor Project" name="gb_predecessor_project_id" context="{'group_by':'predecessor_project_id'}"/>
+                    <filter string="Successor Project" name="gb_successor_project_id" context="{'group_by':'successor_project_id'}"/>
+                    <filter string="Dep Type" name="gb_dep_type" context="{'group_by':'dep_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_albaha_project_dependency" model="ir.actions.act_window">
+        <field name="name">Dependencys</field>
+        <field name="res_model">albaha.project.dependency</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_albaha_project_dependency" name="Dependencys" parent="menu_albaha_pmo_risk_root" action="action_albaha_project_dependency"/>
+</odoo>

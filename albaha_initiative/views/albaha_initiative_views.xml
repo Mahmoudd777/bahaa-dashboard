@@ -1,0 +1,104 @@
+<odoo>
+    <!-- Form View -->
+    <record id="view_albaha_initiative_form" model="ir.ui.view">
+        <field name="name">albaha.initiative.form</field>
+        <field name="model">albaha.initiative</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group string="General Information">
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="program_id"/>
+                            <field name="pillar_id"/>
+                            <field name="sector"/>
+                            <field name="owner_id"/>
+                        </group>
+                        <group string="Timeline &amp; Status">
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                            <field name="status"/>
+                            <field name="rag_status"/>
+                        </group>
+                    </group>
+                    <group string="Budget Details (SAR m)">
+                        <group>
+                            <field name="budget_total_sar_m"/>
+                            <field name="budget_capital_sar_m"/>
+                            <field name="budget_operational_sar_m"/>
+                        </group>
+                        <group>
+                            <field name="budget_consumed_sar_m"/>
+                            <field name="progress_pct"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description">
+                            <field name="description" widget="html"/>
+                        </page>
+                        <page string="Progress History (Periodic Reports)">
+                            <field name="progress_ids" readonly="1"/>
+                        </page>
+                        <page string="Vision 2030 Alignment">
+                             <!-- Placeholder for related views if needed, but using O2M field directly -->
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- List View (Using <list> tag) -->
+    <record id="view_albaha_initiative_tree" model="ir.ui.view">
+        <field name="name">albaha.initiative.list</field>
+        <field name="model">albaha.initiative</field>
+        <field name="arch" type="xml">
+            <list create="false">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="program_id"/>
+                <field name="pillar_id"/>
+                <field name="owner_id"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="rag_status"/>
+                <field name="status"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_albaha_initiative_search" model="ir.ui.view">
+        <field name="name">albaha.initiative.search</field>
+        <field name="model">albaha.initiative</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="program_id"/>
+                <field name="pillar_id"/>
+                <field name="owner_id"/>
+                <filter string="Active" name="active_only" domain="[('status', '=', 'active')]"/>
+                <filter string="On Track (Green)" name="high_rag" domain="[('rag_status', '=', 'green')]"/>
+                <group>
+                    <filter string="Program" name="gb_program" context="{'group_by':'program_id'}"/>
+                    <filter string="Pillar" name="gb_pillar" context="{'group_by':'pillar_id'}"/>
+                    <filter string="RAG" name="gb_rag" context="{'group_by':'rag_status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action and Menu -->
+    <record id="action_albaha_initiative" model="ir.actions.act_window">
+        <field name="name">Initiatives</field>
+        <field name="res_model">albaha.initiative</field>
+        <field name="view_mode">list</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Menu Item -->
+    <menuitem id="menu_albaha_root" name="Al-Baha Initiatives Root" sequence="1"/>
+    <menuitem id="menu_albaha_initiative_parent" name="Initiatives" parent="menu_albaha_root" action="action_albaha_initiative" sequence="10"/>
+
+</odoo>

@@ -1,0 +1,76 @@
+<odoo>
+    <record id="view_albaha_risk_list" model="ir.ui.view">
+        <field name="name">albaha.risk.list</field>
+        <field name="model">albaha.risk</field>
+        <field name="arch" type="xml">
+            <list string="Risks">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="project_id"/>
+                <field name="category"/>
+                <field name="probability"/>
+                <field name="impact"/>
+                <field name="risk_score"/>
+                <field name="severity"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_albaha_risk_form" model="ir.ui.view">
+        <field name="name">albaha.risk.form</field>
+        <field name="model">albaha.risk</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                        <field name="name"/>
+                        <field name="code"/>
+                        <field name="project_id"/>
+                        <field name="category"/>
+                        <field name="probability"/>
+                        <field name="impact"/>
+                        </group>
+                        <group>
+                        <field name="risk_score"/>
+                        <field name="severity"/>
+                        <field name="response_strategy"/>
+                        <field name="owner_id"/>
+                        <field name="target_close_date"/>
+                        <field name="status"/>
+                        </group>
+                    </group>
+                    <group string="Mitigation Plan">
+                        <field name="mitigation_plan" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_albaha_risk_search" model="ir.ui.view">
+        <field name="name">albaha.risk.search</field>
+        <field name="model">albaha.risk</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="project_id"/>
+                <field name="owner_id"/>
+                <group>
+                    <filter string="Project" name="gb_project_id" context="{'group_by':'project_id'}"/>
+                    <filter string="Category" name="gb_category" context="{'group_by':'category'}"/>
+                    <filter string="Severity" name="gb_severity" context="{'group_by':'severity'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_albaha_risk" model="ir.actions.act_window">
+        <field name="name">Risks</field>
+        <field name="res_model">albaha.risk</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_albaha_risk" name="Risks" parent="menu_albaha_pmo_risk_root" action="action_albaha_risk"/>
+</odoo>

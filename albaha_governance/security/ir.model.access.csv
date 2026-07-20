@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_albaha_committee,albaha.committee,model_albaha_committee,base.group_user,1,1,1,1
+access_albaha_decision,albaha.decision,model_albaha_decision,base.group_user,1,1,1,1
+access_albaha_review,albaha.review,model_albaha_review,base.group_user,1,1,1,1
+access_albaha_strategic_risk,albaha.strategic.risk,model_albaha_strategic_risk,base.group_user,1,1,1,1
+access_albaha_transformation,albaha.transformation,model_albaha_transformation,base.group_user,1,1,1,1

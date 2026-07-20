@@ -1,0 +1,70 @@
+<odoo>
+    <record id="view_albaha_strategy_bridge_list" model="ir.ui.view">
+        <field name="name">albaha.strategy.bridge.list</field>
+        <field name="model">albaha.strategy.bridge</field>
+        <field name="arch" type="xml">
+            <list string="Bridges">
+                <field name="name"/>
+                <field name="project_id"/>
+                <field name="pillar_id"/>
+                <field name="vision2030_objective"/>
+                <field name="kpi_name"/>
+                <field name="contribution_pct"/>
+                <field name="baseline_value"/>
+                <field name="target_value"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_albaha_strategy_bridge_form" model="ir.ui.view">
+        <field name="name">albaha.strategy.bridge.form</field>
+        <field name="model">albaha.strategy.bridge</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                        <field name="name"/>
+                        <field name="project_id"/>
+                        <field name="pillar_id"/>
+                        <field name="vision2030_objective"/>
+                        <field name="kpi_name"/>
+                        </group>
+                        <group>
+                        <field name="contribution_pct"/>
+                        <field name="baseline_value"/>
+                        <field name="target_value"/>
+                        <field name="measurement_unit"/>
+                        </group>
+                    </group>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_albaha_strategy_bridge_search" model="ir.ui.view">
+        <field name="name">albaha.strategy.bridge.search</field>
+        <field name="model">albaha.strategy.bridge</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="project_id"/>
+                <field name="pillar_id"/>
+                <field name="vision2030_objective"/>
+                <group>
+                    <filter string="Project" name="gb_project_id" context="{'group_by':'project_id'}"/>
+                    <filter string="Strategic Pillar" name="gb_pillar_id" context="{'group_by':'pillar_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_albaha_strategy_bridge" model="ir.actions.act_window">
+        <field name="name">Bridges</field>
+        <field name="res_model">albaha.strategy.bridge</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_albaha_strategy_bridge" name="Bridges" parent="menu_albaha_pmo_governance_root" action="action_albaha_strategy_bridge"/>
+</odoo>

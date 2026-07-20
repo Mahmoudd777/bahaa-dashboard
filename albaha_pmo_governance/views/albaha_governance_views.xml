@@ -1,0 +1,67 @@
+<odoo>
+    <record id="view_albaha_governance_list" model="ir.ui.view">
+        <field name="name">albaha.governance.list</field>
+        <field name="model">albaha.governance</field>
+        <field name="arch" type="xml">
+            <list string="Governances">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="policy_type"/>
+                <field name="version"/>
+                <field name="effective_date"/>
+                <field name="document_url"/>
+                <field name="approver_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_albaha_governance_form" model="ir.ui.view">
+        <field name="name">albaha.governance.form</field>
+        <field name="model">albaha.governance</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                        <field name="name"/>
+                        <field name="code"/>
+                        <field name="policy_type"/>
+                        <field name="version"/>
+                        </group>
+                        <group>
+                        <field name="effective_date"/>
+                        <field name="document_url"/>
+                        <field name="approver_id"/>
+                        </group>
+                    </group>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_albaha_governance_search" model="ir.ui.view">
+        <field name="name">albaha.governance.search</field>
+        <field name="model">albaha.governance</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="version"/>
+                <field name="document_url"/>
+                <group>
+                    <filter string="Policy Type" name="gb_policy_type" context="{'group_by':'policy_type'}"/>
+                    <filter string="Approver" name="gb_approver_id" context="{'group_by':'approver_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_albaha_governance" model="ir.actions.act_window">
+        <field name="name">Governances</field>
+        <field name="res_model">albaha.governance</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_albaha_governance" name="Governances" parent="menu_albaha_pmo_governance_root" action="action_albaha_governance"/>
+</odoo>

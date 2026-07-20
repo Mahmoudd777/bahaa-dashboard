@@ -1,0 +1,71 @@
+<odoo>
+    <record id="view_albaha_health_list" model="ir.ui.view">
+        <field name="name">albaha.health.list</field>
+        <field name="model">albaha.health</field>
+        <field name="arch" type="xml">
+            <list string="Healths">
+                <field name="name"/>
+                <field name="project_id"/>
+                <field name="snapshot_date"/>
+                <field name="schedule_rag"/>
+                <field name="cost_rag"/>
+                <field name="scope_rag"/>
+                <field name="risk_rag"/>
+                <field name="overall_rag"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_albaha_health_form" model="ir.ui.view">
+        <field name="name">albaha.health.form</field>
+        <field name="model">albaha.health</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                        <field name="name"/>
+                        <field name="project_id"/>
+                        <field name="snapshot_date"/>
+                        <field name="schedule_rag"/>
+                        <field name="cost_rag"/>
+                        </group>
+                        <group>
+                        <field name="scope_rag"/>
+                        <field name="risk_rag"/>
+                        <field name="overall_rag"/>
+                        <field name="trend"/>
+                        </group>
+                    </group>
+                    <group string="Narrative">
+                        <field name="narrative" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_albaha_health_search" model="ir.ui.view">
+        <field name="name">albaha.health.search</field>
+        <field name="model">albaha.health</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="project_id"/>
+                <group>
+                    <filter string="Project" name="gb_project_id" context="{'group_by':'project_id'}"/>
+                    <filter string="Schedule Rag" name="gb_schedule_rag" context="{'group_by':'schedule_rag'}"/>
+                    <filter string="Cost Rag" name="gb_cost_rag" context="{'group_by':'cost_rag'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_albaha_health" model="ir.actions.act_window">
+        <field name="name">Healths</field>
+        <field name="res_model">albaha.health</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_albaha_health" name="Healths" parent="menu_albaha_pmo_delivery_root" action="action_albaha_health"/>
+</odoo>

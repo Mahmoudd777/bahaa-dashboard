@@ -1,0 +1,76 @@
+<odoo>
+    <record id="view_albaha_strategic_risk_list" model="ir.ui.view">
+        <field name="name">albaha.strategic.risk.list</field>
+        <field name="model">albaha.strategic.risk</field>
+        <field name="arch" type="xml">
+            <list string="Risks">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="initiative_id"/>
+                <field name="risk_category"/>
+                <field name="likelihood"/>
+                <field name="impact"/>
+                <field name="risk_score"/>
+                <field name="rag_status"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_albaha_strategic_risk_form" model="ir.ui.view">
+        <field name="name">albaha.strategic.risk.form</field>
+        <field name="model">albaha.strategic.risk</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                        <field name="name"/>
+                        <field name="code"/>
+                        <field name="initiative_id"/>
+                        <field name="risk_category"/>
+                        <field name="likelihood"/>
+                        <field name="impact"/>
+                        </group>
+                        <group>
+                        <field name="risk_score"/>
+                        <field name="rag_status"/>
+                        <field name="owner_id"/>
+                        <field name="identified_date"/>
+                        <field name="review_date"/>
+                        <field name="status"/>
+                        </group>
+                    </group>
+                    <group string="Mitigation Action">
+                        <field name="mitigation_action" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_albaha_strategic_risk_search" model="ir.ui.view">
+        <field name="name">albaha.strategic.risk.search</field>
+        <field name="model">albaha.strategic.risk</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="initiative_id"/>
+                <field name="owner_id"/>
+                <group>
+                    <filter string="Initiative" name="gb_initiative_id" context="{'group_by':'initiative_id'}"/>
+                    <filter string="Risk Category" name="gb_risk_category" context="{'group_by':'risk_category'}"/>
+                    <filter string="Rag Status" name="gb_rag_status" context="{'group_by':'rag_status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_albaha_strategic_risk" model="ir.actions.act_window">
+        <field name="name">Risks</field>
+        <field name="res_model">albaha.strategic.risk</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_albaha_strategic_risk" name="Risks" parent="menu_albaha_governance_root" action="action_albaha_strategic_risk"/>
+</odoo>
