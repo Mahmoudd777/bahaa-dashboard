@@ -46,8 +46,9 @@ class DashboardComponent(models.Model):
         help="Width of the component on the 12-column dashboard grid.",
     )
     row_span = fields.Integer(
-        default=1,
-        help="Height of the component in dashboard grid rows.",
+        default=11,
+        help="Height of the component in dashboard grid rows (8px steps; "
+             "11 steps = one legacy 88px row).",
     )
     grid_x = fields.Integer(
         help="Horizontal grid position (0-11). Empty means auto-flow.",
@@ -152,7 +153,7 @@ class DashboardComponent(models.Model):
             "type": self.component_type,
             "title": self.name,
             "col_span": self.col_span,
-            "row_span": self.row_span or 1,
+            "row_span": self.row_span or 11,
             "grid_x": self.grid_x,
             "grid_y": self.grid_y,
             "column": self.column,

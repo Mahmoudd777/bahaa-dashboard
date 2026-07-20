@@ -4,12 +4,18 @@
 // Deliberately dependency-free so the placement logic can be unit-tested
 // outside the Odoo asset pipeline (see static/tests/grid_math.test.js).
 
-export const GRID_ROW_HEIGHT = 72;
-export const GRID_GAP = 16;
+// Fine-grained grid: the row STEP is 8px and the 16px gutter comes from the
+// cell's 8px padding (same model Gridstack uses: cellHeight = step, margin =
+// gutter). Previously step and gutter were coupled (72 + 16 = 88px), which
+// forced card heights to jump a whole 88px at a time. Rendered heights are
+// unchanged — content height is `step * rows - 2 * margin`, so every legacy
+// row_span maps exactly via `new = old * 11` (88 / 8).
+export const GRID_ROW_HEIGHT = 8;
+export const GRID_GAP = 0;
 export const DEFAULT_COL_SPAN = 3;
-export const DEFAULT_ROW_SPAN = 1;
+export const DEFAULT_ROW_SPAN = 11;
 /** Extra outer rows reserved for a grouped panel title bar. */
-export const PANEL_HEAD_ROWS = 1;
+export const PANEL_HEAD_ROWS = 11;
 /** Fraction of a grid step needed before snapping to the next cell (reduces jumpiness). */
 export const SNAP_BIAS = 0.38;
 
@@ -42,7 +48,9 @@ export function gridSnapDelta(pixels, step) {
 }
 
 // Loose limits — only prevent invalid grid values, not widget-specific caps.
-const RESIZE_LIMITS = { minW: 1, maxW: 12, minH: 1, maxH: 12 };
+/** Tallest allowed card, in 8px steps (= 12 legacy 88px rows). */
+export const MAX_ROW_SPAN = 132;
+const RESIZE_LIMITS = { minW: 1, maxW: 12, minH: 1, maxH: MAX_ROW_SPAN };
 
 export function sanitizeSpan(value, fallback = DEFAULT_COL_SPAN) {
     const n = parseInt(value, 10);
@@ -53,7 +61,9 @@ export function sanitizeSpan(value, fallback = DEFAULT_COL_SPAN) {
 export function sanitizeRows(value, fallback = DEFAULT_ROW_SPAN) {
     const n = parseInt(value, 10);
     if (!n || n < 1) return fallback;
-    return Math.min(12, n);
+    // Rows are 8px steps, so the ceiling is the resize limit (132 = 12 legacy
+    // 88px rows), NOT 12 — that cap belongs to the 12-column axis only.
+    return Math.min(MAX_ROW_SPAN, n);
 }
 
 export function resizeLimits() {
@@ -123,7 +133,7 @@ export function computePanelInnerLayout(components) {
     const positions = [];
     for (const comp of components || []) {
         const w = sanitizeSpan(comp?.col_span ?? 12);
-        const h = sanitizeRows(comp?.row_span ?? 1);
+        const h = sanitizeRows(comp?.row_span ?? DEFAULT_ROW_SPAN);
         if (x > 0 && x + w > 12) {
             y += rowH;
             x = 0;
@@ -174,7 +184,7 @@ function sanitizePanelUnit(unit) {
     unit.grid_y = outerY;
     for (const comp of unit.components || []) {
         comp.col_span = sanitizeSpan(comp.col_span ?? 12);
-        comp.row_span = sanitizeRows(comp.row_span ?? 1);
+        comp.row_span = sanitizeRows(comp.row_span ?? DEFAULT_ROW_SPAN);
         comp.grid_x = outerX;
         comp.grid_y = outerY;
     }
@@ -382,7 +392,7 @@ export function matchRowSpanToAnchor(units, unitIndex, anchorIndex) {
         const targetInner = Math.max(1, anchorRows - PANEL_HEAD_ROWS);
         const scale = innerBottom > 0 ? targetInner / innerBottom : 1;
         for (const comp of unit.components) {
-            comp.row_span = Math.max(1, Math.round(sanitizeRows(comp.row_span ?? 1) * scale));
+            comp.row_span = Math.max(1, Math.round(sanitizeRows(comp.row_span ?? DEFAULT_ROW_SPAN) * scale));
         }
         unit.row_span = panelOuterRowSpan(unit.components);
         return;
@@ -669,20 +679,21 @@ export function sanitizeGridLayout(units, options = {}) {
 }
 
 /** Suggested row_span per widget type so edit mode shows full content (not 72px strips). */
+// Values are in 8px grid steps (legacy 88px rows * 11).
 const EDIT_MIN_ROWS_BY_TYPE = {
-    data_table: 5,
-    alerts_panel: 3,
-    gauge_grid: 4,
-    stat_grid: 2,
-    kpi_grid: 3,
-    goals_list: 3,
-    list_cards: 4,
-    budget_split_bar: 2,
-    stat_card: 2,
-    gauge_card: 2,
-    gauge_semi: 2,
-    kpi_gauge_card: 2,
-    progress_card: 2,
+    data_table: 55,
+    alerts_panel: 33,
+    gauge_grid: 44,
+    stat_grid: 22,
+    kpi_grid: 33,
+    goals_list: 33,
+    list_cards: 44,
+    budget_split_bar: 22,
+    stat_card: 22,
+    gauge_card: 22,
+    gauge_semi: 22,
+    kpi_gauge_card: 22,
+    progress_card: 22,
 };
 
 function suggestedRowSpan(unit) {
@@ -692,24 +703,24 @@ function suggestedRowSpan(unit) {
         for (const pos of positions) {
             innerBottom = Math.max(innerBottom, pos.y + pos.h);
         }
-        return Math.max(2, innerBottom + PANEL_HEAD_ROWS);
+        return Math.max(DEFAULT_ROW_SPAN * 2, innerBottom + PANEL_HEAD_ROWS);
     }
     const type = unit.comp?.type || "";
-    return EDIT_MIN_ROWS_BY_TYPE[type] ?? 2;
+    return EDIT_MIN_ROWS_BY_TYPE[type] ?? DEFAULT_ROW_SPAN * 2;
 }
 
 /** Raise row_span from 1 when saved values are too small to show widget content in edit mode. */
 export function ensureMinimumRowSpans(units) {
     let changed = false;
     for (const unit of units || []) {
-        const current = sanitizeRows(unit.row_span ?? unit.comp?.row_span ?? 1);
+        const current = sanitizeRows(unit.row_span ?? unit.comp?.row_span ?? DEFAULT_ROW_SPAN);
         const suggested = suggestedRowSpan(unit);
         if (current < suggested) {
             changed = true;
             if (unit.kind === "panel") {
                 for (const comp of unit.components || []) {
-                    if (sanitizeRows(comp.row_span ?? 1) < 1) {
-                        comp.row_span = 1;
+                    if (sanitizeRows(comp.row_span ?? DEFAULT_ROW_SPAN) < DEFAULT_ROW_SPAN) {
+                        comp.row_span = DEFAULT_ROW_SPAN;
                     }
                 }
                 unit.row_span = Math.max(suggested, panelOuterRowSpan(unit.components));

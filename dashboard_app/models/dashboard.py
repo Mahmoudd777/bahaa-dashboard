@@ -1,3 +1,5 @@
+import re
+
 from odoo import api, fields, models
 from odoo.exceptions import AccessError, MissingError, UserError
 
@@ -16,6 +18,12 @@ STATUS_COLORS = {
     "bg_tertiary": "#F5F5F5",
     "border": "#D5D7DA",
 }
+
+# Row spans are 8px grid steps (the 12-column axis is unrelated and keeps its
+# own cap of 12). 132 steps = the legacy limit of 12 x 88px rows.
+MAX_ROW_SPAN = 132
+# Outer rows reserved for a grouped panel's title bar (11 steps = one legacy row).
+PANEL_HEAD_ROWS = 11
 
 DEFAULT_BRAND = {
     "primary": "#5C4B43",
@@ -861,6 +869,17 @@ class DashboardDashboard(models.Model):
             "name": dashboard.name,
             "theme": theme_name,
             "colors": colors,
+            # Theme picker (edit mode): the available presets plus whichever
+            # option the edited user currently has, so the client can show the
+            # active swatch and preview changes live before saving.
+            "themes": [
+                dict(t._palette(), id=t.id, name=t.name)
+                for t in self.env["dashboard.theme"].sudo().search([])
+            ],
+            "theme_id": user.dashboard_theme_id.id or False,
+            "custom_theme": bool(user.dashboard_custom_theme),
+            "custom_primary": user.dashboard_color_primary or DEFAULT_BRAND["primary"],
+            "custom_accent": user.dashboard_color_accent or DEFAULT_BRAND["accent"],
             "sections": sections,
             "removed_sections": removed_sections,
             # The ACTING user's edit permission — an admin can edit a target
@@ -893,6 +912,99 @@ class DashboardDashboard(models.Model):
         if dashboard.write_date:
             dates.append(dashboard.write_date)
         return max(dates) if dates else False
+
+    @api.model
+    def save_theme(self, theme_id=None, use_custom=False, primary=None,
+                   accent=None, target_user_id=None):
+        """Apply a dashboard theme to a user and return the resolved palette.
+
+        Either one of the ``dashboard.theme`` presets (``theme_id``), or a
+        custom primary/accent pair (``use_custom``). ``target_user_id`` lets an
+        editor theme another user's dashboard, mirroring save_layout_edits.
+        The client previews the palette locally first; this only persists it.
+        """
+        acting_user = self.env.user.sudo()
+        if not self._user_can_edit_layout(acting_user):
+            raise AccessError("Dashboard layout edit permission is required.")
+
+        if target_user_id:
+            target = self.env["res.users"].sudo().browse(int(target_user_id)).exists()
+            if not target:
+                raise UserError("Invalid target user.")
+        else:
+            target = acting_user
+
+        if use_custom:
+            prim = (primary or DEFAULT_BRAND["primary"]).strip()
+            acc = (accent or DEFAULT_BRAND["accent"]).strip()
+            for value in (prim, acc):
+                if not re.match(r"^#[0-9A-Fa-f]{6}$", value or ""):
+                    raise UserError("Invalid color: %s" % value)
+            target.write({
+                "dashboard_custom_theme": True,
+                "dashboard_color_primary": prim,
+                "dashboard_color_accent": acc,
+            })
+            colors = self._palette(custom={
+                "primary": prim,
+                "primary_dark": _darken(prim),
+                "accent": acc,
+                "pattern": "none",
+            })
+            return {"colors": colors, "theme": "custom",
+                    "theme_id": False, "custom_theme": True,
+                    "custom_primary": prim, "custom_accent": acc}
+
+        theme = self.env["dashboard.theme"].sudo().browse(int(theme_id or 0)).exists()
+        if not theme:
+            raise UserError("Invalid theme.")
+        target.write({
+            "dashboard_custom_theme": False,
+            "dashboard_theme_id": theme.id,
+        })
+        return {"colors": self._palette(theme=theme), "theme": theme.name,
+                "theme_id": theme.id, "custom_theme": False,
+                "custom_primary": target.dashboard_color_primary or DEFAULT_BRAND["primary"],
+                "custom_accent": target.dashboard_color_accent or DEFAULT_BRAND["accent"]}
+
+    @api.model
+    def create_theme(self, name, primary, accent, target_user_id=None):
+        """Save a custom colour pair as a reusable preset and apply it.
+
+        The new record is an ordinary ``dashboard.theme``, so it shows up in the
+        picker next to the seeded ones and can be chosen again later. It is
+        flagged ``is_preset = False`` to distinguish user-made themes from the
+        shipped palette.
+        """
+        acting_user = self.env.user.sudo()
+        if not self._user_can_edit_layout(acting_user):
+            raise AccessError("Dashboard layout edit permission is required.")
+
+        label = (name or "").strip()
+        if not label:
+            raise UserError("A theme name is required.")
+        prim = (primary or "").strip()
+        acc = (accent or "").strip()
+        for value in (prim, acc):
+            if not re.match(r"^#[0-9A-Fa-f]{6}$", value or ""):
+                raise UserError("Invalid color: %s" % value)
+
+        theme = self.env["dashboard.theme"].sudo().create({
+            "name": label,
+            "primary": prim,
+            "primary_dark": _darken(prim),
+            "accent": acc,
+            "pattern": "none",
+            "is_preset": False,
+            "sequence": 50,
+        })
+        # Applying it here keeps the picker and the rendered dashboard in sync.
+        applied = self.save_theme(theme_id=theme.id, target_user_id=target_user_id)
+        applied["themes"] = [
+            dict(t._palette(), id=t.id, name=t.name)
+            for t in self.env["dashboard.theme"].sudo().search([])
+        ]
+        return applied
 
     @api.model
     def save_layout_edits(self, dashboard_id, sections, layout_version=None, visibility=None, target_user_id=None):
@@ -992,7 +1104,7 @@ class DashboardDashboard(models.Model):
                     raise UserError("Invalid column width: %s" % span)
                 vals["col_span"] = span
                 row_span = int(entry.get("row_span") or comp.row_span or 1)
-                if row_span < 1 or row_span > 12:
+                if row_span < 1 or row_span > MAX_ROW_SPAN:
                     raise UserError("Invalid row height: %s" % row_span)
                 vals["row_span"] = row_span
                 column = entry.get("column")
@@ -1043,7 +1155,7 @@ class DashboardDashboard(models.Model):
         max_bottom = 0
         for comp in components:
             w = max(1, min(12, int(comp.get("col_span") or 12)))
-            h = max(1, min(12, int(comp.get("row_span") or 1)))
+            h = max(1, min(MAX_ROW_SPAN, int(comp.get("row_span") or 1)))
             if x > 0 and x + w > 12:
                 y += row_h
                 x = 0
@@ -1056,7 +1168,7 @@ class DashboardDashboard(models.Model):
                 y += row_h
                 x = 0
                 row_h = 1
-        return max(1, min(12, max_bottom + 1))
+        return max(1, min(MAX_ROW_SPAN, max_bottom + PANEL_HEAD_ROWS))
 
     @api.model
     def _build_units(self, components):
@@ -1079,14 +1191,17 @@ class DashboardDashboard(models.Model):
                 panel = panels_by_key.get(key)
                 if panel is None:
                     span = max(1, min(12, int(comp.get("group_col_span") or comp.get("col_span") or self._flow_span(column, 12))))
-                    rows = max(1, min(12, int(comp.get("group_row_span") or comp.get("row_span") or 1)))
+                    rows = max(1, min(MAX_ROW_SPAN, int(comp.get("group_row_span") or comp.get("row_span") or 1)))
                     panel = {
                         "kind": "panel",
                         "key": "panel_%s" % key,
                         "column": column,
                         "col_span": span,
                         "row_span": rows,
-                        "_has_group_row_span": comp.get("group_row_span") is not None,
+                        # An unset Odoo Integer reads as 0 (never None), so test
+                        # truthiness — otherwise the outer span is never
+                        # recomputed from the panel's inner components.
+                        "_has_group_row_span": bool(comp.get("group_row_span")),
                         "grid_x": comp.get("group_grid_x") if comp.get("group_grid_x") is not None else comp.get("grid_x"),
                         "grid_y": comp.get("group_grid_y") if comp.get("group_grid_y") is not None else comp.get("grid_y"),
                         "title": comp.get("group_title") or "",
@@ -1106,7 +1221,7 @@ class DashboardDashboard(models.Model):
                     panel["row_span"] = self._panel_outer_row_span(panel["components"])
             else:
                 span = max(1, min(12, int(comp.get("col_span") or self._flow_span(column, 3))))
-                rows = max(1, min(12, int(comp.get("row_span") or 1)))
+                rows = max(1, min(MAX_ROW_SPAN, int(comp.get("row_span") or 1)))
                 units.append({
                     "kind": "comp",
                     "key": "comp_%s" % comp["id"],

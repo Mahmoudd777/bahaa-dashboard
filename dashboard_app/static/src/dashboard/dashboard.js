@@ -157,6 +157,62 @@ export class Dashboard extends Component {
                                 <t t-if="state.editDirty" t-esc="labels.dirtyHint"/>
                                 <t t-else="" t-esc="labels.idleHint"/>
                             </span>
+                            <div class="o_baha_theme_wrap">
+                                <button class="o_baha_gs_mode"
+                                        t-att-class="{ 'o_baha_gs_mode--free': state.themeOpen }"
+                                        title="اختيار مظهر جاهز أو إنشاء ألوان جديدة — تظهر فوراً للمعاينة"
+                                        t-on-click="toggleThemePanel">
+                                    <i class="fa fa-paint-brush"/>
+                                    <span>المظهر</span>
+                                </button>
+                                <div t-if="state.themeOpen" class="o_baha_theme_panel">
+                                    <div class="o_baha_theme_panel__title">مظاهر جاهزة</div>
+                                    <div class="o_baha_theme_panel__presets">
+                                        <t t-foreach="state.layout.themes or []" t-as="th" t-key="th.id">
+                                            <button class="o_baha_theme_sw"
+                                                    t-att-class="{ 'o_baha_theme_sw--on': !state.layout.custom_theme and state.layout.theme_id === th.id }"
+                                                    t-on-click="() => this.pickPreset(th)">
+                                                <span class="o_baha_theme_sw__dots">
+                                                    <i t-attf-style="background:{{th.primary}}"/>
+                                                    <i t-attf-style="background:{{th.accent}}"/>
+                                                </span>
+                                                <span t-esc="th.name"/>
+                                            </button>
+                                        </t>
+                                    </div>
+                                    <div class="o_baha_theme_panel__title">ألوان مخصصة</div>
+                                    <div class="o_baha_theme_panel__custom">
+                                        <label>
+                                            <span>أساسي</span>
+                                            <input type="color" t-att-value="state.layout.custom_primary"
+                                                   t-on-input="(ev) => this.pickCustom(ev.target.value, null)"/>
+                                        </label>
+                                        <label>
+                                            <span>مميّز</span>
+                                            <input type="color" t-att-value="state.layout.custom_accent"
+                                                   t-on-input="(ev) => this.pickCustom(null, ev.target.value)"/>
+                                        </label>
+                                    </div>
+                                    <div class="o_baha_theme_panel__saveas">
+                                        <input type="text" placeholder="اسم المظهر الجديد"
+                                               t-att-value="state.themeName"
+                                               t-on-input="(ev) => this.state.themeName = ev.target.value"/>
+                                        <button class="o_baha_btn o_baha_btn--text"
+                                                t-att-disabled="!state.themeName.trim() || state.themeSaving"
+                                                t-on-click="saveAsPreset">حفظ كمظهر جاهز</button>
+                                    </div>
+                                    <div class="o_baha_theme_panel__actions">
+                                        <button class="o_baha_btn o_baha_btn--text"
+                                                t-on-click="revertTheme">تراجع</button>
+                                        <button class="o_baha_btn o_baha_btn--primary"
+                                                t-att-disabled="state.themeSaving"
+                                                t-on-click="saveTheme">
+                                            <t t-if="state.themeSaving"><i class="fa fa-spinner fa-spin"/></t>
+                                            <t t-else="">حفظ المظهر</t>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                             <button class="o_baha_gs_mode o_baha_gs_add"
                                     t-att-class="{ 'o_baha_gs_add--on': state.addPanelOpen }"
                                     title="إضافة بطاقة أو تبويب محذوف"
@@ -220,8 +276,14 @@ export class Dashboard extends Component {
         if (!savedFilter || !savedFilter.mode) {
             savedFilter = { mode: "uptodate", date: new Date().toISOString().slice(0, 10) };
         }
-        let savedFloat = false;
-        try { savedFloat = localStorage.getItem("baha_dash_edit_float") === "1"; } catch (e) { /* ignore */ }
+        // Free placement is the default: in edit mode every card keeps its exact
+        // position and size instead of being pulled up into empty space by
+        // Gridstack's top gravity. An explicit user toggle still wins.
+        let savedFloat = true;
+        try {
+            const storedFloat = localStorage.getItem("baha_dash_edit_float");
+            if (storedFloat !== null) { savedFloat = storedFloat === "1"; }
+        } catch (e) { /* ignore */ }
         // Admin opening another user's dashboard (from the user form button):
         // /dashboard?edit_user=<id>. All get_layout / save calls target that user.
         let editUserId = null;
@@ -242,6 +304,9 @@ export class Dashboard extends Component {
             editDirty: false,
             editSession: 0,
             editFloat: savedFloat,
+            themeOpen: false,
+            themeSaving: false,
+            themeName: "",
             dragIndex: null,
             dragInsertIndex: null,
             saving: false,
@@ -1017,6 +1082,144 @@ export class Dashboard extends Component {
             return;
         }
         this.openFullRecord({ model: row.model, res_id: row.res_id });
+    }
+
+    // ---- Theme picker (edit mode) -------------------------------------------
+    // Selecting a preset or nudging a color rewrites state.layout.colors right
+    // away, so colorVars re-renders and the change is visible instantly. Only
+    // "حفظ المظهر" persists it; "تراجع" restores the palette we opened with.
+    toggleThemePanel() {
+        if (!this.state.themeOpen) {
+            this._themeBackup = {
+                colors: { ...(this.state.layout.colors || {}) },
+                theme_id: this.state.layout.theme_id,
+                custom_theme: this.state.layout.custom_theme,
+                custom_primary: this.state.layout.custom_primary,
+                custom_accent: this.state.layout.custom_accent,
+            };
+        }
+        this.state.themeOpen = !this.state.themeOpen;
+    }
+
+    /** Same 0.82 darkening the server applies, so preview matches the save. */
+    _darken(hex, factor = 0.82) {
+        const h = String(hex || "").replace("#", "");
+        if (h.length !== 6) {
+            return hex;
+        }
+        const part = (i) => {
+            const v = Math.round(parseInt(h.slice(i, i + 2), 16) * factor);
+            return Math.max(0, Math.min(255, v)).toString(16).padStart(2, "0");
+        };
+        return `#${part(0)}${part(2)}${part(4)}`;
+    }
+
+    /** Override only the brand keys — status colors are shared across themes. */
+    _previewBrand(brand) {
+        this.state.layout.colors = { ...(this.state.layout.colors || {}), ...brand };
+    }
+
+    pickPreset(theme) {
+        this.state.layout.custom_theme = false;
+        this.state.layout.theme_id = theme.id;
+        this._previewBrand({
+            primary: theme.primary,
+            primary_dark: theme.primary_dark,
+            accent: theme.accent,
+            pattern: theme.pattern,
+        });
+    }
+
+    pickCustom(primary, accent) {
+        const p = primary || this.state.layout.custom_primary;
+        const a = accent || this.state.layout.custom_accent;
+        this.state.layout.custom_theme = true;
+        this.state.layout.custom_primary = p;
+        this.state.layout.custom_accent = a;
+        this._previewBrand({
+            primary: p, primary_dark: this._darken(p), accent: a, pattern: "none",
+        });
+    }
+
+    revertTheme() {
+        const b = this._themeBackup;
+        if (b) {
+            this.state.layout.colors = { ...b.colors };
+            this.state.layout.theme_id = b.theme_id;
+            this.state.layout.custom_theme = b.custom_theme;
+            this.state.layout.custom_primary = b.custom_primary;
+            this.state.layout.custom_accent = b.custom_accent;
+        }
+        this.state.themeOpen = false;
+    }
+
+    /** Persist the current custom colours as a new named preset, so they can be
+     *  picked again later alongside the shipped themes. */
+    async saveAsPreset() {
+        const name = (this.state.themeName || "").trim();
+        if (!name) {
+            return;
+        }
+        this.state.themeSaving = true;
+        try {
+            const res = await rpc("/web/dataset/call_kw/dashboard.dashboard/create_theme", {
+                model: "dashboard.dashboard",
+                method: "create_theme",
+                args: [],
+                kwargs: {
+                    name,
+                    primary: this.state.layout.custom_primary,
+                    accent: this.state.layout.custom_accent,
+                    target_user_id: this.editUserId || null,
+                },
+            });
+            Object.assign(this.state.layout, {
+                colors: res.colors,
+                theme: res.theme,
+                theme_id: res.theme_id,
+                custom_theme: res.custom_theme,
+                themes: res.themes,
+            });
+            this.state.themeName = "";
+            this._themeBackup = null;
+        } catch (e) {
+            this.state.errorMsg = "تعذّر حفظ المظهر الجديد.";
+        } finally {
+            this.state.themeSaving = false;
+        }
+    }
+
+    async saveTheme() {
+        this.state.themeSaving = true;
+        try {
+            const custom = !!this.state.layout.custom_theme;
+            const res = await rpc("/web/dataset/call_kw/dashboard.dashboard/save_theme", {
+                model: "dashboard.dashboard",
+                method: "save_theme",
+                args: [],
+                kwargs: {
+                    theme_id: custom ? null : this.state.layout.theme_id || null,
+                    use_custom: custom,
+                    primary: this.state.layout.custom_primary,
+                    accent: this.state.layout.custom_accent,
+                    target_user_id: this.editUserId || null,
+                },
+            });
+            Object.assign(this.state.layout, {
+                colors: res.colors,
+                theme: res.theme,
+                theme_id: res.theme_id,
+                custom_theme: res.custom_theme,
+                custom_primary: res.custom_primary,
+                custom_accent: res.custom_accent,
+            });
+            this._themeBackup = null;
+            this.state.themeOpen = false;
+        } catch (e) {
+            this.state.errorMsg = "تعذّر حفظ المظهر.";
+        } finally {
+            this.state.themeSaving = false;
+        }
     }
 
     get colorVars() {

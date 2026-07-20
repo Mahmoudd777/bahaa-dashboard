@@ -11,7 +11,7 @@ const GS_COLS = 12;
 // Gridstack's item height is h*cellHeight and top is y*cellHeight, and its 8px
 // content inset yields the same 16px gutter — so cellHeight MUST be 88 (not 72)
 // for positions, heights and spacing to line up with the view grid.
-const GS_CELL_H = 88;
+const GS_CELL_H = 8;
 const GS_MARGIN = 8;    // 8px content inset each side = 16px gutters (= view gap)
 
 /**
