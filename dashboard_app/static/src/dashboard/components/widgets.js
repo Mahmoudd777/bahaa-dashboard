@@ -1174,17 +1174,30 @@ export class StatGrid extends Component {
                         <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر</span>
                     </div>
                     <i class="fa fa-expand o_baha_panel__expand"/>
-                    <i class="fa fa-ellipsis-v o_baha_panel__menu"/>
+                    <span class="o_baha_panel__menuwrap">
+                        <i class="fa fa-ellipsis-v o_baha_panel__menu"
+                           t-att-class="{ 'o_baha_panel__menu--active': drillItems.length,
+                                          'o_baha_panel__menu--on': state.menuOpen }"
+                           t-att-role="drillItems.length ? 'button' : undefined"
+                           t-att-tabindex="drillItems.length ? 0 : undefined"
+                           t-att-title="drillItems.length ? 'عرض التفاصيل' : ''"
+                           t-on-click="toggleMenu"
+                           t-on-keydown="onMenuKeydown"/>
+                        <div t-if="state.menuOpen" class="o_baha_panel__dropdown">
+                            <t t-foreach="drillItems" t-as="d" t-key="d_index">
+                                <button class="o_baha_panel__dropitem"
+                                        t-on-click="() => this.pickDrill(d)">
+                                    <i class="fa fa-table"/><span t-esc="d.label"/>
+                                </button>
+                            </t>
+                        </div>
+                    </span>
                 </div>
             </div>
             <div class="o_baha_statgrid__grid" t-attf-style="grid-template-columns: repeat({{props.comp.data.cols or 2}}, 1fr);">
                 <t t-foreach="props.comp.data.items or []" t-as="s" t-key="s_index">
                     <div class="o_baha_card o_baha_stat"
-                         t-att-class="{ 'o_baha_stat--big': s.big, 'o_baha_clickable': isClickable(s), 'o_baha_clickable--card': isClickable(s) }"
-                         t-att-tabindex="isClickable(s) ? 0 : undefined"
-                         t-att-role="isClickable(s) ? 'button' : undefined"
-                         t-on-click="() => this.openItem(s)"
-                         t-on-keydown="(ev) => this.onItemKeydown(ev, s)">
+                         t-att-class="{ 'o_baha_stat--big': s.big }">
                         <span class="o_baha_stat__icon" t-if="s.icon">
                             <t t-if="iconSvg(s.icon)" t-out="iconSvg(s.icon)"/>
                             <i t-else="" t-attf-class="fa {{s.icon}}"/>
@@ -1205,6 +1218,36 @@ export class StatGrid extends Component {
             </div>
         </div>`;
     static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?"];
+    setup() {
+        this.state = useState({ menuOpen: false });
+    }
+    /** Stats that have something to drill into (a record or an aggregate). */
+    get drillItems() {
+        return (this.props.comp.data.items || []).filter((s) => isClickable(s));
+    }
+    /** The cards themselves are no longer clickable — the ⋮ owns the action.
+     *  One drillable stat opens straight away; several offer a short list. */
+    toggleMenu() {
+        const items = this.drillItems;
+        if (!items.length) {
+            return;
+        }
+        if (items.length === 1) {
+            this.openItem(items[0]);
+            return;
+        }
+        this.state.menuOpen = !this.state.menuOpen;
+    }
+    onMenuKeydown(ev) {
+        if (ev.key === "Enter" || ev.key === " ") {
+            ev.preventDefault();
+            this.toggleMenu();
+        }
+    }
+    pickDrill(item) {
+        this.state.menuOpen = false;
+        this.openItem(item);
+    }
     statusOf(s) { return s.status || (s.delta_dir === "down" ? "bad" : "ok"); }
     numHead(v) { const s = String(v == null ? "" : v); const i = s.indexOf("/"); return i >= 0 ? s.slice(0, i) : s; }
     numTail(v) { const s = String(v == null ? "" : v); const i = s.indexOf("/"); return i >= 0 ? s.slice(i) : ""; }
