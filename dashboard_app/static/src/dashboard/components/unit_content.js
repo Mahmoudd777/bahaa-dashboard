@@ -1,9 +1,9 @@
 /** @odoo-module **/
 
-import { Component, useState, xml } from "@odoo/owl";
+import { Component, useExternalListener, useRef, useState, xml } from "@odoo/owl";
 import { WIDGETS } from "./widgets";
 import { innerCompGridStyle, panelInnerEntries } from "./grid_math";
-import { isClickable, openItem } from "./click_helpers";
+import { BAHA_CLOSE_OVERLAYS, isClickable, openItem } from "./click_helpers";
 
 /**
  * Renders the inner content of a single layout unit — a grouped `panel`
@@ -26,7 +26,7 @@ export class UnitContent extends Component {
                             <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر</span>
                         </div>
                         <i class="fa fa-expand o_baha_panel__expand"/>
-                        <span class="o_baha_panel__menuwrap">
+                        <span class="o_baha_panel__menuwrap" t-ref="menuwrap">
                             <i class="fa fa-ellipsis-v o_baha_panel__menu"
                                t-att-class="{ 'o_baha_panel__menu--active': drillItems.length,
                                               'o_baha_panel__menu--on': state.menuOpen }"
@@ -35,7 +35,8 @@ export class UnitContent extends Component {
                                t-att-title="drillItems.length ? 'عرض بيانات هذا المكوّن' : ''"
                                t-on-click="toggleMenu"
                                t-on-keydown="onMenuKeydown"/>
-                            <div t-if="state.menuOpen" class="o_baha_panel__dropdown">
+                            <div t-if="state.menuOpen" class="o_baha_panel__dropdown"
+                                 t-attf-style="top:{{state.menuPos.top}}px;left:{{state.menuPos.left}}px;">
                                 <t t-foreach="drillItems" t-as="d" t-key="d_index">
                                     <button class="o_baha_panel__dropitem"
                                             t-on-click="() => this.pickDrill(d)">
@@ -63,7 +64,39 @@ export class UnitContent extends Component {
     static props = ["unit", "widgetFor", "propsFor"];
 
     setup() {
-        this.state = useState({ menuOpen: false });
+        this.state = useState({ menuOpen: false, menuPos: { top: 0, left: 0 } });
+        this.menuWrap = useRef("menuwrap");
+        // The dropdown must survive the cell's `overflow: hidden`, so it is
+        // fixed-positioned; that means it has to be dismissed explicitly.
+        useExternalListener(document, "click", this.onDocumentClick.bind(this), { capture: true });
+        useExternalListener(document, "keydown", this.onDocumentKeydown.bind(this));
+        // Same channel the header menus / date picker use, so opening one
+        // overlay closes the others.
+        useExternalListener(document, BAHA_CLOSE_OVERLAYS, () => this.closeMenu());
+        useExternalListener(window, "resize", () => this.closeMenu());
+        useExternalListener(window, "scroll", () => this.closeMenu(), { capture: true });
+    }
+
+    closeMenu() {
+        if (this.state.menuOpen) {
+            this.state.menuOpen = false;
+        }
+    }
+    /** Any click outside the ⋮ and its dropdown dismisses it. */
+    onDocumentClick(ev) {
+        if (!this.state.menuOpen) {
+            return;
+        }
+        const wrap = this.menuWrap.el;
+        if (wrap && wrap.contains(ev.target)) {
+            return;                     // the menu's own buttons handle it
+        }
+        this.closeMenu();
+    }
+    onDocumentKeydown(ev) {
+        if (ev.key === "Escape") {
+            this.closeMenu();
+        }
     }
 
     entries() {
@@ -99,7 +132,7 @@ export class UnitContent extends Component {
         return [p.onOpenRecord, p.onOpenDrilldown];
     }
 
-    toggleMenu() {
+    toggleMenu(ev) {
         const items = this.drillItems;
         if (!items.length) {
             return;
@@ -108,12 +141,24 @@ export class UnitContent extends Component {
             this.pickDrill(items[0]);
             return;
         }
-        this.state.menuOpen = !this.state.menuOpen;
+        if (this.state.menuOpen) {
+            this.closeMenu();
+            return;
+        }
+        // Anchor to the icon in viewport coordinates and keep it on screen.
+        const icon = (ev && ev.currentTarget) || this.menuWrap.el;
+        const r = icon.getBoundingClientRect();
+        const WIDTH = 220;
+        this.state.menuPos = {
+            top: Math.round(r.bottom + 6),
+            left: Math.round(Math.max(8, Math.min(r.left, window.innerWidth - WIDTH - 8))),
+        };
+        this.state.menuOpen = true;
     }
     onMenuKeydown(ev) {
         if (ev.key === "Enter" || ev.key === " ") {
             ev.preventDefault();
-            this.toggleMenu();
+            this.toggleMenu(ev);
         }
     }
     pickDrill(item) {

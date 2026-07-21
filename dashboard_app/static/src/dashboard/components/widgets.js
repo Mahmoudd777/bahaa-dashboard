@@ -1,6 +1,6 @@
 /** @odoo-module **/
 
-import { Component, markup, onMounted, onPatched, onWillUnmount, useRef, useState, xml } from "@odoo/owl";
+import { Component, markup, onMounted, onPatched, onWillUnmount, useExternalListener, useRef, useState, xml } from "@odoo/owl";
 import { user } from "@web/core/user";
 import {
     BAHA_CLOSE_OVERLAYS,
@@ -1169,7 +1169,7 @@ export class StatGrid extends Component {
                         <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر</span>
                     </div>
                     <i class="fa fa-expand o_baha_panel__expand"/>
-                    <span class="o_baha_panel__menuwrap">
+                    <span class="o_baha_panel__menuwrap" t-ref="menuwrap">
                         <i class="fa fa-ellipsis-v o_baha_panel__menu"
                            t-att-class="{ 'o_baha_panel__menu--active': drillItems.length,
                                           'o_baha_panel__menu--on': state.menuOpen }"
@@ -1178,7 +1178,8 @@ export class StatGrid extends Component {
                            t-att-title="drillItems.length ? 'عرض التفاصيل' : ''"
                            t-on-click="toggleMenu"
                            t-on-keydown="onMenuKeydown"/>
-                        <div t-if="state.menuOpen" class="o_baha_panel__dropdown">
+                        <div t-if="state.menuOpen" class="o_baha_panel__dropdown"
+                             t-attf-style="top:{{state.menuPos.top}}px;left:{{state.menuPos.left}}px;">
                             <t t-foreach="drillItems" t-as="d" t-key="d_index">
                                 <button class="o_baha_panel__dropitem"
                                         t-on-click="() => this.pickDrill(d)">
@@ -1214,7 +1215,34 @@ export class StatGrid extends Component {
         </div>`;
     static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?"];
     setup() {
-        this.state = useState({ menuOpen: false });
+        this.state = useState({ menuOpen: false, menuPos: { top: 0, left: 0 } });
+        this.menuWrap = useRef("menuwrap");
+        // Fixed-positioned (the cell clips), so dismissal must be explicit.
+        useExternalListener(document, "click", this.onDocumentClick.bind(this), { capture: true });
+        useExternalListener(document, "keydown", this.onDocumentKeydown.bind(this));
+        useExternalListener(document, BAHA_CLOSE_OVERLAYS, () => this.closeMenu());
+        useExternalListener(window, "resize", () => this.closeMenu());
+        useExternalListener(window, "scroll", () => this.closeMenu(), { capture: true });
+    }
+    closeMenu() {
+        if (this.state.menuOpen) {
+            this.state.menuOpen = false;
+        }
+    }
+    onDocumentClick(ev) {
+        if (!this.state.menuOpen) {
+            return;
+        }
+        const wrap = this.menuWrap.el;
+        if (wrap && wrap.contains(ev.target)) {
+            return;
+        }
+        this.closeMenu();
+    }
+    onDocumentKeydown(ev) {
+        if (ev.key === "Escape") {
+            this.closeMenu();
+        }
     }
     /** Stats that have something to drill into (a record or an aggregate). */
     get drillItems() {
@@ -1222,7 +1250,7 @@ export class StatGrid extends Component {
     }
     /** The cards themselves are no longer clickable — the ⋮ owns the action.
      *  One drillable stat opens straight away; several offer a short list. */
-    toggleMenu() {
+    toggleMenu(ev) {
         const items = this.drillItems;
         if (!items.length) {
             return;
@@ -1231,12 +1259,23 @@ export class StatGrid extends Component {
             this.openItem(items[0]);
             return;
         }
-        this.state.menuOpen = !this.state.menuOpen;
+        if (this.state.menuOpen) {
+            this.closeMenu();
+            return;
+        }
+        const icon = (ev && ev.currentTarget) || this.menuWrap.el;
+        const r = icon.getBoundingClientRect();
+        const WIDTH = 220;
+        this.state.menuPos = {
+            top: Math.round(r.bottom + 6),
+            left: Math.round(Math.max(8, Math.min(r.left, window.innerWidth - WIDTH - 8))),
+        };
+        this.state.menuOpen = true;
     }
     onMenuKeydown(ev) {
         if (ev.key === "Enter" || ev.key === " ") {
             ev.preventDefault();
-            this.toggleMenu();
+            this.toggleMenu(ev);
         }
     }
     pickDrill(item) {

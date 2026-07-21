@@ -162,11 +162,13 @@ body.o_baha_locked {
         &--on { background: rgba(0, 0, 0, 0.08); }
     }
     &__dropdown {
-        position: absolute;
-        top: calc(100% + 6px);
-        inset-inline-start: 0;
-        z-index: 30;
-        min-width: 200px;
+        // Fixed, not absolute: the grid cell clips with `overflow: hidden`, so
+        // an absolutely-positioned menu gets cut off. Coordinates are set from
+        // the icon's viewport rect when it opens.
+        position: fixed;
+        z-index: 2000;
+        width: 220px;
+        min-width: 220px;
         padding: 6px;
         background: #fff;
         border: 1px solid var(--dash-border, #d5d7da);
