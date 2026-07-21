@@ -159,7 +159,12 @@ body.o_baha_locked {
         grid-template-columns: repeat(12, minmax(0, 1fr));
         grid-auto-rows: minmax(var(--inner-row-h), auto);
         grid-auto-flow: dense;   // backfill gaps left by hidden inner components
-        gap: 12px;
+        // Row-gap MUST stay 0: rows are 11x finer than the legacy scale, so a
+        // row-gap is paid once per track and a card spanning 15 rows would
+        // accumulate 14 gaps (~168px) of dead space. Vertical separation comes
+        // from the inner cards' own margins; the column gap is unaffected.
+        column-gap: 12px;
+        row-gap: 0;
         align-items: start;
 
         .o_baha_panel__inner_cell {
