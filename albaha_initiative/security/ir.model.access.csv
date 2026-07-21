@@ -1,5 +1,9 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_albaha_initiative,albaha.initiative user,model_albaha_initiative,base.group_user,1,1,1,0
-access_albaha_initiative_progress,albaha.initiative.progress user,model_albaha_initiative_progress,base.group_user,1,1,1,0
-access_albaha_vision_alignment,albaha.vision.alignment user,model_albaha_vision_alignment,base.group_user,1,1,1,0
-access_albaha_dependency,albaha.dependency user,model_albaha_dependency,base.group_user,1,1,1,0
+access_albaha_initiative,albaha.initiative read,model_albaha_initiative,base.group_user,1,0,0,0
+access_albaha_initiative_progress,albaha.initiative.progress read,model_albaha_initiative_progress,base.group_user,1,0,0,0
+access_albaha_vision_alignment,albaha.vision.alignment read,model_albaha_vision_alignment,base.group_user,1,0,0,0
+access_albaha_dependency,albaha.dependency read,model_albaha_dependency,base.group_user,1,0,0,0
+access_albaha_initiative_edit,albaha.initiative edit,model_albaha_initiative,albaha_strategy.group_albaha_edit_initiative,1,1,1,1
+access_albaha_initiative_progress_edit,albaha.initiative.progress edit,model_albaha_initiative_progress,albaha_strategy.group_albaha_edit_initiative,1,1,1,1
+access_albaha_vision_alignment_edit,albaha.vision.alignment edit,model_albaha_vision_alignment,albaha_strategy.group_albaha_edit_initiative,1,1,1,1
+access_albaha_dependency_edit,albaha.dependency edit,model_albaha_dependency,albaha_strategy.group_albaha_edit_initiative,1,1,1,1

@@ -1,5 +1,9 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_albaha_pillar,albaha.pillar user,model_albaha_pillar,base.group_user,1,1,1,1
-access_albaha_objective,albaha.objective user,model_albaha_objective,base.group_user,1,1,1,1
-access_albaha_program,albaha.program user,model_albaha_program,base.group_user,1,1,1,1
-access_albaha_sector,albaha.sector user,model_albaha_sector,base.group_user,1,1,1,1
+access_albaha_pillar,albaha.pillar read,model_albaha_pillar,base.group_user,1,0,0,0
+access_albaha_objective,albaha.objective read,model_albaha_objective,base.group_user,1,0,0,0
+access_albaha_program,albaha.program read,model_albaha_program,base.group_user,1,0,0,0
+access_albaha_sector,albaha.sector read,model_albaha_sector,base.group_user,1,0,0,0
+access_albaha_pillar_edit,albaha.pillar edit,model_albaha_pillar,albaha_strategy.group_albaha_edit_pillar,1,1,1,1
+access_albaha_objective_edit,albaha.objective edit,model_albaha_objective,albaha_strategy.group_albaha_edit_objective,1,1,1,1
+access_albaha_program_edit,albaha.program edit,model_albaha_program,albaha_strategy.group_albaha_edit_program,1,1,1,1
+access_albaha_sector_edit,albaha.sector edit,model_albaha_sector,albaha_strategy.group_albaha_edit_program,1,1,1,1

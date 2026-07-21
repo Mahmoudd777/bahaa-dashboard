@@ -12,7 +12,8 @@
     'version': '19.0.1.0.0',
     'depends': ['base', 'mail'],
     'data': [
-        # Security first
+        # Security first — groups before the ACLs that reference them
+        'security/albaha_groups.xml',
         'security/ir.model.access.csv',
         # Views and Menus (Order matters for dependencies)
         'views/albaha_pillar_views.xml',
