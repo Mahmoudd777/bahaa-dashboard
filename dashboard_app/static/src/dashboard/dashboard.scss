@@ -124,7 +124,7 @@ body.o_baha_locked {
     background: #ffffff;
     border: 1px solid #E8E8E8;
     border-radius: 4px;
-    padding: 20px 24px;
+    padding: 14px 24px 16px;
     height: auto;
     box-shadow: none;
 
@@ -134,8 +134,8 @@ body.o_baha_locked {
         justify-content: space-between;
         gap: 12px;
         flex-wrap: wrap;
-        margin-bottom: 14px;
-        padding-bottom: 12px;
+        margin-bottom: 8px;
+        padding-bottom: 8px;
         border-bottom: 1px solid #EFEFF0;   // subtle divider line under the title
     }
     &__title {

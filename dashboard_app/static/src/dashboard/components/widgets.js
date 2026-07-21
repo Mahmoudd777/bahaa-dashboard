@@ -655,12 +655,7 @@ export class BarChartV extends Component {
                 </div>
                 <div class="o_baha_barv__cols">
                     <t t-foreach="props.comp.data.items or []" t-as="item" t-key="item_index">
-                        <div class="o_baha_barv__col"
-                             t-att-class="clickableClass(item)"
-                             t-att-tabindex="isClickable(item) ? 0 : undefined"
-                             t-att-role="isClickable(item) ? 'button' : undefined"
-                             t-on-click="() => this.openItem(item)"
-                             t-on-keydown="(ev) => this.onItemKeydown(ev, item)">
+                        <div class="o_baha_barv__col">
                             <div class="o_baha_barv__bars">
                                 <t t-if="item.bars">
                                     <t t-foreach="item.bars" t-as="b" t-key="b_index">
