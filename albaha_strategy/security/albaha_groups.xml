@@ -9,49 +9,35 @@
              Odoo permission rather than a hidden button, so it holds no matter
              how the record is reached (dashboard, list view, RPC).
 
+             No category_id: Odoo 19 removed that field from res.groups.
              noupdate="1" so a module upgrade never silently re-assigns rights.
         -->
-        <record id="module_category_albaha_data" model="ir.module.category">
-            <field name="name">بيانات الباحة الاستراتيجية</field>
-            <field name="description">صلاحيات تعديل بيانات المكتب الاستراتيجي، لكل نموذج على حدة.</field>
-            <field name="sequence">50</field>
-        </record>
-
         <record id="group_albaha_edit_objective" model="res.groups">
             <field name="name">تعديل الأهداف الاستراتيجية</field>
-            <field name="category_id" ref="module_category_albaha_data"/>
         </record>
         <record id="group_albaha_edit_pillar" model="res.groups">
             <field name="name">تعديل الركائز</field>
-            <field name="category_id" ref="module_category_albaha_data"/>
         </record>
         <record id="group_albaha_edit_program" model="res.groups">
             <field name="name">تعديل البرامج</field>
-            <field name="category_id" ref="module_category_albaha_data"/>
         </record>
         <record id="group_albaha_edit_kpi" model="res.groups">
             <field name="name">تعديل المؤشرات</field>
-            <field name="category_id" ref="module_category_albaha_data"/>
         </record>
         <record id="group_albaha_edit_indicator" model="res.groups">
             <field name="name">تعديل المؤشرات الإقليمية</field>
-            <field name="category_id" ref="module_category_albaha_data"/>
         </record>
         <record id="group_albaha_edit_initiative" model="res.groups">
             <field name="name">تعديل المبادرات</field>
-            <field name="category_id" ref="module_category_albaha_data"/>
         </record>
         <record id="group_albaha_edit_risk" model="res.groups">
             <field name="name">تعديل المخاطر الاستراتيجية</field>
-            <field name="category_id" ref="module_category_albaha_data"/>
         </record>
         <record id="group_albaha_edit_decision" model="res.groups">
             <field name="name">تعديل القرارات</field>
-            <field name="category_id" ref="module_category_albaha_data"/>
         </record>
         <record id="group_albaha_edit_steerco" model="res.groups">
             <field name="name">تعديل قرارات اللجان</field>
-            <field name="category_id" ref="module_category_albaha_data"/>
         </record>
     </data>
 </odoo>
