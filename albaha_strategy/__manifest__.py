@@ -20,6 +20,7 @@
         'views/albaha_objective_views.xml',
         'views/albaha_program_views.xml',
         'views/albaha_sector_views.xml',
+        'views/res_users_views.xml',
     ],
     'license': 'LGPL-3',
     'application': True,
