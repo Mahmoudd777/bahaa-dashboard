@@ -59,15 +59,14 @@ class ResUsers(models.Model):
 
     def _inverse_albaha_edit(self):
         for user in self:
+            # Build ONE command list and assign once. Assigning user.group_ids
+            # repeatedly in a loop does not accumulate — each assignment
+            # replaces the pending write, so only the last command would apply.
+            cmds = []
             for fname, xmlid in EDIT_GROUPS.items():
                 grp = self._albaha_group(xmlid)
                 if not grp:
                     continue
-                # (4, id) adds, (3, id) removes — link/unlink only.
-                user.group_ids = [(4, grp.id)] if user[fname] else [(3, grp.id)]
-
-    # These computed toggles are just a friendly face over group membership;
-    # expose them so they survive the SUPERUSER_ID field allow-list on writes.
-    @property
-    def SELF_READABLE_FIELDS(self):
-        return super().SELF_READABLE_FIELDS + list(EDIT_GROUPS)
+                cmds.append((4, grp.id) if user[fname] else (3, grp.id))
+            if cmds:
+                user.group_ids = cmds
