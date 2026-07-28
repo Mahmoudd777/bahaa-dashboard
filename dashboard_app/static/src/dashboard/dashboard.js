@@ -342,11 +342,15 @@ export class Dashboard extends Component {
         if (this.locked) {
             document.body.classList.add("o_baha_locked");
         }
+        // Hide Odoo's default OdooBot chat bubble/popup while the dashboard is
+        // shown — it's confusing on a client-facing view and isn't part of this app.
+        document.body.classList.add("o_baha_dash_active");
         onWillUnmount(() => {
             if (this.locked) {
                 document.body.classList.remove("o_baha_locked");
             }
             document.body.classList.remove("o_baha_edit_mode");
+            document.body.classList.remove("o_baha_dash_active");
             document.removeEventListener("keydown", this._onGlobalKeyDown, true);
             window.removeEventListener("beforeunload", this._onBeforeUnload);
         });

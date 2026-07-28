@@ -13,6 +13,12 @@ body.o_baha_locked {
     .o_action_manager { top: 0 !important; }
 }
 
+// Odoo's default OdooBot chat bubble/popup — not part of this app, hidden
+// while the dashboard is shown so it doesn't confuse a client-facing view.
+body.o_baha_dash_active {
+    .o-mail-ChatHub, .o-mail-ChatWindow { display: none !important; }
+}
+
 // Frontend website page wrapper (portal users open the dashboard here)
 .o_baha_dashboard_page {
     min-height: 100vh;
@@ -368,7 +374,7 @@ body.o_baha_locked {
     background: #fff;
 }
 
-// ---- Status legend chips (مسار صحيح / في خطر / متأخر) ----
+// ---- Status legend chips (علي المسار / متأخر / متأخر جدا) ----
 .o_baha_legend {
     display: flex;
     gap: 14px;
@@ -384,6 +390,7 @@ body.o_baha_locked {
         &--ok { background: var(--dash-success, #00ab9d); }
         &--risk { background: var(--dash-warning, #f0974f); }
         &--late { background: var(--dash-danger, #ff5147); }
+        &--none { background: #9aa0a6; }
     }
 }
 
@@ -929,6 +936,9 @@ body.o_baha_locked {
 
 // ---- Data table ----
 .o_baha_table {
+    // Content taller than the fixed card height (--rows) scrolls instead of
+    // being clipped invisibly by the ancestor .o_baha_dash__cell's overflow:hidden.
+    overflow-y: auto;
     table { width: 100%; border-collapse: collapse; font-size: 13px; }
     th, td { padding: 10px 12px; text-align: right; border-bottom: 1px solid var(--dash-border); }
     th { color: var(--dash-text-secondary); font-weight: 700; background: #fafbfc; }
@@ -1528,6 +1538,20 @@ body.o_baha_locked {
     &__scale { display: flex; justify-content: space-between; width: 140px; font-size: 11px; color: var(--dash-text-tertiary); }
 }
 
+// Composite grid panels (gauge/stat/kpi/semi) — the grid of cards scrolls
+// independently of the panel head when there are more cards than the fixed
+// card height fits, instead of being clipped invisibly.
+.o_baha_gaugegrid, .o_baha_statgrid, .o_baha_kpigrid, .o_baha_semigrid {
+    display: flex;
+    flex-direction: column;
+    .o_baha_panel__head { flex: 0 0 auto; }
+}
+.o_baha_gaugegrid__grid, .o_baha_statgrid__grid, .o_baha_kpigrid__grid, .o_baha_semigrid__grid {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+}
+
 // KPI gauge card
 .o_baha_kpi {
     &__top { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
@@ -1563,6 +1587,7 @@ body.o_baha_locked {
 
 // goals list
 .o_baha_goals {
+    overflow-y: auto;
     &__row {
         display: flex; align-items: center; gap: 12px;
         background: rgba(243, 243, 247, 0.2);
@@ -1586,6 +1611,7 @@ body.o_baha_locked {
 
 // list cards (risk / actions)
 .o_baha_listcards {
+    overflow-y: auto;
     &__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
     &__headmain { display: flex; align-items: center; gap: 8px; }
     &__count { background: var(--dash-bg-tertiary); border-radius: 999px; padding: 1px 9px; font-size: 12px; font-weight: 700; }
@@ -1604,6 +1630,7 @@ body.o_baha_locked {
     display: flex;
     flex-direction: column;
     gap: 16px;
+    overflow-y: auto;
     &__group {
         background: rgba(243, 243, 247, 0.2);
         border: 1px solid #E8E8E8;

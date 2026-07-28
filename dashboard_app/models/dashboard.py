@@ -1120,7 +1120,7 @@ class DashboardDashboard(models.Model):
                     group_rows = entry.get("group_row_span")
                     if group_rows is not None:
                         group_rows = int(group_rows)
-                        if group_rows < 1 or group_rows > 12:
+                        if group_rows < 1 or group_rows > MAX_ROW_SPAN:
                             raise UserError("Invalid group row height: %s" % group_rows)
                         vals["group_row_span"] = group_rows
                     if "group_grid_x" in entry and entry.get("group_grid_x") is not None:

@@ -1,5 +1,7 @@
 /** @odoo-module **/
 
+import { useExternalListener, useRef, useState } from "@odoo/owl";
+
 /** Dashboard-wide event: close header menus, date picker, etc. Set ev.detail.closed = true when something closes. */
 export const BAHA_CLOSE_OVERLAYS = "baha:close-overlays";
 
@@ -48,4 +50,87 @@ export function openDataTarget(data, onOpenRecord, onOpenDrilldown) {
 
 export function onDataKeydown(ev, data, onOpenRecord, onOpenDrilldown) {
     onItemKeydown(ev, data, onOpenRecord, onOpenDrilldown);
+}
+
+/** Shared "⋮ / expand" drill-down menu for a widget's header: one drillable
+ *  item opens straight away (same as clicking the component itself); several
+ *  offer a short picker list. Both the expand icon and the ⋮ icon call
+ *  `toggleMenu`, so they behave identically. `component` is the calling
+ *  widget's `this` (for props.onOpenRecord/onOpenDrilldown); `getItems` reads
+ *  that widget's current drillable items (called on every access, not cached,
+ *  so it always reflects live props). */
+export function useDrillMenu(component, getItems) {
+    const state = useState({ menuOpen: false, menuPos: { top: 0, left: 0 } });
+    const menuWrap = useRef("menuwrap");
+
+    function closeMenu() {
+        if (state.menuOpen) {
+            state.menuOpen = false;
+        }
+    }
+    function openDrillItem(item) {
+        openItem(item, component.props.onOpenRecord, component.props.onOpenDrilldown);
+    }
+    useExternalListener(document, "click", (ev) => {
+        if (!state.menuOpen) {
+            return;
+        }
+        const wrap = menuWrap.el;
+        if (wrap && wrap.contains(ev.target)) {
+            return;
+        }
+        closeMenu();
+    }, { capture: true });
+    useExternalListener(document, "keydown", (ev) => {
+        if (ev.key === "Escape") {
+            closeMenu();
+        }
+    });
+    useExternalListener(document, BAHA_CLOSE_OVERLAYS, () => closeMenu());
+    useExternalListener(window, "resize", () => closeMenu());
+    useExternalListener(window, "scroll", () => closeMenu(), { capture: true });
+
+    function toggleMenu(ev) {
+        const items = (getItems() || []).filter(isClickable);
+        if (!items.length) {
+            return;
+        }
+        if (items.length === 1) {
+            openDrillItem(items[0]);
+            return;
+        }
+        if (state.menuOpen) {
+            closeMenu();
+            return;
+        }
+        const icon = (ev && ev.currentTarget) || menuWrap.el;
+        const r = icon.getBoundingClientRect();
+        const WIDTH = 220;
+        state.menuPos = {
+            top: Math.round(r.bottom + 6),
+            left: Math.round(Math.max(8, Math.min(r.left, window.innerWidth - WIDTH - 8))),
+        };
+        state.menuOpen = true;
+    }
+    function onMenuKeydown(ev) {
+        if (ev.key === "Enter" || ev.key === " ") {
+            ev.preventDefault();
+            toggleMenu(ev);
+        }
+    }
+    function pickDrill(item) {
+        state.menuOpen = false;
+        openDrillItem(item);
+    }
+
+    return {
+        state,
+        menuWrap,
+        get drillItems() {
+            return (getItems() || []).filter(isClickable);
+        },
+        toggleMenu,
+        onMenuKeydown,
+        pickDrill,
+    };
 }

@@ -5,7 +5,7 @@ import { user } from "@web/core/user";
 import {
     BAHA_CLOSE_OVERLAYS,
     clickableClass, isClickable, onDataKeydown, onItemKeydown,
-    openDataTarget, openItem as dispatchItemClick,
+    openDataTarget, openItem as dispatchItemClick, useDrillMenu,
 } from "./click_helpers";
 
 // Figma calendar icon for the date pill (stroke=currentColor).
@@ -610,7 +610,7 @@ export class ProgressCard extends Component {
 export class BarChartH extends Component {
     static template = xml`
         <div class="o_baha_card o_baha_barh">
-            <div class="o_baha_card__head" t-if="props.comp.title and !props.comp.data.hide_head"><span class="o_baha_card__title" t-esc="props.comp.title"/><div class="o_baha_card__tools"><span class="o_baha_legend"><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>مسار صحيح</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>في خطر</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر</span></span><i class="fa fa-expand o_baha_panel__expand"/><i class="fa fa-ellipsis-v o_baha_panel__menu"/></div></div>
+            <div class="o_baha_card__head" t-if="props.comp.title and !props.comp.data.hide_head"><span class="o_baha_card__title" t-esc="props.comp.title"/><div class="o_baha_card__tools"><span class="o_baha_legend"><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>علي المسار</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>متأخر</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر جدا</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--none"/>لم يتم القياس</span></span><i class="fa fa-expand o_baha_panel__expand" t-on-click="menu.toggleMenu" t-on-keydown="menu.onMenuKeydown" tabindex="0" role="button" title="عرض التفاصيل"/><span class="o_baha_panel__menuwrap" t-ref="menuwrap"><i class="fa fa-ellipsis-v o_baha_panel__menu" t-att-class="{ 'o_baha_panel__menu--active': menu.drillItems.length, 'o_baha_panel__menu--on': menu.state.menuOpen }" t-att-role="menu.drillItems.length ? 'button' : undefined" t-att-tabindex="menu.drillItems.length ? 0 : undefined" t-att-title="menu.drillItems.length ? 'عرض التفاصيل' : ''" t-on-click="menu.toggleMenu" t-on-keydown="menu.onMenuKeydown"/><div t-if="menu.state.menuOpen" class="o_baha_panel__dropdown" t-attf-style="top:{{menu.state.menuPos.top}}px;left:{{menu.state.menuPos.left}}px;"><t t-foreach="menu.drillItems" t-as="d" t-key="d_index"><button class="o_baha_panel__dropitem" t-on-click="() => this.menu.pickDrill(d)"><i class="fa fa-table"/><span t-esc="d.label"/></button></t></div></span></div></div>
             <div class="o_baha_barh__rows">
                 <t t-foreach="props.comp.data.items or []" t-as="item" t-key="item_index">
                     <div class="o_baha_barh__row"
@@ -630,6 +630,9 @@ export class BarChartH extends Component {
             </div>
         </div>`;
     static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?"];
+    setup() {
+        this.menu = useDrillMenu(this, () => this.props.comp.data.items || []);
+    }
     get colorAccent() { return this.props.colors.accent || "#00ab9d"; }
     isClickable(item) { return isClickable(item); }
     clickableClass(item) { return clickableClass(item); }
@@ -689,7 +692,7 @@ export class BarChartV extends Component {
 export class DataTable extends Component {
     static template = xml`
         <div class="o_baha_card o_baha_table">
-            <div class="o_baha_card__head" t-if="props.comp.title and !props.comp.data.hide_head"><span class="o_baha_card__title" t-esc="props.comp.title"/><div class="o_baha_card__tools"><span class="o_baha_legend"><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>مسار صحيح</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>في خطر</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر</span></span><i class="fa fa-expand o_baha_panel__expand"/><i class="fa fa-ellipsis-v o_baha_panel__menu"/></div></div>
+            <div class="o_baha_card__head" t-if="props.comp.title and !props.comp.data.hide_head"><span class="o_baha_card__title" t-esc="props.comp.title"/><div class="o_baha_card__tools"><span class="o_baha_legend"><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>علي المسار</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>متأخر</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر جدا</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--none"/>لم يتم القياس</span></span><i class="fa fa-expand o_baha_panel__expand" t-on-click="menu.toggleMenu" t-on-keydown="menu.onMenuKeydown" tabindex="0" role="button" title="عرض التفاصيل"/><span class="o_baha_panel__menuwrap" t-ref="menuwrap"><i class="fa fa-ellipsis-v o_baha_panel__menu" t-att-class="{ 'o_baha_panel__menu--active': menu.drillItems.length, 'o_baha_panel__menu--on': menu.state.menuOpen }" t-att-role="menu.drillItems.length ? 'button' : undefined" t-att-tabindex="menu.drillItems.length ? 0 : undefined" t-att-title="menu.drillItems.length ? 'عرض التفاصيل' : ''" t-on-click="menu.toggleMenu" t-on-keydown="menu.onMenuKeydown"/><div t-if="menu.state.menuOpen" class="o_baha_panel__dropdown" t-attf-style="top:{{menu.state.menuPos.top}}px;left:{{menu.state.menuPos.left}}px;"><t t-foreach="menu.drillItems" t-as="d" t-key="d_index"><button class="o_baha_panel__dropitem" t-on-click="() => this.menu.pickDrill(d)"><i class="fa fa-table"/><span t-esc="d.label"/></button></t></div></span></div></div>
             <table>
                 <thead>
                     <tr>
@@ -731,6 +734,9 @@ export class DataTable extends Component {
             </table>
         </div>`;
     static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?"];
+    setup() {
+        this.menu = useDrillMenu(this, () => this.props.comp.data.rows || []);
+    }
     get colorAccent() { return this.props.colors.accent || "#00ab9d"; }
     isClickable(row) { return isClickable(row); }
     openRow(row) {
@@ -874,7 +880,7 @@ export class BudgetSplitBar extends Component {
              t-att-role="cardRole"
              t-on-click="() => this.openSelf()"
              t-on-keydown="onSelfKeydown">
-            <div class="o_baha_card__head" t-if="props.comp.title and !props.comp.data.hide_head"><span class="o_baha_card__title" t-esc="props.comp.title"/><div class="o_baha_card__tools"><span class="o_baha_legend"><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>مسار صحيح</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>في خطر</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر</span></span><i class="fa fa-expand o_baha_panel__expand"/><i class="fa fa-ellipsis-v o_baha_panel__menu"/></div></div>
+            <div class="o_baha_card__head" t-if="props.comp.title and !props.comp.data.hide_head"><span class="o_baha_card__title" t-esc="props.comp.title"/><div class="o_baha_card__tools"><span class="o_baha_legend"><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>علي المسار</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>متأخر</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر جدا</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--none"/>لم يتم القياس</span></span><i class="fa fa-expand o_baha_panel__expand" t-on-click="menu.toggleMenu" t-on-keydown="menu.onMenuKeydown" tabindex="0" role="button" title="عرض التفاصيل"/><span class="o_baha_panel__menuwrap" t-ref="menuwrap"><i class="fa fa-ellipsis-v o_baha_panel__menu" t-att-class="{ 'o_baha_panel__menu--active': menu.drillItems.length, 'o_baha_panel__menu--on': menu.state.menuOpen }" t-att-role="menu.drillItems.length ? 'button' : undefined" t-att-tabindex="menu.drillItems.length ? 0 : undefined" t-att-title="menu.drillItems.length ? 'عرض التفاصيل' : ''" t-on-click="menu.toggleMenu" t-on-keydown="menu.onMenuKeydown"/><div t-if="menu.state.menuOpen" class="o_baha_panel__dropdown" t-attf-style="top:{{menu.state.menuPos.top}}px;left:{{menu.state.menuPos.left}}px;"><t t-foreach="menu.drillItems" t-as="d" t-key="d_index"><button class="o_baha_panel__dropitem" t-on-click="() => this.menu.pickDrill(d)"><i class="fa fa-table"/><span t-esc="d.label"/></button></t></div></span></div></div>
             <div class="o_baha_split__bar">
                 <div class="o_baha_split__seg o_baha_split__seg--spent"
                      t-attf-style="width:{{props.comp.data.spent_pct}}%;" t-esc="props.comp.data.spent_label"/>
@@ -887,6 +893,9 @@ export class BudgetSplitBar extends Component {
             </div>
         </div>`;
     static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?"];
+    setup() {
+        this.menu = useDrillMenu(this, () => [this.props.comp.data]);
+    }
     get cardClass() {
         return {
             "o_baha_clickable": isClickable(this.props.comp.data),
@@ -913,7 +922,7 @@ export class BudgetSplitBar extends Component {
 export class BarChartHPlanned extends Component {
     static template = xml`
         <div class="o_baha_card o_baha_barhp">
-            <div class="o_baha_card__head" t-if="props.comp.title and !props.comp.data.hide_head"><span class="o_baha_card__title" t-esc="props.comp.title"/><div class="o_baha_card__tools"><span class="o_baha_legend"><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>مسار صحيح</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>في خطر</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر</span></span><i class="fa fa-expand o_baha_panel__expand"/><i class="fa fa-ellipsis-v o_baha_panel__menu"/></div></div>
+            <div class="o_baha_card__head" t-if="props.comp.title and !props.comp.data.hide_head"><span class="o_baha_card__title" t-esc="props.comp.title"/><div class="o_baha_card__tools"><span class="o_baha_legend"><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>علي المسار</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>متأخر</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر جدا</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--none"/>لم يتم القياس</span></span><i class="fa fa-expand o_baha_panel__expand" t-on-click="menu.toggleMenu" t-on-keydown="menu.onMenuKeydown" tabindex="0" role="button" title="عرض التفاصيل"/><span class="o_baha_panel__menuwrap" t-ref="menuwrap"><i class="fa fa-ellipsis-v o_baha_panel__menu" t-att-class="{ 'o_baha_panel__menu--active': menu.drillItems.length, 'o_baha_panel__menu--on': menu.state.menuOpen }" t-att-role="menu.drillItems.length ? 'button' : undefined" t-att-tabindex="menu.drillItems.length ? 0 : undefined" t-att-title="menu.drillItems.length ? 'عرض التفاصيل' : ''" t-on-click="menu.toggleMenu" t-on-keydown="menu.onMenuKeydown"/><div t-if="menu.state.menuOpen" class="o_baha_panel__dropdown" t-attf-style="top:{{menu.state.menuPos.top}}px;left:{{menu.state.menuPos.left}}px;"><t t-foreach="menu.drillItems" t-as="d" t-key="d_index"><button class="o_baha_panel__dropitem" t-on-click="() => this.menu.pickDrill(d)"><i class="fa fa-table"/><span t-esc="d.label"/></button></t></div></span></div></div>
             <div class="o_baha_barhp__rows">
                 <t t-foreach="props.comp.data.items or []" t-as="item" t-key="item_index">
                     <div class="o_baha_barhp__row"
@@ -934,6 +943,9 @@ export class BarChartHPlanned extends Component {
             </div>
         </div>`;
     static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?"];
+    setup() {
+        this.menu = useDrillMenu(this, () => this.props.comp.data.items || []);
+    }
     get colorAccent() { return this.props.colors.accent || "#00ab9d"; }
     isClickable(item) { return isClickable(item); }
     clickableClass(item) { return clickableClass(item); }
@@ -947,7 +959,7 @@ export class BarChartHPlanned extends Component {
 export class GoalsList extends Component {
     static template = xml`
         <div class="o_baha_card o_baha_goals">
-            <div class="o_baha_card__head" t-if="props.comp.title and !props.comp.data.hide_head"><span class="o_baha_card__title" t-esc="props.comp.title"/><div class="o_baha_card__tools"><span class="o_baha_legend"><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>مسار صحيح</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>في خطر</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر</span></span><i class="fa fa-expand o_baha_panel__expand"/><i class="fa fa-ellipsis-v o_baha_panel__menu"/></div></div>
+            <div class="o_baha_card__head" t-if="props.comp.title and !props.comp.data.hide_head"><span class="o_baha_card__title" t-esc="props.comp.title"/><div class="o_baha_card__tools"><span class="o_baha_legend"><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>علي المسار</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>متأخر</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر جدا</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--none"/>لم يتم القياس</span></span><i class="fa fa-expand o_baha_panel__expand" t-on-click="menu.toggleMenu" t-on-keydown="menu.onMenuKeydown" tabindex="0" role="button" title="عرض التفاصيل"/><span class="o_baha_panel__menuwrap" t-ref="menuwrap"><i class="fa fa-ellipsis-v o_baha_panel__menu" t-att-class="{ 'o_baha_panel__menu--active': menu.drillItems.length, 'o_baha_panel__menu--on': menu.state.menuOpen }" t-att-role="menu.drillItems.length ? 'button' : undefined" t-att-tabindex="menu.drillItems.length ? 0 : undefined" t-att-title="menu.drillItems.length ? 'عرض التفاصيل' : ''" t-on-click="menu.toggleMenu" t-on-keydown="menu.onMenuKeydown"/><div t-if="menu.state.menuOpen" class="o_baha_panel__dropdown" t-attf-style="top:{{menu.state.menuPos.top}}px;left:{{menu.state.menuPos.left}}px;"><t t-foreach="menu.drillItems" t-as="d" t-key="d_index"><button class="o_baha_panel__dropitem" t-on-click="() => this.menu.pickDrill(d)"><i class="fa fa-table"/><span t-esc="d.label"/></button></t></div></span></div></div>
             <t t-foreach="props.comp.data.items or []" t-as="g" t-key="g_index">
                 <div class="o_baha_goals__row"
                      t-att-class="clickableClass(g)"
@@ -974,6 +986,9 @@ export class GoalsList extends Component {
             </t>
         </div>`;
     static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?"];
+    setup() {
+        this.menu = useDrillMenu(this, () => this.props.comp.data.items || []);
+    }
     isClickable(item) { return isClickable(item); }
     clickableClass(item) { return clickableClass(item); }
     openItem(item) { dispatchItemClick(item, this.props.onOpenRecord, this.props.onOpenDrilldown); }
@@ -1001,8 +1016,24 @@ export class ListCards extends Component {
                     <span t-if="props.comp.data.filter_label" class="o_baha_chip">
                         <span t-esc="props.comp.data.filter_label"/><i class="fa fa-angle-down"/>
                     </span>
-                    <i class="fa fa-expand o_baha_panel__expand"/>
-                    <i class="fa fa-ellipsis-v o_baha_panel__menu"/>
+                    <i class="fa fa-expand o_baha_panel__expand" t-on-click="menu.toggleMenu" t-on-keydown="menu.onMenuKeydown" tabindex="0" role="button" title="عرض التفاصيل"/>
+                    <span class="o_baha_panel__menuwrap" t-ref="menuwrap">
+                        <i class="fa fa-ellipsis-v o_baha_panel__menu"
+                           t-att-class="{ 'o_baha_panel__menu--active': menu.drillItems.length, 'o_baha_panel__menu--on': menu.state.menuOpen }"
+                           t-att-role="menu.drillItems.length ? 'button' : undefined"
+                           t-att-tabindex="menu.drillItems.length ? 0 : undefined"
+                           t-att-title="menu.drillItems.length ? 'عرض التفاصيل' : ''"
+                           t-on-click="menu.toggleMenu"
+                           t-on-keydown="menu.onMenuKeydown"/>
+                        <div t-if="menu.state.menuOpen" class="o_baha_panel__dropdown"
+                             t-attf-style="top:{{menu.state.menuPos.top}}px;left:{{menu.state.menuPos.left}}px;">
+                            <t t-foreach="menu.drillItems" t-as="d" t-key="d_index">
+                                <button class="o_baha_panel__dropitem" t-on-click="() => this.menu.pickDrill(d)">
+                                    <i class="fa fa-table"/><span t-esc="d.label"/>
+                                </button>
+                            </t>
+                        </div>
+                    </span>
                 </div>
             </div>
             <t t-foreach="props.comp.data.items or []" t-as="it" t-key="it_index">
@@ -1023,6 +1054,9 @@ export class ListCards extends Component {
             </t>
         </div>`;
     static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?"];
+    setup() {
+        this.menu = useDrillMenu(this, () => this.props.comp.data.items || []);
+    }
     isClickable(item) { return isClickable(item); }
     clickableClass(item) { return clickableClass(item); }
     openItem(item) { dispatchItemClick(item, this.props.onOpenRecord, this.props.onOpenDrilldown); }
@@ -1035,7 +1069,7 @@ export class ListCards extends Component {
 export class AlertsPanel extends Component {
     static template = xml`
         <div class="o_baha_card o_baha_alerts">
-            <div class="o_baha_card__head" t-if="props.comp.title and !props.comp.data.hide_head"><span class="o_baha_card__title" t-esc="props.comp.title"/><div class="o_baha_card__tools"><span class="o_baha_legend"><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>مسار صحيح</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>في خطر</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر</span></span><i class="fa fa-expand o_baha_panel__expand"/><i class="fa fa-ellipsis-v o_baha_panel__menu"/></div></div>
+            <div class="o_baha_card__head" t-if="props.comp.title and !props.comp.data.hide_head"><span class="o_baha_card__title" t-esc="props.comp.title"/><div class="o_baha_card__tools"><span class="o_baha_legend"><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>علي المسار</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>متأخر</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر جدا</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--none"/>لم يتم القياس</span></span><i class="fa fa-expand o_baha_panel__expand" t-on-click="menu.toggleMenu" t-on-keydown="menu.onMenuKeydown" tabindex="0" role="button" title="عرض التفاصيل"/><span class="o_baha_panel__menuwrap" t-ref="menuwrap"><i class="fa fa-ellipsis-v o_baha_panel__menu" t-att-class="{ 'o_baha_panel__menu--active': menu.drillItems.length, 'o_baha_panel__menu--on': menu.state.menuOpen }" t-att-role="menu.drillItems.length ? 'button' : undefined" t-att-tabindex="menu.drillItems.length ? 0 : undefined" t-att-title="menu.drillItems.length ? 'عرض التفاصيل' : ''" t-on-click="menu.toggleMenu" t-on-keydown="menu.onMenuKeydown"/><div t-if="menu.state.menuOpen" class="o_baha_panel__dropdown" t-attf-style="top:{{menu.state.menuPos.top}}px;left:{{menu.state.menuPos.left}}px;"><t t-foreach="menu.drillItems" t-as="d" t-key="d_index"><button class="o_baha_panel__dropitem" t-on-click="() => this.menu.pickDrill(d)"><i class="fa fa-table"/><span t-esc="d.label"/></button></t></div></span></div></div>
             <t t-foreach="props.comp.data.groups or []" t-as="grp" t-key="grp_index">
                 <div class="o_baha_alerts__group"
                      t-att-class="{ 'o_baha_alerts__group--open': this.isGroupOpen(grp_index) }">
@@ -1074,6 +1108,7 @@ export class AlertsPanel extends Component {
     static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?"];
     setup() {
         this.state = useState({ openGroups: {} });
+        this.menu = useDrillMenu(this, () => (this.props.comp.data.groups || []).flatMap((g) => g.items || []));
     }
     get colorPrimary() { return this.props.colors.primary || "#5c4b43"; }
     isGroupOpen(index) { return Boolean(this.state.openGroups[index]); }
@@ -1103,12 +1138,28 @@ export class GaugeGrid extends Component {
                 <span class="o_baha_panel__title" t-esc="props.comp.title"/>
                 <div class="o_baha_panel__headtools">
                     <div class="o_baha_legend">
-                        <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>مسار صحيح</span>
-                        <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>في خطر</span>
-                        <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر</span>
+                        <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>علي المسار</span>
+                        <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>متأخر</span>
+                        <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر جدا</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--none"/>لم يتم القياس</span>
                     </div>
-                    <i class="fa fa-expand o_baha_panel__expand"/>
-                    <i class="fa fa-ellipsis-v o_baha_panel__menu"/>
+                    <i class="fa fa-expand o_baha_panel__expand" t-on-click="menu.toggleMenu" t-on-keydown="menu.onMenuKeydown" tabindex="0" role="button" title="عرض التفاصيل"/>
+                    <span class="o_baha_panel__menuwrap" t-ref="menuwrap">
+                        <i class="fa fa-ellipsis-v o_baha_panel__menu"
+                           t-att-class="{ 'o_baha_panel__menu--active': menu.drillItems.length, 'o_baha_panel__menu--on': menu.state.menuOpen }"
+                           t-att-role="menu.drillItems.length ? 'button' : undefined"
+                           t-att-tabindex="menu.drillItems.length ? 0 : undefined"
+                           t-att-title="menu.drillItems.length ? 'عرض التفاصيل' : ''"
+                           t-on-click="menu.toggleMenu"
+                           t-on-keydown="menu.onMenuKeydown"/>
+                        <div t-if="menu.state.menuOpen" class="o_baha_panel__dropdown"
+                             t-attf-style="top:{{menu.state.menuPos.top}}px;left:{{menu.state.menuPos.left}}px;">
+                            <t t-foreach="menu.drillItems" t-as="d" t-key="d_index">
+                                <button class="o_baha_panel__dropitem" t-on-click="() => this.menu.pickDrill(d)">
+                                    <i class="fa fa-table"/><span t-esc="d.label"/>
+                                </button>
+                            </t>
+                        </div>
+                    </span>
                 </div>
             </div>
             <div class="o_baha_gaugegrid__grid" t-attf-style="grid-template-columns: repeat({{props.comp.data.cols or 4}}, 1fr);">
@@ -1139,6 +1190,9 @@ export class GaugeGrid extends Component {
             </div>
         </div>`;
     static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?"];
+    setup() {
+        this.menu = useDrillMenu(this, () => this.props.comp.data.items || []);
+    }
     trendClass(dir) { return trendClass(dir); }
     isClickable(item) { return isClickable(item); }
     clickableClass(item, extra = "") { return clickableClass(item, extra); }
@@ -1164,11 +1218,11 @@ export class StatGrid extends Component {
                 <span class="o_baha_panel__title" t-esc="props.comp.title"/>
                 <div class="o_baha_panel__headtools">
                     <div class="o_baha_legend">
-                        <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>مسار صحيح</span>
-                        <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>في خطر</span>
-                        <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر</span>
+                        <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>علي المسار</span>
+                        <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>متأخر</span>
+                        <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر جدا</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--none"/>لم يتم القياس</span>
                     </div>
-                    <i class="fa fa-expand o_baha_panel__expand"/>
+                    <i class="fa fa-expand o_baha_panel__expand" t-on-click="toggleMenu" t-on-keydown="onMenuKeydown" tabindex="0" role="button" title="عرض التفاصيل"/>
                     <span class="o_baha_panel__menuwrap" t-ref="menuwrap">
                         <i class="fa fa-ellipsis-v o_baha_panel__menu"
                            t-att-class="{ 'o_baha_panel__menu--active': drillItems.length,
@@ -1302,12 +1356,28 @@ export class KpiGrid extends Component {
                 <span class="o_baha_panel__title" t-esc="props.comp.title"/>
                 <div class="o_baha_panel__headtools">
                     <div class="o_baha_legend">
-                        <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>مسار صحيح</span>
-                        <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>في خطر</span>
-                        <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر</span>
+                        <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>علي المسار</span>
+                        <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>متأخر</span>
+                        <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر جدا</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--none"/>لم يتم القياس</span>
                     </div>
-                    <i class="fa fa-expand o_baha_panel__expand"/>
-                    <i class="fa fa-ellipsis-v o_baha_panel__menu"/>
+                    <i class="fa fa-expand o_baha_panel__expand" t-on-click="menu.toggleMenu" t-on-keydown="menu.onMenuKeydown" tabindex="0" role="button" title="عرض التفاصيل"/>
+                    <span class="o_baha_panel__menuwrap" t-ref="menuwrap">
+                        <i class="fa fa-ellipsis-v o_baha_panel__menu"
+                           t-att-class="{ 'o_baha_panel__menu--active': menu.drillItems.length, 'o_baha_panel__menu--on': menu.state.menuOpen }"
+                           t-att-role="menu.drillItems.length ? 'button' : undefined"
+                           t-att-tabindex="menu.drillItems.length ? 0 : undefined"
+                           t-att-title="menu.drillItems.length ? 'عرض التفاصيل' : ''"
+                           t-on-click="menu.toggleMenu"
+                           t-on-keydown="menu.onMenuKeydown"/>
+                        <div t-if="menu.state.menuOpen" class="o_baha_panel__dropdown"
+                             t-attf-style="top:{{menu.state.menuPos.top}}px;left:{{menu.state.menuPos.left}}px;">
+                            <t t-foreach="menu.drillItems" t-as="d" t-key="d_index">
+                                <button class="o_baha_panel__dropitem" t-on-click="() => this.menu.pickDrill(d)">
+                                    <i class="fa fa-table"/><span t-esc="d.label"/>
+                                </button>
+                            </t>
+                        </div>
+                    </span>
                 </div>
             </div>
             <div class="o_baha_kpigrid__grid" t-attf-style="grid-template-columns: repeat({{props.comp.data.cols or 2}}, 1fr);">
@@ -1340,6 +1410,9 @@ export class KpiGrid extends Component {
             </div>
         </div>`;
     static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?"];
+    setup() {
+        this.menu = useDrillMenu(this, () => this.props.comp.data.items || []);
+    }
     isClickable(item) { return isClickable(item); }
     clickableClass(item, extra = "") { return clickableClass(item, extra); }
     openItem(item) { dispatchItemClick(item, this.props.onOpenRecord, this.props.onOpenDrilldown); }
@@ -1363,12 +1436,28 @@ export class SemiGrid extends Component {
                 <span class="o_baha_panel__title" t-esc="props.comp.title"/>
                 <div class="o_baha_panel__headtools">
                     <div class="o_baha_legend">
-                        <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>مسار صحيح</span>
-                        <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>في خطر</span>
-                        <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر</span>
+                        <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>علي المسار</span>
+                        <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>متأخر</span>
+                        <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر جدا</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--none"/>لم يتم القياس</span>
                     </div>
-                    <i class="fa fa-expand o_baha_panel__expand"/>
-                    <i class="fa fa-ellipsis-v o_baha_panel__menu"/>
+                    <i class="fa fa-expand o_baha_panel__expand" t-on-click="menu.toggleMenu" t-on-keydown="menu.onMenuKeydown" tabindex="0" role="button" title="عرض التفاصيل"/>
+                    <span class="o_baha_panel__menuwrap" t-ref="menuwrap">
+                        <i class="fa fa-ellipsis-v o_baha_panel__menu"
+                           t-att-class="{ 'o_baha_panel__menu--active': menu.drillItems.length, 'o_baha_panel__menu--on': menu.state.menuOpen }"
+                           t-att-role="menu.drillItems.length ? 'button' : undefined"
+                           t-att-tabindex="menu.drillItems.length ? 0 : undefined"
+                           t-att-title="menu.drillItems.length ? 'عرض التفاصيل' : ''"
+                           t-on-click="menu.toggleMenu"
+                           t-on-keydown="menu.onMenuKeydown"/>
+                        <div t-if="menu.state.menuOpen" class="o_baha_panel__dropdown"
+                             t-attf-style="top:{{menu.state.menuPos.top}}px;left:{{menu.state.menuPos.left}}px;">
+                            <t t-foreach="menu.drillItems" t-as="d" t-key="d_index">
+                                <button class="o_baha_panel__dropitem" t-on-click="() => this.menu.pickDrill(d)">
+                                    <i class="fa fa-table"/><span t-esc="d.label"/>
+                                </button>
+                            </t>
+                        </div>
+                    </span>
                 </div>
             </div>
             <div class="o_baha_semigrid__grid" t-attf-style="grid-template-columns: repeat({{props.comp.data.cols or 5}}, 1fr);">
@@ -1402,6 +1491,9 @@ export class SemiGrid extends Component {
             </div>
         </div>`;
     static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?"];
+    setup() {
+        this.menu = useDrillMenu(this, () => this.props.comp.data.items || []);
+    }
     trendClass(dir) { return trendClass(dir); }
     isClickable(item) { return isClickable(item); }
     clickableClass(item, extra = "") { return clickableClass(item, extra); }

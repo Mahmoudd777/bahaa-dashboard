@@ -21,11 +21,12 @@ export class UnitContent extends Component {
                     <span class="o_baha_panel__title" t-esc="props.unit.title"/>
                     <div class="o_baha_panel__headtools">
                         <div class="o_baha_legend">
-                            <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>مسار صحيح</span>
-                            <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>في خطر</span>
-                            <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر</span>
+                            <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>علي المسار</span>
+                            <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>متأخر</span>
+                            <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر جدا</span>
+                            <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--none"/>لم يتم القياس</span>
                         </div>
-                        <i class="fa fa-expand o_baha_panel__expand"/>
+                        <i class="fa fa-expand o_baha_panel__expand" t-on-click="toggleMenu" t-on-keydown="onMenuKeydown" tabindex="0" role="button" title="عرض التفاصيل"/>
                         <span class="o_baha_panel__menuwrap" t-ref="menuwrap">
                             <i class="fa fa-ellipsis-v o_baha_panel__menu"
                                t-att-class="{ 'o_baha_panel__menu--active': drillItems.length,
