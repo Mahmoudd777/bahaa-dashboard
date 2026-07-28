@@ -642,7 +642,10 @@ export class BarChartH extends Component {
         const items = this.props.comp.data.items || [];
         return this.props.comp.data.max || Math.max(1, ...items.map((i) => i.value || 0));
     }
-    pct(v) { return Math.round(((v || 0) / this.max) * 100); }
+    // Bar GEOMETRY only — clamped to 0..100 so a value above `max` (a KPI that
+    // beat its target, e.g. 118%) cannot render a fill wider than its track.
+    // The label still shows the true value; only the drawing is capped.
+    pct(v) { return Math.max(0, Math.min(100, Math.round(((v || 0) / this.max) * 100))); }
 }
 
 // ---------------------------------------------------------------------------
@@ -683,7 +686,9 @@ export class BarChartV extends Component {
         const items = this.props.comp.data.items || [];
         return this.props.comp.data.max || Math.max(1, ...items.map((i) => i.value || 0));
     }
-    pct(v) { return Math.round(((v || 0) / this.max) * 100); }
+    // Clamped for the same reason as BarChartH — a value over `max` must not
+    // draw a column taller than the plot area.
+    pct(v) { return Math.max(0, Math.min(100, Math.round(((v || 0) / this.max) * 100))); }
 }
 
 // ---------------------------------------------------------------------------
@@ -935,7 +940,7 @@ export class BarChartHPlanned extends Component {
                         <div class="o_baha_barhp__track">
                             <div class="o_baha_barhp__plan"/>
                             <div class="o_baha_barhp__fill"
-                                 t-attf-style="width:{{item.value}}%;background:{{item.color or colorAccent}};"/>
+                                 t-attf-style="width:{{pct(item.value)}}%;background:{{item.color or colorAccent}};"/>
                         </div>
                         <span class="o_baha_barhp__budget" t-esc="item.budget"/>
                     </div>
@@ -951,6 +956,9 @@ export class BarChartHPlanned extends Component {
     clickableClass(item) { return clickableClass(item); }
     openItem(item) { dispatchItemClick(item, this.props.onOpenRecord, this.props.onOpenDrilldown); }
     onItemKeydown(ev, item) { onItemKeydown(ev, item, this.props.onOpenRecord, this.props.onOpenDrilldown); }
+    // Actual-vs-planned values are already percentages; clamp the drawn width
+    // so an over-100% actual stays inside its planned track.
+    pct(v) { return Math.max(0, Math.min(100, Math.round(v || 0))); }
 }
 
 // ---------------------------------------------------------------------------
