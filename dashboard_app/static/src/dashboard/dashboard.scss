@@ -882,6 +882,9 @@ body.o_baha_dash_active {
 
 // ---- Horizontal bar chart ----
 .o_baha_barh {
+    // Content taller than the fixed card height (--rows) scrolls instead of
+    // being clipped invisibly by the ancestor .o_baha_dash__cell's overflow:hidden.
+    overflow-y: auto;
     &__rows { display: flex; flex-direction: column; gap: 14px; }
     &__row { display: flex; align-items: center; gap: 20px; }
     &__label { flex: 0 0 170px; font-size: 14px; color: #000000; text-align: right; line-height: 1.4; }
@@ -1576,6 +1579,8 @@ body.o_baha_dash_active {
 
 // planned-vs-actual horizontal bars
 .o_baha_barhp {
+    // Same as .o_baha_barh — scroll rather than clip when the rows overflow.
+    overflow-y: auto;
     &__rows { display: flex; flex-direction: column; gap: 14px; }
     &__row { display: flex; align-items: center; gap: 10px; }
     &__label { flex: 0 0 150px; font-size: 12px; color: var(--dash-text-secondary); }
