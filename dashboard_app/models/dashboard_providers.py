@@ -77,15 +77,21 @@ def _series_pick(records, period_field, flt):
 
 
 def kpi_at(kpi, flt):
-    """(value, target, achievement_pct, rag) of a KPI for the active filter."""
+    """(value, target, achievement_pct, rag) of a KPI for the active filter.
+
+    Achievement always comes from `kpi.achievement_of()` so the direction
+    ('lower is better') is honoured, and the RAG is banded from that same
+    number rather than the hand-entered rag_status — a stored colour that
+    contradicts the percentage beside it is what this replaces.
+    """
     if flt["mode"] == "all":
         return (kpi.latest_value, kpi.target_value, kpi.achievement_pct, kpi.rag)
     v = _series_pick(kpi.value_ids, "period", flt)
     if not v:
         return (0.0, kpi.target_value or 0.0, 0.0, "grey")
     tgt = kpi.target_value or v.target_value or 0.0
-    ach = round(min((v.actual_value or 0.0) / tgt * 100, 999), 1) if tgt else 0.0
-    return (v.actual_value or 0.0, tgt, ach, v.rag_status or "grey")
+    ach = kpi.achievement_of(v.actual_value, tgt)
+    return (v.actual_value or 0.0, tgt, ach, rag_level(ach))
 
 
 def initiative_at(init, flt):
@@ -426,8 +432,10 @@ def completion_by_year(comp, cfg, env):
     by_year = defaultdict(list)
     for v in _recs(env, "albaha.kpi.value"):
         tgt = v.target_value or (v.kpi_id.target_value if v.kpi_id else 0.0)
-        if tgt:
-            by_year[(v.period or "")[:4]].append((v.actual_value or 0.0) / tgt * 100.0)
+        if tgt and v.kpi_id:
+            # Via the KPI so a lower-is-better indicator does not drag the
+            # yearly average the wrong way (see albaha.kpi.achievement_of).
+            by_year[(v.period or "")[:4]].append(v.kpi_id.achievement_of(v.actual_value, tgt))
     items = []
     for year in sorted(by_year):
         if not DF.year_in_filter(flt, year):
