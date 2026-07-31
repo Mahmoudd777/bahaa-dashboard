@@ -1275,6 +1275,114 @@ body.o_baha_dash_active {
     font-weight: 900;
 }
 
+// ============================================================
+//  Floating record windows (draggable, several at once)
+// ============================================================
+// Deliberately NOT modal — no backdrop — so the dashboard stays readable
+// behind them and two records can be compared side by side.
+.o_baha_float {
+    position: fixed;
+    width: min(460px, calc(100vw - 32px));
+    max-height: min(70vh, 640px);
+    display: flex;
+    flex-direction: column;
+    direction: rtl;
+    background: rgba(255, 255, 255, 0.97);
+    border: 1px solid rgba(255, 255, 255, 0.72);
+    border-radius: 14px;
+    box-shadow: 0 22px 60px rgba(24, 29, 39, 0.28);
+    backdrop-filter: blur(14px);
+    font-family: "Tajawal", "Segoe UI", system-ui, sans-serif;
+    overflow: hidden;
+    animation: o_baha_modal_in 0.16s ease-out;
+
+    // While dragging, kill the entry animation and any transition so the
+    // window tracks the pointer exactly instead of easing behind it.
+    &--dragging {
+        animation: none;
+        transition: none;
+        user-select: none;
+        box-shadow: 0 30px 70px rgba(24, 29, 39, 0.34);
+    }
+
+    &__head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--dash-border, #d5d7da);
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.5));
+        cursor: grab;          // the whole header is the drag handle
+        flex: 0 0 auto;
+
+        &:active { cursor: grabbing; }
+    }
+    &__titles { min-width: 0; }
+    &__eyebrow {
+        color: var(--dash-accent, #00ab9d);
+        font-size: 11px;
+        font-weight: 800;
+    }
+    &__title {
+        margin-top: 2px;
+        color: var(--dash-text-primary, #181d27);
+        font-size: 15px;
+        font-weight: 800;
+    }
+    &__subtitle {
+        margin-top: 2px;
+        color: var(--dash-text-tertiary, #535862);
+        font-size: 12px;
+        font-weight: 600;
+    }
+    &__headtools {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex: 0 0 auto;
+    }
+    &__close {
+        border: 0;
+        background: transparent;
+        font-size: 16px;
+        color: #9aa0a6;
+        cursor: pointer;
+        line-height: 1;
+        padding: 2px;
+        &:hover { color: #111827; }
+        &:focus { outline: none; }
+        &:focus-visible {
+            outline: 2px solid var(--dash-focus-ring, #00ab9d);
+            outline-offset: 2px;
+        }
+    }
+
+    &__body {
+        padding: 16px;
+        overflow-y: auto;
+        flex: 1 1 auto;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    &__foot {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 10px;
+        padding: 12px 16px;
+        border-top: 1px solid var(--dash-border, #d5d7da);
+        flex: 0 0 auto;
+    }
+
+    // The summary grid is tighter in a narrow window than in a full modal.
+    .o_baha_detail_summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .o_baha_detail_sections { grid-template-columns: 1fr; }
+}
+
 .o_baha_lines_modal__hint {
     margin-top: 10px;
     color: var(--dash-text-secondary, #414651);

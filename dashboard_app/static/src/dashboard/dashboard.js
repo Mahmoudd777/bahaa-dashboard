@@ -9,7 +9,7 @@ import { _t } from "@web/core/l10n/translation";
 import { WIDGETS } from "./components/widgets";
 import { ImportModal } from "./components/import_modal";
 import { AdvancedImportModal } from "./components/advanced_import_modal";
-import { RecordDetailModal } from "./components/record_detail_modal";
+import { FloatingDetailPanel } from "./components/floating_detail_panel";
 import { AggregateListModal } from "./components/aggregate_list_modal";
 import {
     ComponentDetailModal,
@@ -252,12 +252,6 @@ export class Dashboard extends Component {
             <AdvancedImportModal t-if="state.advancedImportOpen"
                                  onClose="() => this.closeAdvancedImport()"
                                  onConfirm="openAdvancedImport.bind(this)"/>
-            <RecordDetailModal t-if="state.recordDetail.open"
-                               detail="state.recordDetail.detail"
-                               loading="state.recordDetail.loading"
-                               error="state.recordDetail.error"
-                               onClose="() => this.closeRecordDetail()"
-                               onOpenFull="openFullRecord.bind(this)"/>
             <AggregateListModal t-if="state.aggregateList.open"
                                 detail="state.aggregateList.detail"
                                 loading="state.aggregateList.loading"
@@ -270,9 +264,18 @@ export class Dashboard extends Component {
                                   onClose="() => this.closeComponentDetail()"
                                   onOpenRecord="openRecordDetail.bind(this)"
                                   onOpenDrilldown="openDrilldown.bind(this)"/>
+            <!-- Floating record windows sit above the wizards, so opening a row
+                 from inside one brings the record out in front of it. -->
+            <t t-foreach="state.detailPanels" t-as="panel" t-key="panel.id">
+                <FloatingDetailPanel panel="panel"
+                                     onClose.bind="closeDetailPanel"
+                                     onFocus.bind="focusDetailPanel"
+                                     onMove.bind="moveDetailPanel"
+                                     onOpenFull="openFullRecord.bind(this)"/>
+            </t>
         </div>`;
 
-    static components = { ...WIDGETS, ImportModal, AdvancedImportModal, RecordDetailModal, AggregateListModal, ComponentDetailModal, UnitGrid, GridstackEditor };
+    static components = { ...WIDGETS, ImportModal, AdvancedImportModal, FloatingDetailPanel, AggregateListModal, ComponentDetailModal, UnitGrid, GridstackEditor };
     static props = ["*"];
 
     setup() {
@@ -305,7 +308,9 @@ export class Dashboard extends Component {
             loading: true,
             importOpen: false,
             advancedImportOpen: false,
-            recordDetail: { open: false, loading: false, detail: null, error: "" },
+            // Record details are floating windows, not a modal: several can be
+            // open at once so records can be compared side by side.
+            detailPanels: [],
             aggregateList: { open: false, loading: false, detail: null, error: "" },
             componentDetail: { open: false, title: "", sections: [] },
             activeTab: 0,
@@ -327,6 +332,10 @@ export class Dashboard extends Component {
         });
         this._editLayoutDraft = null;
         this._editDraftsBySection = {};
+        // Stacking counter for floating record panels. Starts above the modal
+        // layer (2000) so a record always opens in front of the wizard that
+        // spawned it — the bug that made "فتح" look like it did nothing.
+        this._panelZ = 2500;
 
         // Entrance "blow up" animations: run once the section first renders, and
         // again whenever the active tab changes (re-reveals the new tab's blocks).
@@ -379,9 +388,12 @@ export class Dashboard extends Component {
                     this.closeAdvancedImport();
                     return;
                 }
-                if (this.state.recordDetail.open) {
+                // Floating panels close one at a time, topmost first, so Esc
+                // does not wipe out a comparison the user is mid-way through.
+                if (this.state.detailPanels.length) {
                     ev.preventDefault();
-                    this.closeRecordDetail();
+                    const top = this.state.detailPanels.reduce((a, b) => (b.z > a.z ? b : a));
+                    this.closeDetailPanel(top.id);
                     return;
                 }
                 if (this.state.componentDetail.open) {
@@ -1020,14 +1032,36 @@ export class Dashboard extends Component {
         }
     }
 
+    /** Open a record as a floating panel. Several can be open at once and each
+     *  can be dragged, so two records can be put side by side and compared —
+     *  which a single modal could never do. Re-opening the same record brings
+     *  the existing panel forward instead of stacking a duplicate on top. */
     async openRecordDetail(record) {
         if (!record || !record.model || !record.id) {
             return;
         }
-        this.state.recordDetail.open = true;
-        this.state.recordDetail.loading = true;
-        this.state.recordDetail.error = "";
-        this.state.recordDetail.detail = null;
+        const id = `${record.model}:${record.id}`;
+        const existing = this.state.detailPanels.find((p) => p.id === id);
+        if (existing) {
+            this.focusDetailPanel(id);
+            return;
+        }
+
+        // Cascade each new panel so it does not land exactly on the last one.
+        const step = this.state.detailPanels.length % 6;
+        const panel = {
+            id,
+            model: record.model,
+            res_id: record.id,
+            x: Math.max(16, Math.round(window.innerWidth / 2 - 230) + step * 28),
+            y: Math.max(16, 96 + step * 28),
+            z: ++this._panelZ,
+            loading: true,
+            error: "",
+            detail: null,
+        };
+        this.state.detailPanels.push(panel);
+
         try {
             const detail = await Promise.race([
                 rpc("/web/dataset/call_kw/dashboard.dashboard/get_record_detail",
@@ -1036,20 +1070,50 @@ export class Dashboard extends Component {
                       kwargs: { dashboard_filter: this.state.filter || null } }),
                 new Promise((_, rej) => setTimeout(() => rej(new Error("RPC timeout (8s)")), 8000)),
             ]);
-            this.state.recordDetail.detail = detail;
+            // The panel may have been closed while the request was in flight.
+            const live = this.state.detailPanels.find((p) => p.id === id);
+            if (live) {
+                live.detail = detail;
+            }
         } catch (e) {
-            this.state.recordDetail.error = "تعذّر تحميل تفاصيل السجل";
+            const live = this.state.detailPanels.find((p) => p.id === id);
+            if (live) {
+                live.error = "تعذّر تحميل تفاصيل السجل";
+            }
             this.notification.add(e.message || "تعذّر تحميل تفاصيل السجل", { type: "danger" });
         } finally {
-            this.state.recordDetail.loading = false;
+            const live = this.state.detailPanels.find((p) => p.id === id);
+            if (live) {
+                live.loading = false;
+            }
         }
     }
 
-    closeRecordDetail() {
-        this.state.recordDetail.open = false;
-        this.state.recordDetail.loading = false;
-        this.state.recordDetail.detail = null;
-        this.state.recordDetail.error = "";
+    closeDetailPanel(id) {
+        const idx = this.state.detailPanels.findIndex((p) => p.id === id);
+        if (idx >= 0) {
+            this.state.detailPanels.splice(idx, 1);
+        }
+    }
+
+    closeAllDetailPanels() {
+        this.state.detailPanels.length = 0;
+    }
+
+    /** Raise a panel above its siblings when it is clicked. */
+    focusDetailPanel(id) {
+        const panel = this.state.detailPanels.find((p) => p.id === id);
+        if (panel && panel.z !== this._panelZ) {
+            panel.z = ++this._panelZ;
+        }
+    }
+
+    moveDetailPanel(id, x, y) {
+        const panel = this.state.detailPanels.find((p) => p.id === id);
+        if (panel) {
+            panel.x = x;
+            panel.y = y;
+        }
     }
 
     openFullRecord(detail) {
