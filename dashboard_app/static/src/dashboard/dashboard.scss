@@ -29,6 +29,12 @@ body.o_baha_dash_active {
 .o_baha_dash {
     --dash-primary: #5c4b43;
     --dash-accent: #00ab9d;
+    // Focus rings deliberately do NOT follow --dash-accent. That one is
+    // user-customisable, and a dark custom accent renders the ring as a
+    // near-black box that reads as a rendering fault rather than a focus
+    // state. Keeping it fixed means the indicator stays legible and
+    // recognisable whatever palette a user saves.
+    --dash-focus-ring: #00ab9d;
     --dash-success: #00ab9d;
     --dash-warning: #f0974f;
     --dash-danger: #ff5147;
@@ -394,7 +400,7 @@ body.o_baha_dash_active {
     // :focus reset, clicking leaves a box sitting on the card afterwards.
     &:focus { outline: none; }
     &:focus-visible {
-        outline: 2px solid var(--dash-accent, #00ab9d);
+        outline: 2px solid var(--dash-focus-ring, #00ab9d);
         outline-offset: 3px;
         opacity: 1;
     }
@@ -1693,7 +1699,7 @@ body.o_baha_dash_active {
         border-radius: 4px;
         &:focus { outline: none; }
         &:focus-visible {
-            outline: 2px solid var(--dash-accent, #00ab9d);
+            outline: 2px solid var(--dash-focus-ring, #00ab9d);
             outline-offset: 4px;
         }
     }
@@ -1771,7 +1777,7 @@ body.o_baha_dash_active {
     }
     &:focus { outline: none; }
     &:focus-visible {
-        outline: 2px solid var(--dash-accent, #00ab9d);
+        outline: 2px solid var(--dash-focus-ring, #00ab9d);
         outline-offset: -2px;
         background: rgba(0, 171, 157, 0.09);
     }
@@ -1786,7 +1792,7 @@ body.o_baha_dash_active {
     }
     &:focus { outline: none; }
     &:focus-visible {
-        outline: 2px solid var(--dash-accent, #00ab9d);
+        outline: 2px solid var(--dash-focus-ring, #00ab9d);
         outline-offset: 2px;
     }
 }

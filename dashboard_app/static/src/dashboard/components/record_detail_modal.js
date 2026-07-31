@@ -1,11 +1,12 @@
 /** @odoo-module **/
 
-import { Component, xml } from "@odoo/owl";
+import { Component, onMounted, useRef, xml } from "@odoo/owl";
 
 export class RecordDetailModal extends Component {
     static template = xml`
         <div class="o_baha_modal__backdrop o_baha_detail_backdrop" t-on-click="() => props.onClose()">
-            <div class="o_baha_modal o_baha_detail_modal" t-on-click.stop="">
+            <div class="o_baha_modal o_baha_detail_modal" t-on-click.stop=""
+                 t-ref="dialog" tabindex="-1" role="dialog" aria-modal="true">
                 <div class="o_baha_modal__header o_baha_detail_modal__header">
                     <div>
                         <div class="o_baha_detail_modal__eyebrow">تفاصيل السجل</div>
@@ -107,6 +108,13 @@ export class RecordDetailModal extends Component {
         </div>`;
 
     static props = ["detail?", "loading?", "error?", "onClose", "onOpenFull?"];
+
+    setup() {
+        // See ComponentDetailModal: focus must leave the clicked card, or Esc
+        // leaves a focus ring painted on it.
+        this.dialogRef = useRef("dialog");
+        onMounted(() => this.dialogRef.el && this.dialogRef.el.focus());
+    }
 
     get detail() {
         return this.props.detail || {};
