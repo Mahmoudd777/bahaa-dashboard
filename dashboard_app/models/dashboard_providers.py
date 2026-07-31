@@ -89,7 +89,12 @@ def kpi_at(kpi, flt):
     v = _series_pick(kpi.value_ids, "period", flt)
     if not v:
         return (0.0, kpi.target_value or 0.0, 0.0, "grey")
-    tgt = kpi.target_value or v.target_value or 0.0
+    # The PERIOD's own target wins over the KPI's overall one. `target_value`
+    # on the KPI is the end-of-strategy figure (2030), so preferring it scored
+    # a Q2-2026 actual against a 2030 goal and made every in-flight indicator
+    # look like it was failing. Compare like with like; fall back to the
+    # overall target only when a period carries none.
+    tgt = v.target_value or kpi.target_value or 0.0
     ach = kpi.achievement_of(v.actual_value, tgt)
     return (v.actual_value or 0.0, tgt, ach, rag_level(ach))
 
