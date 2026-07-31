@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
+<!--
+    noupdate="1": these are the admin's *initial* preferences. Theme,
+    assigned dashboard and landing action are all user-changeable in the
+    UI, so re-applying them on every module update would keep dragging the
+    user back to these defaults.
+-->
+<odoo noupdate="1">
     <!-- Land the admin on the dashboard right after login (home action),
          and give them the brown CEO dashboard with the brown theme. -->
     <record id="base.user_admin" model="res.users">
