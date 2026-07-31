@@ -1006,9 +1006,8 @@ export class ListCards extends Component {
                     <span t-if="props.comp.data.count" class="o_baha_listcards__count" t-esc="props.comp.data.count"/>
                 </div>
                 <div class="o_baha_card__tools">
-                    <span t-if="props.comp.data.filter_label" class="o_baha_chip">
-                        <span t-esc="props.comp.data.filter_label"/><i class="fa fa-angle-down"/>
-                    </span>
+                    <!-- Filter chip parked — see PARKED_UI.md. It rendered a
+                         dropdown affordance with no dropdown behind it. -->
                     <button t-if="props.onOpenComponent" class="o_baha_expand_btn"
                             title="عرض كامل البيانات"
                             t-on-click="() => props.onOpenComponent(props.comp)">
