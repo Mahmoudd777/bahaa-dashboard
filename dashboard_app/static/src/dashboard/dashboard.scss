@@ -374,6 +374,29 @@ body.o_baha_dash_active {
     background: #fff;
 }
 
+// ---- Card header "expand" control ----
+// A real <button> (not an <i>) so it is keyboard-reachable and activates on
+// Enter/Space for free; styled back down to look like the bare icon it replaced.
+.o_baha_expand_btn {
+    border: 0;
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    line-height: 0;
+    cursor: pointer;
+    color: #454445;
+    opacity: 0.6;
+    font-size: 16px;
+    transition: opacity 0.15s ease, color 0.15s ease;
+
+    &:hover { opacity: 1; color: var(--dash-primary, #5c4b43); }
+    &:focus-visible {
+        outline: 2px solid var(--dash-accent, #00ab9d);
+        outline-offset: 3px;
+        opacity: 1;
+    }
+}
+
 // ---- Status legend chips (علي المسار / متأخر / متأخر جدا) ----
 .o_baha_legend {
     display: flex;
@@ -1229,6 +1252,18 @@ body.o_baha_dash_active {
         background: rgba(0, 171, 157, 0.16);
         box-shadow: 0 8px 18px rgba(0, 171, 157, 0.16);
     }
+}
+
+// Expanded-card wizard: a grouped panel contributes one titled table per
+// inner component, so they need separating from each other.
+.o_baha_detail_modal__body > .o_baha_lines_table + .o_baha_lines_table {
+    margin-top: 18px;
+}
+.o_baha_lines_table > h4 {
+    margin: 0 0 10px;
+    color: var(--dash-text-primary, #181d27);
+    font-size: 14px;
+    font-weight: 900;
 }
 
 .o_baha_lines_modal__hint {

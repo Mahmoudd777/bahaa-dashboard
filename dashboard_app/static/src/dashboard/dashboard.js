@@ -12,6 +12,11 @@ import { AdvancedImportModal } from "./components/advanced_import_modal";
 import { RecordDetailModal } from "./components/record_detail_modal";
 import { AggregateListModal } from "./components/aggregate_list_modal";
 import {
+    ComponentDetailModal,
+    sectionForComponent,
+    sectionsForUnit,
+} from "./components/component_detail_modal";
+import {
     cloneUnits,
     normalizeEditUnits,
     normalizeEditUnitsWithMeta,
@@ -259,9 +264,15 @@ export class Dashboard extends Component {
                                 error="state.aggregateList.error"
                                 onClose="() => this.closeAggregateList()"
                                 onOpenRecord="openAggregateRecord.bind(this)"/>
+            <ComponentDetailModal t-if="state.componentDetail.open"
+                                  title="state.componentDetail.title"
+                                  sections="state.componentDetail.sections"
+                                  onClose="() => this.closeComponentDetail()"
+                                  onOpenRecord="openRecordDetail.bind(this)"
+                                  onOpenDrilldown="openDrilldown.bind(this)"/>
         </div>`;
 
-    static components = { ...WIDGETS, ImportModal, AdvancedImportModal, RecordDetailModal, AggregateListModal, UnitGrid, GridstackEditor };
+    static components = { ...WIDGETS, ImportModal, AdvancedImportModal, RecordDetailModal, AggregateListModal, ComponentDetailModal, UnitGrid, GridstackEditor };
     static props = ["*"];
 
     setup() {
@@ -296,6 +307,7 @@ export class Dashboard extends Component {
             advancedImportOpen: false,
             recordDetail: { open: false, loading: false, detail: null, error: "" },
             aggregateList: { open: false, loading: false, detail: null, error: "" },
+            componentDetail: { open: false, title: "", sections: [] },
             activeTab: 0,
             errorMsg: "",
             filter: savedFilter,
@@ -370,6 +382,11 @@ export class Dashboard extends Component {
                 if (this.state.recordDetail.open) {
                     ev.preventDefault();
                     this.closeRecordDetail();
+                    return;
+                }
+                if (this.state.componentDetail.open) {
+                    ev.preventDefault();
+                    this.closeComponentDetail();
                     return;
                 }
                 if (this.state.aggregateList.open) {
@@ -930,6 +947,8 @@ export class Dashboard extends Component {
         if (!this.state.editing && INTERACTIVE_WIDGETS.has(comp.type)) {
             props.onOpenRecord = this.openRecordDetail.bind(this);
             props.onOpenDrilldown = this.openDrilldown.bind(this);
+            // The ⤢ expand icon: opens everything this card holds at once.
+            props.onOpenComponent = this.openComponentDetail.bind(this);
         }
         if (comp.type === "toolbar" || comp.type === "banner") {
             props.onAction = this.onAction.bind(this);
@@ -1086,6 +1105,28 @@ export class Dashboard extends Component {
             return;
         }
         this.openFullRecord({ model: row.model, res_id: row.res_id });
+    }
+
+    /** The ⤢ expand icon on a card. Unlike the per-item drill-down, this shows
+     *  the card's WHOLE dataset in one wizard — no picker, no choosing. The
+     *  data is already loaded client-side, so this needs no RPC. */
+    openComponentDetail(comp) {
+        if (!comp) {
+            return;
+        }
+        // A grouped panel expands to all of its inner components at once.
+        const sections = comp.kind === "panel" || comp.components
+            ? sectionsForUnit(comp)
+            : [sectionForComponent(comp)];
+        this.state.componentDetail.title = comp.title || comp.name || "تفاصيل المكوّن";
+        this.state.componentDetail.sections = sections;
+        this.state.componentDetail.open = true;
+    }
+
+    closeComponentDetail() {
+        this.state.componentDetail.open = false;
+        this.state.componentDetail.sections = [];
+        this.state.componentDetail.title = "";
     }
 
     // ---- Theme picker (edit mode) -------------------------------------------

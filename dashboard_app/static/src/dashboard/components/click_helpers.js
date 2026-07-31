@@ -52,13 +52,17 @@ export function onDataKeydown(ev, data, onOpenRecord, onOpenDrilldown) {
     onItemKeydown(ev, data, onOpenRecord, onOpenDrilldown);
 }
 
-/** Shared "⋮ / expand" drill-down menu for a widget's header: one drillable
- *  item opens straight away (same as clicking the component itself); several
- *  offer a short picker list. Both the expand icon and the ⋮ icon call
- *  `toggleMenu`, so they behave identically. `component` is the calling
- *  widget's `this` (for props.onOpenRecord/onOpenDrilldown); `getItems` reads
- *  that widget's current drillable items (called on every access, not cached,
- *  so it always reflects live props). */
+/** Shared "⋮" drill-down picker for a widget's header: one drillable item
+ *  opens straight away; several offer a short picker list. `component` is the
+ *  calling widget's `this` (for props.onOpenRecord/onOpenDrilldown);
+ *  `getItems` reads that widget's current drillable items (called on every
+ *  access, not cached, so it always reflects live props).
+ *
+ *  CURRENTLY UNUSED — the ⋮ button was removed from the card headers on
+ *  request, leaving only ⤢ expand (which opens the whole card at once via
+ *  ComponentDetailModal). Kept here intact because the ⋮ is planned to come
+ *  back; re-wiring it means calling this in a widget's setup() and adding the
+ *  markup back to its header. */
 export function useDrillMenu(component, getItems) {
     const state = useState({ menuOpen: false, menuPos: { top: 0, left: 0 } });
     const menuWrap = useRef("menuwrap");
