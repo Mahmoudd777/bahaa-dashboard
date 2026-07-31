@@ -1177,15 +1177,17 @@ body.o_baha_dash_active {
             border-bottom: 0;
         }
     }
+    // Kept in step with the detail table above — a 14px table next to 12px
+    // field labels in the same window reads as an accident.
     dt {
         color: var(--dash-text-tertiary, #535862);
-        font-size: 12px;
+        font-size: 13px;
         font-weight: 700;
     }
     dd {
         margin: 0;
         color: var(--dash-text-primary, #181d27);
-        font-size: 13px;
+        font-size: 14px;
         font-weight: 800;
         text-align: left;
     }
@@ -1202,22 +1204,33 @@ body.o_baha_dash_active {
 .o_baha_detail_table {
     overflow: auto;
 
+    // Sized for reading, not for fitting: these tables are the numbers people
+    // actually came to look at. Horizontal scrolling is fine — cramming the
+    // columns small enough to avoid it is not.
     table {
         width: 100%;
         border-collapse: collapse;
-        font-size: 12px;
+        font-size: 14px;
     }
     th,
     td {
-        padding: 10px 12px;
+        padding: 12px 16px;
         border-bottom: 1px solid rgba(213, 215, 218, 0.72);
         text-align: right;
         white-space: nowrap;
+        line-height: 1.5;
     }
     th {
         color: var(--dash-text-secondary, #414651);
         font-weight: 800;
         background: rgba(255, 255, 255, 0.62);
+        // Header stays put while the rows scroll under it.
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+    td {
+        color: var(--dash-text-primary, #181d27);
     }
 }
 
@@ -1286,9 +1299,12 @@ body.o_baha_dash_active {
     // functions before the browser ever sees them, so min(460px, calc(...))
     // fails the whole stylesheet to compile. Plain width + max-* does the
     // same job and survives the preprocessor.
-    width: 460px;
+    // 520px keeps a 5-column history table readable while still letting two
+    // windows sit side by side on a 1280px screen (520*2 + gaps), which is the
+    // whole point of them being movable.
+    width: 520px;
     max-width: calc(100vw - 32px);
-    max-height: 70vh;
+    max-height: 78vh;
     display: flex;
     flex-direction: column;
     direction: rtl;
