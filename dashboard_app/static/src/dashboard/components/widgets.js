@@ -479,7 +479,7 @@ export class GaugeCard extends Component {
                 </div>
             </div>
         </div>`;
-    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?"];
+    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?", "onOpenComponent?"];
 
     trendClass(dir) { return trendClass(dir); }
 
@@ -535,7 +535,7 @@ export class StatCard extends Component {
                 </div>
             </div>
         </div>`;
-    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?"];
+    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?", "onOpenComponent?"];
     trendClass(dir) { return trendClass(dir); }
     get cardClass() {
         return {
@@ -582,7 +582,7 @@ export class ProgressCard extends Component {
                 المطلوب: <span t-esc="props.comp.data.required + '%'"/>
             </div>
         </div>`;
-    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?"];
+    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?", "onOpenComponent?"];
     get colorDefault() { return this.props.colors.danger || "#ff5147"; }
     get cardClass() {
         return {
@@ -629,7 +629,7 @@ export class BarChartH extends Component {
                 </t>
             </div>
         </div>`;
-    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?"];
+    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?", "onOpenComponent?"];
     get colorAccent() { return this.props.colors.accent || "#00ab9d"; }
     isClickable(item) { return isClickable(item); }
     clickableClass(item) { return clickableClass(item); }
@@ -673,7 +673,7 @@ export class BarChartV extends Component {
                 </div>
             </div>
         </div>`;
-    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?"];
+    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?", "onOpenComponent?"];
     get colorAccent() { return this.props.colors.accent || "#00ab9d"; }
     isClickable(item) { return isClickable(item); }
     clickableClass(item) { return clickableClass(item); }
@@ -735,7 +735,7 @@ export class DataTable extends Component {
                 </tbody>
             </table>
         </div>`;
-    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?"];
+    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?", "onOpenComponent?"];
     get colorAccent() { return this.props.colors.accent || "#00ab9d"; }
     isClickable(row) { return isClickable(row); }
     openRow(row) {
@@ -776,7 +776,7 @@ export class GaugeSemi extends Component {
                 <span t-esc="props.comp.data.delta"/>
             </div>
         </div>`;
-    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?"];
+    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?", "onOpenComponent?"];
     get trendCls() { return trendClass(this.props.comp.data.trend); }
     get cardClass() {
         return {
@@ -841,7 +841,7 @@ export class KpiGaugeCard extends Component {
                 </div>
             </div>
         </div>`;
-    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?"];
+    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?", "onOpenComponent?"];
     get cardClass() {
         return {
             "o_baha_clickable": isClickable(this.props.comp.data),
@@ -891,7 +891,7 @@ export class BudgetSplitBar extends Component {
                 <span><i class="o_baha_dot o_baha_dot--rem"/> متبقي</span>
             </div>
         </div>`;
-    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?"];
+    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?", "onOpenComponent?"];
     get cardClass() {
         return {
             "o_baha_clickable": isClickable(this.props.comp.data),
@@ -938,7 +938,7 @@ export class BarChartHPlanned extends Component {
                 </t>
             </div>
         </div>`;
-    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?"];
+    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?", "onOpenComponent?"];
     get colorAccent() { return this.props.colors.accent || "#00ab9d"; }
     isClickable(item) { return isClickable(item); }
     clickableClass(item) { return clickableClass(item); }
@@ -981,7 +981,7 @@ export class GoalsList extends Component {
                 </div>
             </t>
         </div>`;
-    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?"];
+    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?", "onOpenComponent?"];
     isClickable(item) { return isClickable(item); }
     clickableClass(item) { return clickableClass(item); }
     openItem(item) { dispatchItemClick(item, this.props.onOpenRecord, this.props.onOpenDrilldown); }
@@ -1033,7 +1033,7 @@ export class ListCards extends Component {
                 </div>
             </t>
         </div>`;
-    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?"];
+    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?", "onOpenComponent?"];
     isClickable(item) { return isClickable(item); }
     clickableClass(item) { return clickableClass(item); }
     openItem(item) { dispatchItemClick(item, this.props.onOpenRecord, this.props.onOpenDrilldown); }
@@ -1082,7 +1082,7 @@ export class AlertsPanel extends Component {
                 </div>
             </t>
         </div>`;
-    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?"];
+    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?", "onOpenComponent?"];
     setup() {
         this.state = useState({ openGroups: {} });
     }
@@ -1152,7 +1152,7 @@ export class GaugeGrid extends Component {
                 </t>
             </div>
         </div>`;
-    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?"];
+    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?", "onOpenComponent?"];
     trendClass(dir) { return trendClass(dir); }
     isClickable(item) { return isClickable(item); }
     clickableClass(item, extra = "") { return clickableClass(item, extra); }
@@ -1212,7 +1212,7 @@ export class StatGrid extends Component {
                 </t>
             </div>
         </div>`;
-    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?"];
+    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?", "onOpenComponent?"];
     statusOf(s) { return s.status || (s.delta_dir === "down" ? "bad" : "ok"); }
     numHead(v) { const s = String(v == null ? "" : v); const i = s.indexOf("/"); return i >= 0 ? s.slice(0, i) : s; }
     numTail(v) { const s = String(v == null ? "" : v); const i = s.indexOf("/"); return i >= 0 ? s.slice(i) : ""; }
@@ -1273,7 +1273,7 @@ export class KpiGrid extends Component {
                 </t>
             </div>
         </div>`;
-    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?"];
+    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?", "onOpenComponent?"];
     isClickable(item) { return isClickable(item); }
     clickableClass(item, extra = "") { return clickableClass(item, extra); }
     openItem(item) { dispatchItemClick(item, this.props.onOpenRecord, this.props.onOpenDrilldown); }
@@ -1338,7 +1338,7 @@ export class SemiGrid extends Component {
                 </t>
             </div>
         </div>`;
-    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?"];
+    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?", "onOpenComponent?"];
     trendClass(dir) { return trendClass(dir); }
     isClickable(item) { return isClickable(item); }
     clickableClass(item, extra = "") { return clickableClass(item, extra); }
