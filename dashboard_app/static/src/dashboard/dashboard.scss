@@ -1282,8 +1282,13 @@ body.o_baha_dash_active {
 // behind them and two records can be compared side by side.
 .o_baha_float {
     position: fixed;
-    width: min(460px, calc(100vw - 32px));
-    max-height: min(70vh, 640px);
+    // NB: no CSS min()/max() here. SCSS resolves those as its own numeric
+    // functions before the browser ever sees them, so min(460px, calc(...))
+    // fails the whole stylesheet to compile. Plain width + max-* does the
+    // same job and survives the preprocessor.
+    width: 460px;
+    max-width: calc(100vw - 32px);
+    max-height: 70vh;
     display: flex;
     flex-direction: column;
     direction: rtl;
