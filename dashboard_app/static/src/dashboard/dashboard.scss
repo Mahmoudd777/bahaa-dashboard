@@ -390,6 +390,9 @@ body.o_baha_dash_active {
     transition: opacity 0.15s ease, color 0.15s ease;
 
     &:hover { opacity: 1; color: var(--dash-primary, #5c4b43); }
+    // Mouse users get no ring; keyboard users still do. Without the explicit
+    // :focus reset, clicking leaves a box sitting on the card afterwards.
+    &:focus { outline: none; }
     &:focus-visible {
         outline: 2px solid var(--dash-accent, #00ab9d);
         outline-offset: 3px;
@@ -1688,6 +1691,7 @@ body.o_baha_dash_active {
         display: flex; align-items: center; justify-content: space-between; gap: 12px;
         cursor: pointer;
         border-radius: 4px;
+        &:focus { outline: none; }
         &:focus-visible {
             outline: 2px solid var(--dash-accent, #00ab9d);
             outline-offset: 4px;
@@ -1765,6 +1769,7 @@ body.o_baha_dash_active {
     &:hover {
         background: rgba(0, 171, 157, 0.07) !important;
     }
+    &:focus { outline: none; }
     &:focus-visible {
         outline: 2px solid var(--dash-accent, #00ab9d);
         outline-offset: -2px;
@@ -1779,6 +1784,7 @@ body.o_baha_dash_active {
     &:hover {
         background: rgba(0, 171, 157, 0.06);
     }
+    &:focus { outline: none; }
     &:focus-visible {
         outline: 2px solid var(--dash-accent, #00ab9d);
         outline-offset: 2px;
