@@ -111,7 +111,9 @@ export class Dashboard extends Component {
                                          widgetFor.bind="widgetFor"
                                          propsFor.bind="propsFor"
                                          onChange.bind="onGsChange"
-                                         onRemove.bind="onRemoveUnit"/>
+                                         onRemove.bind="onRemoveUnit"
+                                         moveTargets="moveTargets"
+                                         onMove.bind="onMoveUnitToSection"/>
                     </t>
                     <t t-else="">
                         <UnitGrid units="activeUnits" widgetFor.bind="widgetFor" propsFor.bind="propsFor"/>
@@ -332,6 +334,8 @@ export class Dashboard extends Component {
         });
         this._editLayoutDraft = null;
         this._editDraftsBySection = {};
+        // Cards queued to change page on the next save: {componentId: sectionId}.
+        this._pendingMoves = {};
         // Stacking counter for floating record panels. Starts above the modal
         // layer (2000) so a record always opens in front of the wizard that
         // spawned it — the bug that made "فتح" look like it did nothing.
@@ -668,6 +672,7 @@ export class Dashboard extends Component {
         const { units: normalized, repaired } = normalizeEditUnitsWithMeta(this.activeUnits);
         this._editDraftsBySection = {};
         this._editSectionVis = {};
+        this._pendingMoves = {};
         this.state.addPanelOpen = false;
         this.state.editing = true;
         this.state.editDirty = repaired;
@@ -730,6 +735,7 @@ export class Dashboard extends Component {
         this._editLayoutDraft = null;
         this._editDraftsBySection = {};
         this._editSectionVis = {};
+        this._pendingMoves = {};
         document.body.classList.remove("o_baha_edit_mode");
     }
 
@@ -817,6 +823,48 @@ export class Dashboard extends Component {
         this.state.draftUnits = this._editLayoutDraft;
         this.state.editSession = Date.now();     // force GridstackEditor remount
         this._syncGlobalEditDirty();
+    }
+
+    /** Other tabs this card could be moved to (everything but the current). */
+    get moveTargets() {
+        const current = this.activeSection?.id;
+        return this.tabs
+            .filter((t) => t.id && t.id !== current)
+            .map((t) => ({ id: t.id, name: t.name }));
+    }
+
+    /** Move a card to another page. Seeded components are pinned to whichever
+     *  page the seed put them on, which is only right until someone disagrees
+     *  — so placement is the user's to change, not ours to fix by re-seeding.
+     *
+     *  The card leaves this tab's draft immediately and is queued for a
+     *  section_id change at save time. It is NOT added to the target's draft:
+     *  that draft may not be loaded, and re-fetching after the save is what
+     *  gives the target its authoritative geometry. */
+    onMoveUnitToSection(key, targetSectionId) {
+        const sectionId = this.activeSection?.id;
+        const draft = this._editDraftsBySection[sectionId];
+        if (!draft || !targetSectionId || targetSectionId === sectionId) {
+            return;
+        }
+        const idx = draft.units.findIndex((u) => u.key === key);
+        if (idx < 0) {
+            return;
+        }
+        const [unit] = draft.units.splice(idx, 1);
+        for (const id of this._unitCompIds(unit)) {
+            this._pendingMoves[id] = targetSectionId;
+        }
+        draft.dirty = true;
+        this._editLayoutDraft = cloneUnits(draft.units);
+        this.state.draftUnits = this._editLayoutDraft;
+        this.state.editSession = Date.now();     // force GridstackEditor remount
+        this._syncGlobalEditDirty();
+        const target = this.tabs.find((t) => t.id === targetSectionId);
+        this.notification.add(
+            _t('سيتم نقل البطاقة إلى "%s" عند حفظ التخطيط', (target && target.name) || ""),
+            { type: "info" }
+        );
     }
 
     /** Re-add a previously removed card (+ in the add panel). */
@@ -919,8 +967,10 @@ export class Dashboard extends Component {
                     items: unitsToSaveItems(this._editDraftsBySection[tab.id].units),
                 }));
             const visibility = this._collectVisibilityChanges();
+            const moves = { ...this._pendingMoves };
             const hasVis = Object.keys(visibility.components).length || Object.keys(visibility.sections).length;
-            if (!sections.length && !hasVis) {
+            const hasMoves = Object.keys(moves).length;
+            if (!sections.length && !hasVis && !hasMoves) {
                 return;
             }
             await rpc("/web/dataset/call_kw/dashboard.dashboard/save_layout_edits", {
@@ -930,9 +980,11 @@ export class Dashboard extends Component {
                 kwargs: {
                     layout_version: this.state.layout.layout_version || null,
                     visibility,
+                    moves,
                     target_user_id: this.editUserId || null,
                 },
             });
+            this._pendingMoves = {};
             for (const section of sections) {
                 const draft = this._editDraftsBySection[section.section_id];
                 if (draft) {

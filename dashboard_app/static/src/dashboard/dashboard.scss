@@ -2520,6 +2520,75 @@ body.o_baha_dash_active {
 }
 .o_baha_gs_item:hover .o_baha_gs_remove { opacity: 1; }
 
+// ---- Move a card to another page (edit mode) ----
+// Sits beside the × and appears on the same hover, so the two card actions
+// read as one pair rather than the move being hidden somewhere else.
+.o_baha_gs_movewrap {
+    position: absolute;
+    top: 6px;
+    inset-inline-end: 36px;
+    z-index: 9;
+}
+.o_baha_gs_move {
+    width: 24px;
+    height: 24px;
+    border: 0;
+    border-radius: 50%;
+    background: var(--dash-primary, #5c4b43);
+    color: #fff;
+    font-size: 11px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.15s ease, filter 0.15s ease;
+
+    &:hover { filter: brightness(1.15); }
+}
+.o_baha_gs_item:hover .o_baha_gs_move { opacity: 1; }
+// Keep it visible while its menu is open, or the menu looks unanchored.
+.o_baha_gs_movewrap:has(.o_baha_gs_movemenu) .o_baha_gs_move { opacity: 1; }
+
+.o_baha_gs_movemenu {
+    position: absolute;
+    top: calc(100% + 6px);
+    inset-inline-end: 0;
+    min-width: 210px;
+    padding: 6px;
+    background: #fff;
+    border: 1px solid var(--dash-border, #d5d7da);
+    border-radius: 10px;
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.16);
+    text-align: right;
+    z-index: 20;
+
+    &__title {
+        padding: 4px 8px 6px;
+        color: var(--dash-text-tertiary, #717680);
+        font-size: 11px;
+        font-weight: 800;
+    }
+}
+.o_baha_gs_moveitem {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 7px 9px;
+    border: 0;
+    border-radius: 6px;
+    background: none;
+    color: var(--dash-text-secondary, #414651);
+    font-size: 12px;
+    font-weight: 600;
+    text-align: right;
+    cursor: pointer;
+
+    &:hover { background: rgba(0, 171, 157, 0.09); color: var(--dash-teal, #00786e); }
+    i { opacity: 0.6; }
+}
+
 // remove (×) on a tab, edit mode only
 .o_baha_tab__remove {
     margin-inline-start: 6px;

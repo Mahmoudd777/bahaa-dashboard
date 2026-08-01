@@ -1007,7 +1007,8 @@ class DashboardDashboard(models.Model):
         return applied
 
     @api.model
-    def save_layout_edits(self, dashboard_id, sections, layout_version=None, visibility=None, target_user_id=None):
+    def save_layout_edits(self, dashboard_id, sections, layout_version=None, visibility=None,
+                          moves=None, target_user_id=None):
         """Persist component order and grid layout from dashboard edit mode.
 
         ``sections`` is a list of ``{"section_id": id, "items": [...]}``
@@ -1076,7 +1077,24 @@ class DashboardDashboard(models.Model):
                     sec.sudo().visible = bool(vis)
             self.env.flush_all()
 
-        if not sections and not visibility:
+        # Cards moved to another page. Applied before the geometry pass so a
+        # component that just arrived is already on its new section. Both the
+        # source and target section must belong to THIS dashboard — a move is
+        # a rearrangement, never a way to reach another dashboard's pages.
+        if moves:
+            for cid, target_sid in moves.items():
+                comp = Component.browse(int(cid)).exists()
+                target = Section.sudo().browse(int(target_sid)).exists()
+                if not comp or not target:
+                    continue
+                if comp.section_id.dashboard_id != dashboard or target.dashboard_id != dashboard:
+                    raise UserError("Invalid dashboard section for move.")
+                if comp.component_type == "banner":
+                    continue          # the banner is page furniture, not a card
+                comp.section_id = target.id
+            self.env.flush_all()
+
+        if not sections and not visibility and not moves:
             raise UserError("No layout changes to save.")
 
         saved = 0
