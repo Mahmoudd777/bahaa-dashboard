@@ -143,6 +143,7 @@ export class ComponentDetailModal extends Component {
                         <t t-foreach="filledSections" t-as="section" t-key="section_index">
                             <section class="o_baha_detail_table o_baha_lines_table">
                                 <h4 t-if="filledSections.length > 1" t-esc="section.title"/>
+                                <div class="o_baha_detail_table__scroll">
                                 <table>
                                     <thead>
                                         <tr>
@@ -170,6 +171,7 @@ export class ComponentDetailModal extends Component {
                                         </t>
                                     </tbody>
                                 </table>
+                                </div>
                             </section>
                         </t>
                     </t>

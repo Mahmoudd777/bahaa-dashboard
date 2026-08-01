@@ -39,6 +39,7 @@ export class AggregateListModal extends Component {
                     </t>
                     <t t-else="">
                         <section class="o_baha_detail_table o_baha_lines_table">
+                            <div class="o_baha_detail_table__scroll">
                             <table>
                                 <thead>
                                     <tr>
@@ -65,6 +66,7 @@ export class AggregateListModal extends Component {
                                     </t>
                                 </tbody>
                             </table>
+                            </div>
                         </section>
                         <div t-if="detail.truncated" class="o_baha_lines_modal__hint">
                             تم عرض أول 80 سجل فقط.

@@ -93,6 +93,7 @@ export class FloatingDetailPanel extends Component {
                     <section t-if="detail.table and detail.table.rows and detail.table.rows.length"
                              class="o_baha_detail_table">
                         <h4 t-esc="detail.table.title"/>
+                        <div class="o_baha_detail_table__scroll">
                         <table>
                             <thead>
                                 <tr>
@@ -111,6 +112,7 @@ export class FloatingDetailPanel extends Component {
                                 </t>
                             </tbody>
                         </table>
+                        </div>
                     </section>
                 </t>
             </div>

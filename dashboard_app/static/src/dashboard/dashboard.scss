@@ -418,12 +418,36 @@ body.o_baha_dash_active {
 
 // Column headers pinned to the top of their own scroll area.
 .o_baha_card__scroll table thead th,
-.o_baha_detail_table table thead th {
+.o_baha_detail_table__scroll table thead th {
     position: sticky;
     top: 0;
     z-index: 2;
     // Must be opaque, or rows show through as they pass underneath.
     background: #fafbfc;
+}
+
+// Same rule inside the wizards: the section title ("آخر تقارير التقدم") and
+// the column headers hold still while only the rows move. Without the
+// max-height the table just grows and the whole wizard body scrolls instead,
+// carrying the headings off-screen with it.
+.o_baha_detail_table {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+
+    > h4 { flex: 0 0 auto; }
+}
+.o_baha_detail_table__scroll {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: 320px;
+    overflow-y: auto;
+    overflow-x: auto;   // wide tables still scroll sideways, by design
+}
+// The expand wizard is a reading view whose table IS the content, so it gets
+// the room rather than being boxed into the same short window.
+.o_baha_lines_table > .o_baha_detail_table__scroll {
+    max-height: 58vh;
 }
 
 // ---- Card header "expand" control ----
@@ -1245,7 +1269,8 @@ body.o_baha_dash_active {
 }
 
 .o_baha_detail_table {
-    overflow: auto;
+    // NB: no `overflow` here. Scrolling belongs to the inner __scroll wrapper,
+    // otherwise the section title scrolls away with the rows it labels.
 
     // Sized for reading, not for fitting: these tables are the numbers people
     // actually came to look at. Horizontal scrolling is fine — cramming the
@@ -1266,11 +1291,6 @@ body.o_baha_dash_active {
     th {
         color: var(--dash-text-secondary, #414651);
         font-weight: 800;
-        background: rgba(255, 255, 255, 0.62);
-        // Header stays put while the rows scroll under it.
-        position: sticky;
-        top: 0;
-        z-index: 1;
     }
     td {
         color: var(--dash-text-primary, #181d27);
