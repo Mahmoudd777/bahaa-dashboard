@@ -695,6 +695,7 @@ export class DataTable extends Component {
     static template = xml`
         <div class="o_baha_card o_baha_table">
             <div class="o_baha_card__head" t-if="props.comp.title and !props.comp.data.hide_head"><span class="o_baha_card__title" t-esc="props.comp.title"/><div class="o_baha_card__tools"><span class="o_baha_legend"><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>علي المسار</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>متأخر</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر جدا</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--none"/>لم يتم القياس</span></span><button t-if="props.onOpenComponent" class="o_baha_expand_btn" title="عرض كامل البيانات" t-on-click="() => props.onOpenComponent(props.comp)"><i class="fa fa-expand"/></button></div></div>
+            <div class="o_baha_card__scroll">
             <table>
                 <thead>
                     <tr>
@@ -744,6 +745,7 @@ export class DataTable extends Component {
                     </t>
                 </tbody>
             </table>
+            </div>
         </div>`;
     static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?", "onOpenComponent?"];
     get colorAccent() { return this.props.colors.accent || "#00ab9d"; }
@@ -966,6 +968,7 @@ export class GoalsList extends Component {
     static template = xml`
         <div class="o_baha_card o_baha_goals">
             <div class="o_baha_card__head" t-if="props.comp.title and !props.comp.data.hide_head"><span class="o_baha_card__title" t-esc="props.comp.title"/><div class="o_baha_card__tools"><span class="o_baha_legend"><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>علي المسار</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>متأخر</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر جدا</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--none"/>لم يتم القياس</span></span><button t-if="props.onOpenComponent" class="o_baha_expand_btn" title="عرض كامل البيانات" t-on-click="() => props.onOpenComponent(props.comp)"><i class="fa fa-expand"/></button></div></div>
+            <div class="o_baha_card__scroll">
             <t t-foreach="props.comp.data.items or []" t-as="g" t-key="g_index">
                 <div class="o_baha_goals__row"
                      t-att-class="clickableClass(g)"
@@ -990,6 +993,7 @@ export class GoalsList extends Component {
                     </div>
                 </div>
             </t>
+            </div>
         </div>`;
     static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?", "onOpenComponent?"];
     isClickable(item) { return isClickable(item); }
@@ -1025,6 +1029,7 @@ export class ListCards extends Component {
                     </button>
                 </div>
             </div>
+            <div class="o_baha_card__scroll">
             <t t-foreach="props.comp.data.items or []" t-as="it" t-key="it_index">
                 <div class="o_baha_listcards__item"
                      t-attf-class="o_baha_listcards__item--{{it.level or 'mid'}} {{clickableClass(it)}}"
@@ -1041,6 +1046,7 @@ export class ListCards extends Component {
                     <div t-if="it.decision" class="o_baha_listcards__decision" t-esc="it.decision"/>
                 </div>
             </t>
+            </div>
         </div>`;
     static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?", "onOpenComponent?"];
     isClickable(item) { return isClickable(item); }
@@ -1056,6 +1062,7 @@ export class AlertsPanel extends Component {
     static template = xml`
         <div class="o_baha_card o_baha_alerts">
             <div class="o_baha_card__head" t-if="props.comp.title and !props.comp.data.hide_head"><span class="o_baha_card__title" t-esc="props.comp.title"/><div class="o_baha_card__tools"><span class="o_baha_legend"><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>علي المسار</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>متأخر</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر جدا</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--none"/>لم يتم القياس</span></span><button t-if="props.onOpenComponent" class="o_baha_expand_btn" title="عرض كامل البيانات" t-on-click="() => props.onOpenComponent(props.comp)"><i class="fa fa-expand"/></button></div></div>
+            <div class="o_baha_card__scroll">
             <t t-foreach="props.comp.data.groups or []" t-as="grp" t-key="grp_index">
                 <div class="o_baha_alerts__group"
                      t-att-class="{ 'o_baha_alerts__group--open': this.isGroupOpen(grp_index) }">
@@ -1090,6 +1097,7 @@ export class AlertsPanel extends Component {
                     </div>
                 </div>
             </t>
+            </div>
         </div>`;
     static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?", "onOpenComponent?"];
     setup() {

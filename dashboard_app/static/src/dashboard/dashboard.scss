@@ -380,6 +380,52 @@ body.o_baha_dash_active {
     background: #fff;
 }
 
+// ============================================================
+//  Scrolling cards: header stays, records move
+// ============================================================
+// One rule for every scrollable card. The card is a flex column that clips;
+// its header is fixed height and never scrolls; `__scroll` takes the rest and
+// is the only thing that moves. Column headers inside it stay pinned via
+// sticky, so a reader scrolling row 40 can still tell which column is which.
+//
+// This replaces putting `overflow-y: auto` on the card itself, which scrolled
+// the title and the legend away with the data — you lost the labels exactly
+// when the list got long enough to need them.
+.o_baha_card,
+.o_baha_panel {
+    &.o_baha_table,
+    &.o_baha_goals,
+    &.o_baha_listcards,
+    &.o_baha_alerts {
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+}
+
+.o_baha_card__head,
+.o_baha_listcards__head,
+.o_baha_panel__head {
+    flex: 0 0 auto;
+}
+
+.o_baha_card__scroll {
+    flex: 1 1 auto;
+    min-height: 0;          // without this a flex child refuses to shrink
+    overflow-y: auto;
+    overflow-x: hidden;     // overflow-y alone promotes overflow-x to auto
+}
+
+// Column headers pinned to the top of their own scroll area.
+.o_baha_card__scroll table thead th,
+.o_baha_detail_table table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    // Must be opaque, or rows show through as they pass underneath.
+    background: #fafbfc;
+}
+
 // ---- Card header "expand" control ----
 // A real <button> (not an <i>) so it is keyboard-reachable and activates on
 // Enter/Space for free; styled back down to look like the bare icon it replaced.
@@ -972,9 +1018,6 @@ body.o_baha_dash_active {
 
 // ---- Data table ----
 .o_baha_table {
-    // Content taller than the fixed card height (--rows) scrolls instead of
-    // being clipped invisibly by the ancestor .o_baha_dash__cell's overflow:hidden.
-    overflow-y: auto;
     table { width: 100%; border-collapse: collapse; font-size: 13px; }
     th, td { padding: 10px 12px; text-align: right; border-bottom: 1px solid var(--dash-border); }
     th { color: var(--dash-text-secondary); font-weight: 700; background: #fafbfc; }
@@ -1768,8 +1811,6 @@ body.o_baha_dash_active {
 
 // goals list
 .o_baha_goals {
-    overflow-y: auto;
-    overflow-x: hidden;   // never a sideways bar: overflow-y alone promotes overflow-x to auto
     &__row {
         display: flex; align-items: center; gap: 12px;
         background: rgba(243, 243, 247, 0.2);
@@ -1793,8 +1834,6 @@ body.o_baha_dash_active {
 
 // list cards (risk / actions)
 .o_baha_listcards {
-    overflow-y: auto;
-    overflow-x: hidden;   // never a sideways bar: overflow-y alone promotes overflow-x to auto
     &__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
     &__headmain { display: flex; align-items: center; gap: 8px; }
     &__count { background: var(--dash-bg-tertiary); border-radius: 999px; padding: 1px 9px; font-size: 12px; font-weight: 700; }
@@ -1810,11 +1849,8 @@ body.o_baha_dash_active {
 
 // alerts panel
 .o_baha_alerts {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    overflow-y: auto;
-    overflow-x: hidden;   // never a sideways bar: overflow-y alone promotes overflow-x to auto
+    // Groups are spaced by the scroll container now, not the card.
+    .o_baha_card__scroll { display: flex; flex-direction: column; gap: 16px; }
     &__group {
         background: rgba(243, 243, 247, 0.2);
         border: 1px solid #E8E8E8;
