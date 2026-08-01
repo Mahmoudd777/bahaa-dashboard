@@ -160,16 +160,57 @@ def pillars_bar(comp, cfg, env):
     return cfg
 
 
+def _program_spend(env, program):
+    """(spent, total) for a programme, summed from its initiatives.
+
+    albaha.program carries only a total budget, so consumption has to come
+    from the initiatives beneath it. Falls back to the programme's own total
+    when the initiatives carry no budget of their own.
+    """
+    inits = _recs(env, "albaha.initiative", domain=[("program_id", "=", program.id)])
+    spent = sum(inits.mapped("budget_consumed_sar_m")) if inits else 0.0
+    total = sum(inits.mapped("budget_total_sar_m")) if inits else 0.0
+    return spent, (total or program.total_budget_sar_m or 0.0)
+
+
 def programs_planned(comp, cfg, env):
     flt = _flt(env)
     items = []
     for p in _recs(env, "albaha.program", order="id"):
         pct, rag = program_at(env, p, flt)
+        # Was printing total_budget twice — every programme read "246.3/246.3",
+        # i.e. fully spent, for all five. Spend now comes from the initiatives.
+        spent, total = _program_spend(env, p)
         items.append({"label": p.name, "value": int(round(pct)),
-                      "budget": "%s/%s" % (fmt_num(p.total_budget_sar_m), fmt_num(p.total_budget_sar_m)),
+                      "budget": "%s/%s" % (fmt_num(spent), fmt_num(total)),
                       "color": rag_color(rag),
                       "record": _record("albaha.program", p)})
     cfg["items"] = items
+    return cfg
+
+
+def budget_variance(comp, cfg, env):
+    """Budget consumed per programme.
+
+    Previously this component shared `programs_planned`, so "انحراف الميزانية"
+    and "تقدم البرامج الاستراتيجية" rendered byte-identical bars under two
+    different names — one of the duplicates the client flagged. This measures
+    money, not delivery: the bar is the share of budget consumed, and it turns
+    red past 100% because overspend is the point of the chart.
+    """
+    items = []
+    for p in _recs(env, "albaha.program", order="id"):
+        spent, total = _program_spend(env, p)
+        used = int(round(spent / total * 100)) if total else 0
+        items.append({
+            "label": p.name,
+            "value": min(used, 100),
+            "budget": "%s/%s" % (fmt_num(spent), fmt_num(total)),
+            "color": rag_color("red" if used > 100 else "green" if used <= 90 else "amber"),
+            "record": _record("albaha.program", p),
+        })
+    cfg["items"] = items
+    cfg.setdefault("max", 100)
     return cfg
 
 
@@ -302,9 +343,16 @@ def initiatives_table(comp, cfg, env):
     # Headers defined beside the cells that fill them — see kpi_table.
     cfg["columns"] = ["المبادرة", "البرنامج", "التقدم", "الميزانية",
                       "تاريخ الاكتمال الأساسي", "تاريخ الاكتمال المتوقع"]
+    # `attention_only` narrows the table to initiatives that are behind.
+    # Without it the summary table and the full one listed all 19 rows each,
+    # stacked on the same page — two identical tables under different names.
+    # The summary now earns its place by answering "what needs attention".
+    attention_only = bool(cfg.get("attention_only"))
     rows = []
     for i in _recs(env, "albaha.initiative", order="id"):
         pct, lvl = initiative_at(i, flt)
+        if attention_only and lvl == "green":
+            continue
         slipped = bool(i.forecast_end_date and i.end_date and i.forecast_end_date > i.end_date)
         rows.append({"cells": [
             i.name,
@@ -661,6 +709,7 @@ PROVIDERS = {
     "objectives_gauges": objectives_gauges,
     "pillars_bar": pillars_bar,
     "programs_planned": programs_planned,
+    "budget_variance": budget_variance,
     "goals_list": goals_list,
     "kpi_forecast_bar": kpi_forecast_bar,
     "kpi_grid": kpi_grid,
