@@ -210,6 +210,12 @@ def kpi_table(comp, cfg, env):
     nothing about whether things are improving.
     """
     flt = _flt(env)
+    # The provider owns the column headers. Keeping them in the component's
+    # stored config let the two drift apart — headers said one thing while the
+    # cells below carried another, which is exactly how the "الجهة" column
+    # ended up labelling the wrong data. Defined here, they cannot disagree.
+    cfg["columns"] = ["الجودة", "اسم المؤشر", "الحالي", _target_header(flt),
+                      "التقدم", "التغير", "المصدر"]
     rows = []
     for k in _recs(env, "albaha.kpi", order="id"):
         val, tgt, ach, lvl = kpi_at(k, flt)
@@ -260,6 +266,28 @@ def _fmt_date(d):
     return d.strftime("%Y-%m-%d") if d else "—"
 
 
+def _period_label(flt):
+    """Human name for the period currently being compared against, e.g.
+    '2026-Q2'. Empty when no period is selected."""
+    mode = flt["mode"]
+    if mode == "quarter":
+        return flt["quarter"]
+    if mode == "uptodate":
+        return DF.quarter_of_date(flt["date"])
+    if mode == "period":
+        a, b = DF.quarter_of_date(flt["from"]), DF.quarter_of_date(flt["to"])
+        return a if a == b else "%s ← %s" % (b, a)
+    return ""
+
+
+def _target_header(flt):
+    """Label for the target column. Never a hard-coded year: the target shown
+    belongs to whichever period the filter selected, so the header has to say
+    which one — a fixed '2026' silently misreports every other period."""
+    label = _period_label(flt)
+    return "المستهدف (%s)" % label if label else "المستهدف"
+
+
 def initiatives_table(comp, cfg, env):
     """Columns: المبادرة | البرنامج | التقدم | الميزانية | الاكتمال الأساسي |
     الاكتمال المتوقع.
@@ -271,6 +299,9 @@ def initiatives_table(comp, cfg, env):
     seeing, and plain text buries it.
     """
     flt = _flt(env)
+    # Headers defined beside the cells that fill them — see kpi_table.
+    cfg["columns"] = ["المبادرة", "البرنامج", "التقدم", "الميزانية",
+                      "تاريخ الاكتمال الأساسي", "تاريخ الاكتمال المتوقع"]
     rows = []
     for i in _recs(env, "albaha.initiative", order="id"):
         pct, lvl = initiative_at(i, flt)
