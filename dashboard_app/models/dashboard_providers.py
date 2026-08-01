@@ -516,6 +516,14 @@ def completion_by_year(comp, cfg, env):
 
 # ---- single values -----------------------------------------------------------
 def budget_split(comp, cfg, env):
+    """The card stays a single spent/remaining bar; expanding it (⤢) breaks
+    that total down per programme.
+
+    The bar answers "how much of the budget is gone", which is only useful
+    once you can also see *where* it went. The breakdown rides in `rows` /
+    `columns`, which the card ignores and the expand wizard renders — so no
+    second on-page section is needed to carry it.
+    """
     flt = _flt(env)
     recs = _frecs(env, "albaha.budget", "period_year_month", "m")
     approved = sum(recs.mapped("approved_amount")) if recs else 0.0
@@ -525,6 +533,30 @@ def budget_split(comp, cfg, env):
     cfg["spent_label"] = "%d%% (%s)" % (pct, fmt_num(spent))
     cfg["remaining_label"] = "%d%% (%s)" % (100 - pct, fmt_num(approved - spent))
     cfg["aggregate"] = _aggregate("budget_records", "سجلات الموازنة")
+
+    # Per-programme spend, for the expand wizard.
+    per_prog = defaultdict(lambda: {"approved": 0.0, "spent": 0.0})
+    for b in recs:
+        prog = b.project_id.program_id
+        key = prog.name if prog else "غير مرتبط ببرنامج"
+        per_prog[key]["approved"] += b.approved_amount or 0.0
+        per_prog[key]["spent"] += b.actual_spent or 0.0
+
+    cfg["columns"] = ["البرنامج", "المعتمد", "المصروف", "المتبقي", "نسبة الصرف"]
+    rows = []
+    for name, v in sorted(per_prog.items(), key=lambda kv: -kv[1]["approved"]):
+        used = int(round(v["spent"] / v["approved"] * 100)) if v["approved"] else 0
+        rows.append({"cells": [
+            name,
+            fmt_num(v["approved"]),
+            fmt_num(v["spent"]),
+            fmt_num(v["approved"] - v["spent"]),
+            # Over-spend is the thing worth catching, so colour by it rather
+            # than showing a bare percentage.
+            {"type": "progress", "value": min(used, 100),
+             "color": rag_color("red" if used > 100 else "green" if used <= 90 else "amber")},
+        ], "status": "ok"})
+    cfg["rows"] = rows
     return cfg
 
 
