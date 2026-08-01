@@ -202,14 +202,26 @@ def kpi_grid(comp, cfg, env):
 
 
 def kpi_table(comp, cfg, env):
+    """Columns: الجودة | اسم المؤشر | الحالي | المستهدف | التقدم | التغير | المصدر.
+
+    The التغير column answers the same question the strategic objectives
+    already answered — is this moving the right way — by comparing the last
+    two reported periods. A percentage with no direction beside it says
+    nothing about whether things are improving.
+    """
     flt = _flt(env)
     rows = []
     for k in _recs(env, "albaha.kpi", order="id"):
         val, tgt, ach, lvl = kpi_at(k, flt)
+        tdir, tdelta = trend_delta_from_series(k.value_ids, "actual_value")
+        # 'up' means the number rose. For a lower-is-better KPI a rise is bad,
+        # so the arrow follows the value while the colour follows the meaning.
+        good = (tdir == "up") if k.direction != "down" else (tdir == "down")
         rows.append({"cells": [
             {"type": "badge", "label": QUALITY_AR.get(lvl, ""), "level": QUALITY_LEVEL.get(lvl, "none")},
             k.name, fmt_num(val), fmt_num(tgt),
             {"type": "progress", "value": int(round(ach)), "color": rag_color(lvl)},
+            {"type": "trend", "label": tdelta, "dir": tdir, "good": good},
             {"type": "tag", "label": k.code or ""},
         ], "status": "ok", "record": {"model": "albaha.kpi", "id": k.id}})
     cfg["rows"] = rows
@@ -244,17 +256,33 @@ def regional_semi(comp, cfg, env):
 
 
 # ---- tables / cards ----------------------------------------------------------
+def _fmt_date(d):
+    return d.strftime("%Y-%m-%d") if d else "—"
+
+
 def initiatives_table(comp, cfg, env):
+    """Columns: المبادرة | البرنامج | التقدم | الميزانية | الاكتمال الأساسي |
+    الاكتمال المتوقع.
+
+    The programme already has its own column, so the initiative name is shown
+    without the " — <programme>" suffix it carries in the data. The expected
+    completion date is tagged red when it has slipped past the baseline: a
+    date that quietly sits later than its commitment is the thing worth
+    seeing, and plain text buries it.
+    """
     flt = _flt(env)
     rows = []
     for i in _recs(env, "albaha.initiative", order="id"):
         pct, lvl = initiative_at(i, flt)
+        slipped = bool(i.forecast_end_date and i.end_date and i.forecast_end_date > i.end_date)
         rows.append({"cells": [
             i.name,
             {"type": "tag", "label": i.program_id.name or ""},
             {"type": "progress", "value": int(round(pct)), "color": rag_color(lvl)},
             "%s/%s" % (fmt_num(i.budget_consumed_sar_m), fmt_num(i.budget_total_sar_m)),
-            i.owner_id.name or "",
+            _fmt_date(i.end_date),
+            {"type": "tag", "label": _fmt_date(i.forecast_end_date),
+             "color": rag_color("red") if slipped else rag_color("green")},
         ], "status": "ok", "record": _record("albaha.initiative", i)})
     cfg["rows"] = rows
     return cfg

@@ -727,6 +727,16 @@ export class DataTable extends Component {
                                     <t t-elif="cell and cell.type === 'tag'">
                                         <span class="o_baha_tag" t-attf-style="{{cell.color ? 'color:'+cell.color+';border-color:'+cell.color : ''}}" t-esc="cell.label"/>
                                     </t>
+                                    <t t-elif="cell and cell.type === 'trend'">
+                                        <span t-if="cell.label" class="o_baha_trend"
+                                              t-attf-class="o_baha_trend--{{cell.good ? 'up' : 'down'}}">
+                                            <span class="o_baha_trend__pct" t-esc="cell.label"/>
+                                            <span class="o_baha_trend__badge">
+                                                <i t-attf-class="fa {{cell.dir === 'down' ? 'fa-arrow-down' : 'fa-arrow-up'}}"/>
+                                            </span>
+                                        </span>
+                                        <span t-else="">—</span>
+                                    </t>
                                     <t t-else=""><span t-esc="cell"/></t>
                                 </td>
                             </t>
@@ -1112,7 +1122,10 @@ export class GaugeGrid extends Component {
             <div class="o_baha_panel__head" t-if="!props.comp.data.hide_head">
                 <span class="o_baha_panel__title" t-esc="props.comp.title"/>
                 <div class="o_baha_panel__headtools">
-                    <div class="o_baha_legend">
+                    <!-- hide_legend: for panels showing plain figures rather
+                         than items tracked against a target, where a RAG key
+                         implies a status the numbers do not carry. -->
+                    <div class="o_baha_legend" t-if="!props.comp.data.hide_legend">
                         <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>علي المسار</span>
                         <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>متأخر</span>
                         <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر جدا</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--none"/>لم يتم القياس</span>
@@ -1176,7 +1189,10 @@ export class StatGrid extends Component {
             <div class="o_baha_panel__head" t-if="!props.comp.data.hide_head">
                 <span class="o_baha_panel__title" t-esc="props.comp.title"/>
                 <div class="o_baha_panel__headtools">
-                    <div class="o_baha_legend">
+                    <!-- hide_legend: for panels showing plain figures rather
+                         than items tracked against a target, where a RAG key
+                         implies a status the numbers do not carry. -->
+                    <div class="o_baha_legend" t-if="!props.comp.data.hide_legend">
                         <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>علي المسار</span>
                         <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>متأخر</span>
                         <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر جدا</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--none"/>لم يتم القياس</span>
@@ -1231,7 +1247,10 @@ export class KpiGrid extends Component {
             <div class="o_baha_panel__head" t-if="!props.comp.data.hide_head">
                 <span class="o_baha_panel__title" t-esc="props.comp.title"/>
                 <div class="o_baha_panel__headtools">
-                    <div class="o_baha_legend">
+                    <!-- hide_legend: for panels showing plain figures rather
+                         than items tracked against a target, where a RAG key
+                         implies a status the numbers do not carry. -->
+                    <div class="o_baha_legend" t-if="!props.comp.data.hide_legend">
                         <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>علي المسار</span>
                         <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>متأخر</span>
                         <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر جدا</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--none"/>لم يتم القياس</span>
@@ -1295,7 +1314,10 @@ export class SemiGrid extends Component {
             <div class="o_baha_panel__head" t-if="!props.comp.data.hide_head">
                 <span class="o_baha_panel__title" t-esc="props.comp.title"/>
                 <div class="o_baha_panel__headtools">
-                    <div class="o_baha_legend">
+                    <!-- hide_legend: for panels showing plain figures rather
+                         than items tracked against a target, where a RAG key
+                         implies a status the numbers do not carry. -->
+                    <div class="o_baha_legend" t-if="!props.comp.data.hide_legend">
                         <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>علي المسار</span>
                         <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>متأخر</span>
                         <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر جدا</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--none"/>لم يتم القياس</span>
