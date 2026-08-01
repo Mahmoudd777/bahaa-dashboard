@@ -1091,7 +1091,33 @@ class DashboardDashboard(models.Model):
                     raise UserError("Invalid dashboard section for move.")
                 if comp.component_type == "banner":
                     continue          # the banner is page furniture, not a card
-                comp.section_id = target.id
+                # Land it BELOW everything already on the target page.
+                #
+                # Carrying its old page's grid_y across meant it almost always
+                # overlapped a card already sitting there. An overlap makes the
+                # client's sanitiser treat the whole page as corrupt and reflow
+                # it — one arriving card was measured repositioning 6 of the 7
+                # cards around it, wrecking an arrangement the user had already
+                # saved. Placing it at the bottom keeps the page valid, so
+                # nothing else is touched.
+                bottom = 0
+                for sibling in target.component_ids.filtered("visible"):
+                    if sibling.id == comp.id:
+                        continue
+                    top = sibling.group_grid_y if sibling.group_key else sibling.grid_y
+                    height = sibling.group_row_span if sibling.group_key else sibling.row_span
+                    bottom = max(bottom, (top or 0) + (height or 0))
+                seqs = target.component_ids.mapped("sequence") or [0]
+                comp.write({
+                    "section_id": target.id,
+                    "grid_x": 0,
+                    "grid_y": bottom,
+                    "group_grid_x": 0 if comp.group_key else comp.group_grid_x,
+                    "group_grid_y": bottom if comp.group_key else comp.group_grid_y,
+                    # Appended, not interleaved: keeping the old sequence made
+                    # it collide with a card already on the target page.
+                    "sequence": max(seqs) + 10,
+                })
             self.env.flush_all()
 
         if not sections and not visibility and not moves:
