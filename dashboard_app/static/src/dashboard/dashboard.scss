@@ -433,16 +433,27 @@ body.o_baha_dash_active {
 .o_baha_detail_table {
     display: flex;
     flex-direction: column;
-    min-height: 0;
+    // Never squeezed by the flex body it sits in. Letting it shrink collapsed
+    // the table to about one visible row, so the wizard body scrolls instead.
+    flex: 0 0 auto;
 
     > h4 { flex: 0 0 auto; }
 }
 .o_baha_detail_table__scroll {
-    flex: 1 1 auto;
-    min-height: 0;
+    // Height follows the rows and is only capped, rather than being stretched
+    // or shrunk to fit leftover space: a short table stays short, a long one
+    // stops here and scrolls. `flex: 1 1 auto` here is what crushed it.
     max-height: 320px;
     overflow-y: auto;
     overflow-x: auto;   // wide tables still scroll sideways, by design
+}
+
+// Every block in a wizard body keeps its natural height. These bodies are
+// flex columns, so by default a tall block gets compressed to fit instead of
+// making the body scroll — which is what reduced a table to a single row.
+.o_baha_float__body > *,
+.o_baha_detail_modal__body > * {
+    flex: 0 0 auto;
 }
 // The expand wizard is a reading view whose table IS the content, so it gets
 // the room rather than being boxed into the same short window.
