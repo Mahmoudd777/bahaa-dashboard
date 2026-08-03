@@ -1665,6 +1665,90 @@ body.o_baha_dash_active {
     }
 }
 
+.o_baha_export_modal {
+    max-width: 640px;
+}
+
+.o_baha_export_period {
+    &__hint {
+        color: var(--dash-text-tertiary, #717680);
+        text-align: center;
+        padding: 24px;
+    }
+    // Reuses .o_baha_filter__opt styling but lays the three mode buttons out
+    // inline instead of as the header's absolutely-positioned dropdown.
+    &__modes {
+        position: static;
+        display: flex;
+        gap: 6px;
+        padding: 0;
+        margin-bottom: 14px;
+        background: transparent;
+        box-shadow: none;
+    }
+    &__controls {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    &__date {
+        height: 40px;
+        padding: 0 10px;
+        border: 1px solid var(--dash-border, #d5d7da);
+        border-radius: 8px;
+        font-size: 13px;
+        color: var(--dash-text-primary, #181d27);
+        background: #fff;
+    }
+    &__sep {
+        color: var(--dash-text-tertiary, #717680);
+    }
+}
+
+.o_baha_export_formats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.o_baha_export_format {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 28px 14px;
+    border: 1px solid var(--dash-border, #d5d7da);
+    border-radius: 12px;
+    background: #fff;
+    cursor: pointer;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+
+    &:hover:not(:disabled) {
+        border-color: var(--dash-accent, #00ab9d);
+        background: rgba(0, 171, 157, 0.04);
+    }
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+    &__icon {
+        font-size: 30px;
+        color: var(--dash-accent, #00ab9d);
+    }
+    &__label {
+        font-weight: 800;
+        color: var(--dash-text-primary, #181d27);
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 560px) {
+    .o_baha_export_formats {
+        grid-template-columns: 1fr;
+    }
+}
+
 .o_baha_dropzone {
     border: 2px dashed var(--dash-border, #d5d7da);
     border-radius: 12px;

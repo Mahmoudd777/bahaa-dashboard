@@ -1,5 +1,6 @@
 import base64
 import json
+from datetime import date
 
 from odoo import http
 from odoo.http import request
@@ -121,4 +122,50 @@ class DashboardImportController(http.Controller):
         return request.make_response(
             json.dumps(payload),
             headers=[("Content-Type", "application/json")],
+        )
+
+
+class DashboardExportController(http.Controller):
+
+    @http.route("/dashboard_app/export/download", type="http", auth="user", readonly=True)
+    def export_download(self, target=None, format=None, filter=None, **kwargs):
+        """Stream a PDF or Excel export of the selected target, date-filtered."""
+        if not target:
+            return request.make_response(
+                "Missing target parameter",
+                headers=[("Content-Type", "text/plain")],
+                status=400,
+            )
+        if format not in ("xlsx", "pdf"):
+            return request.make_response(
+                "Invalid format parameter",
+                headers=[("Content-Type", "text/plain")],
+                status=400,
+            )
+        try:
+            dashboard_filter = json.loads(filter) if filter else None
+        except ValueError:
+            dashboard_filter = None
+
+        try:
+            if format == "xlsx":
+                content = request.env["dashboard.export"].build_export_xlsx(target, dashboard_filter)
+                content_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            else:
+                content = request.env["dashboard.export"].build_export_pdf(target, dashboard_filter)
+                content_type = "application/pdf"
+        except Exception as err:
+            return request.make_response(
+                str(err),
+                headers=[("Content-Type", "text/plain")],
+                status=400,
+            )
+
+        filename = "export_%s_%s.%s" % (target, date.today().strftime("%Y%m%d"), format)
+        return request.make_response(
+            content,
+            headers=[
+                ("Content-Type", content_type),
+                ("Content-Disposition", "attachment; filename=%s" % filename),
+            ],
         )

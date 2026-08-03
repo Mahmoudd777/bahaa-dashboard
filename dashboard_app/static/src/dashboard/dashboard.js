@@ -8,6 +8,7 @@ import { user } from "@web/core/user";
 import { _t } from "@web/core/l10n/translation";
 import { WIDGETS } from "./components/widgets";
 import { ImportModal } from "./components/import_modal";
+import { ExportModal } from "./components/export_modal";
 import { AdvancedImportModal } from "./components/advanced_import_modal";
 import { FloatingDetailPanel } from "./components/floating_detail_panel";
 import { AggregateListModal } from "./components/aggregate_list_modal";
@@ -251,6 +252,9 @@ export class Dashboard extends Component {
             <ImportModal t-if="state.importOpen"
                          onClose="() => this.closeImport()"
                          onDone="() => this.onImportDone()"/>
+            <ExportModal t-if="state.exportOpen"
+                         onClose="() => this.closeExport()"
+                         filter="state.filter"/>
             <AdvancedImportModal t-if="state.advancedImportOpen"
                                  onClose="() => this.closeAdvancedImport()"
                                  onConfirm="openAdvancedImport.bind(this)"/>
@@ -277,7 +281,7 @@ export class Dashboard extends Component {
             </t>
         </div>`;
 
-    static components = { ...WIDGETS, ImportModal, AdvancedImportModal, FloatingDetailPanel, AggregateListModal, ComponentDetailModal, UnitGrid, GridstackEditor };
+    static components = { ...WIDGETS, ImportModal, ExportModal, AdvancedImportModal, FloatingDetailPanel, AggregateListModal, ComponentDetailModal, UnitGrid, GridstackEditor };
     static props = ["*"];
 
     setup() {
@@ -309,6 +313,7 @@ export class Dashboard extends Component {
             layout: { sections: [], colors: {}, access: true },
             loading: true,
             importOpen: false,
+            exportOpen: false,
             advancedImportOpen: false,
             // Record details are floating windows, not a modal: several can be
             // open at once so records can be compared side by side.
@@ -385,6 +390,11 @@ export class Dashboard extends Component {
                 if (this.state.importOpen) {
                     ev.preventDefault();
                     this.closeImport();
+                    return;
+                }
+                if (this.state.exportOpen) {
+                    ev.preventDefault();
+                    this.closeExport();
                     return;
                 }
                 if (this.state.advancedImportOpen) {
@@ -1052,12 +1062,16 @@ export class Dashboard extends Component {
             }
             this.state.advancedImportOpen = true;
         } else if (action === "export") {
-            this.notification.add("التصدير غير متاح بعد", { type: "warning" });
+            this.state.exportOpen = true;
         }
     }
 
     closeImport() {
         this.state.importOpen = false;
+    }
+
+    closeExport() {
+        this.state.exportOpen = false;
     }
 
     closeAdvancedImport() {

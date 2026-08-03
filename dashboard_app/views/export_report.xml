@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Wide tables need landscape; the print view is deliberately plain
+         (logo, title, active period, generation date, one bordered table). -->
+    <record id="paperformat_export" model="report.paperformat">
+        <field name="name">تصدير لوحة التحكم - أفقي A4</field>
+        <field name="default" eval="False"/>
+        <field name="format">A4</field>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">18</field>
+        <field name="margin_bottom">18</field>
+        <field name="margin_left">10</field>
+        <field name="margin_right">10</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <template id="report_export_document">
+        <t t-call="web.html_container">
+            <!-- Reports render outside the dashboard's asset bundle, so the
+                 (deliberately minimal) styling is inlined here. -->
+            <style>
+                .o_baha_export_page { font-family: "Tajawal", "Arial", sans-serif; }
+                .o_baha_export_page__header { display: flex; align-items: center; gap: 14px; margin-bottom: 6px; }
+                .o_baha_export_page__logo { max-width: 120px; max-height: 60px; }
+                .o_baha_export_page__titles h2 { margin: 0; font-size: 20px; }
+                .o_baha_export_page__titles div { color: #5C4B43; font-size: 12px; }
+                .o_baha_export_page__meta { display: flex; justify-content: space-between; color: #414651; font-size: 11px; margin-bottom: 10px; border-bottom: 1px solid #d5d7da; padding-bottom: 8px; }
+                .o_baha_export_page__table { width: 100%; border-collapse: collapse; font-size: 10px; }
+                .o_baha_export_page__table th, .o_baha_export_page__table td { border: 1px solid #d5d7da; padding: 4px 6px; text-align: right; }
+                .o_baha_export_page__table th { background: #5C4B43; color: #fff; }
+                .o_baha_export_page__truncated { margin-top: 8px; color: #717680; font-size: 10px; }
+            </style>
+            <div class="page o_baha_export_page" dir="rtl">
+                <div class="o_baha_export_page__header">
+                    <img t-if="data.get('logo')" t-att-src="'data:image/png;base64,%s' % data['logo']"
+                         class="o_baha_export_page__logo"/>
+                    <div class="o_baha_export_page__titles">
+                        <h2 t-esc="data['target_label']"/>
+                        <div t-esc="data['company_name']"/>
+                    </div>
+                </div>
+                <div class="o_baha_export_page__meta">
+                    <span t-esc="data['filter_label']"/>
+                    <span>تاريخ الإصدار: <t t-esc="data['generated_at']"/></span>
+                </div>
+                <table class="o_baha_export_page__table">
+                    <thead>
+                        <tr>
+                            <t t-foreach="data['headers']" t-as="header" t-key="header_index">
+                                <th t-esc="header"/>
+                            </t>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="data['rows']" t-as="row" t-key="row_index">
+                            <tr>
+                                <t t-foreach="row" t-as="cell" t-key="cell_index">
+                                    <td t-esc="cell"/>
+                                </t>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+                <p t-if="data.get('truncated')" class="o_baha_export_page__truncated">
+                    تم عرض أول 5000 سجل فقط، ولم يتم تضمين بقية السجلات في هذا التقرير.
+                </p>
+            </div>
+        </t>
+    </template>
+
+    <record id="action_report_export" model="ir.actions.report">
+        <field name="name">تصدير بيانات لوحة التحكم</field>
+        <field name="model">dashboard.export</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">dashboard_app.report_export_document</field>
+        <field name="report_file">dashboard_app.report_export_document</field>
+        <field name="paperformat_id" ref="paperformat_export"/>
+    </record>
+
+</odoo>
