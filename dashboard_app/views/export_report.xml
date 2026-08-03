@@ -31,31 +31,40 @@
                 .o_baha_export_page__table { width: 100%; border-collapse: collapse; font-size: 10px; }
                 .o_baha_export_page__table th, .o_baha_export_page__table td { border: 1px solid #d5d7da; padding: 4px 6px; text-align: right; }
                 .o_baha_export_page__table th { background: #5C4B43; color: #fff; }
+                .o_baha_export_page__note { margin: 0 0 8px; color: #717680; font-size: 10px; }
                 .o_baha_export_page__truncated { margin-top: 8px; color: #717680; font-size: 10px; }
             </style>
+            <!-- report_data's keys are merged directly into the top-level QWeb
+                 context by ir.actions.report._get_rendering_context() (there is
+                 no companion report.dashboard_app.report_export_document model
+                 to nest them under a "data" key) — reference them bare. Bare
+                 names resolve to values.get(name), i.e. None when absent, so
+                 t-if guards below are belt-and-braces against a missing key
+                 ever reaching an attribute/subscript access. -->
             <div class="page o_baha_export_page" dir="rtl">
                 <div class="o_baha_export_page__header">
-                    <img t-if="data.get('logo')" t-att-src="'data:image/png;base64,%s' % data['logo']"
+                    <img t-if="logo" t-att-src="'data:image/png;base64,%s' % logo"
                          class="o_baha_export_page__logo"/>
                     <div class="o_baha_export_page__titles">
-                        <h2 t-esc="data['target_label']"/>
-                        <div t-esc="data['company_name']"/>
+                        <h2 t-if="target_label" t-esc="target_label"/>
+                        <div t-if="company_name" t-esc="company_name"/>
                     </div>
                 </div>
                 <div class="o_baha_export_page__meta">
-                    <span t-esc="data['filter_label']"/>
-                    <span>تاريخ الإصدار: <t t-esc="data['generated_at']"/></span>
+                    <span t-if="filter_label" t-esc="filter_label"/>
+                    <span t-if="generated_at">تاريخ الإصدار: <t t-esc="generated_at"/></span>
                 </div>
+                <p t-if="date_filter_note" class="o_baha_export_page__note" t-esc="date_filter_note"/>
                 <table class="o_baha_export_page__table">
                     <thead>
                         <tr>
-                            <t t-foreach="data['headers']" t-as="header" t-key="header_index">
+                            <t t-foreach="headers or []" t-as="header" t-key="header_index">
                                 <th t-esc="header"/>
                             </t>
                         </tr>
                     </thead>
                     <tbody>
-                        <t t-foreach="data['rows']" t-as="row" t-key="row_index">
+                        <t t-foreach="rows or []" t-as="row" t-key="row_index">
                             <tr>
                                 <t t-foreach="row" t-as="cell" t-key="cell_index">
                                     <td t-esc="cell"/>
@@ -64,8 +73,9 @@
                         </t>
                     </tbody>
                 </table>
-                <p t-if="data.get('truncated')" class="o_baha_export_page__truncated">
-                    تم عرض أول 5000 سجل فقط، ولم يتم تضمين بقية السجلات في هذا التقرير.
+                <p t-if="truncated" class="o_baha_export_page__truncated">
+                    تم عرض أول <t t-esc="row_limit"/> سجل فقط، ولم يتم تضمين بقية السجلات في هذا
+                    التقرير. للحصول على المجموعة الكاملة، يرجى استخدام تصدير Excel.
                 </p>
             </div>
         </t>

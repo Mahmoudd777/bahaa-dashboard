@@ -309,16 +309,20 @@ def get_target(key):
     return IMPORT_TARGETS.get(key)
 
 
-def list_targets(env, require_create=False, require_read=False):
-    """Return targets whose model is installed and optionally creatable/readable."""
+def list_targets(env, require_create=False):
+    """Return targets whose model is installed and optionally creatable.
+
+    No `require_read` gate: no albaha.* model grants anything to
+    base.group_portal, and this deployment reads dashboard data via .sudo()
+    after gating on dashboard_access, not per-model ACLs. See
+    dashboard_export.get_export_targets() / dashboard_import.get_import_targets().
+    """
     items = []
     for spec in IMPORT_TARGETS.values():
         model = spec["model"]
         if model not in env.registry.models:
             continue
         if require_create and not env[model].check_access_rights("create", raise_exception=False):
-            continue
-        if require_read and not env[model].check_access_rights("read", raise_exception=False):
             continue
         items.append({
             "key": spec["key"],

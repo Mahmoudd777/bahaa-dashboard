@@ -1,5 +1,6 @@
 import base64
 import json
+import logging
 from datetime import date
 
 from odoo import http
@@ -7,6 +8,8 @@ from odoo.http import request
 
 from odoo.addons.web.controllers.home import Home
 from odoo.addons.web.controllers.utils import is_user_internal
+
+_logger = logging.getLogger(__name__)
 
 
 class DashboardHome(Home):
@@ -128,18 +131,18 @@ class DashboardImportController(http.Controller):
 class DashboardExportController(http.Controller):
 
     @http.route("/dashboard_app/export/download", type="http", auth="user", readonly=True)
-    def export_download(self, target=None, format=None, filter=None, **kwargs):
+    def export_download(self, target=None, export_format=None, filter=None, **kwargs):
         """Stream a PDF or Excel export of the selected target, date-filtered."""
         if not target:
             return request.make_response(
                 "Missing target parameter",
-                headers=[("Content-Type", "text/plain")],
+                headers=[("Content-Type", "text/plain; charset=utf-8")],
                 status=400,
             )
-        if format not in ("xlsx", "pdf"):
+        if export_format not in ("xlsx", "pdf"):
             return request.make_response(
                 "Invalid format parameter",
-                headers=[("Content-Type", "text/plain")],
+                headers=[("Content-Type", "text/plain; charset=utf-8")],
                 status=400,
             )
         try:
@@ -148,20 +151,23 @@ class DashboardExportController(http.Controller):
             dashboard_filter = None
 
         try:
-            if format == "xlsx":
+            if export_format == "xlsx":
                 content = request.env["dashboard.export"].build_export_xlsx(target, dashboard_filter)
                 content_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             else:
                 content = request.env["dashboard.export"].build_export_pdf(target, dashboard_filter)
                 content_type = "application/pdf"
-        except Exception as err:
+        except Exception:
+            # Don't leak internal details (e.g. QWeb template ids) to the
+            # browser — log the real exception server-side instead.
+            _logger.exception("Dashboard export failed for target=%s format=%s", target, export_format)
             return request.make_response(
-                str(err),
-                headers=[("Content-Type", "text/plain")],
+                "تعذّر إنشاء ملف التصدير. يرجى المحاولة لاحقًا أو التواصل مع الدعم الفني.",
+                headers=[("Content-Type", "text/plain; charset=utf-8")],
                 status=400,
             )
 
-        filename = "export_%s_%s.%s" % (target, date.today().strftime("%Y%m%d"), format)
+        filename = "export_%s_%s.%s" % (target, date.today().strftime("%Y%m%d"), export_format)
         return request.make_response(
             content,
             headers=[

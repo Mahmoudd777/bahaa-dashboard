@@ -14,6 +14,3 @@ access_dashboard_section_portal,dashboard.section.portal,model_dashboard_section
 access_dashboard_component_portal,dashboard.component.portal,model_dashboard_component,base.group_portal,1,0,0,0
 access_dashboard_theme_portal,dashboard.theme.portal,model_dashboard_theme,base.group_portal,1,0,0,0
 access_dashboard_import_portal,dashboard.import.portal,model_dashboard_import,base.group_portal,1,1,1,0
-access_dashboard_export_user,dashboard.export.user,model_dashboard_export,base.group_user,1,0,0,0
-access_dashboard_export_manager,dashboard.export.manager,model_dashboard_export,base.group_system,1,1,1,1
-access_dashboard_export_portal,dashboard.export.portal,model_dashboard_export,base.group_portal,1,0,0,0

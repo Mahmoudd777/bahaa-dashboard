@@ -31,6 +31,7 @@ export class ExportModal extends Component {
                         <ImportTargetPicker targets="state.targets"
                                             selectedKey="state.targetKey"
                                             emptyMessage="'لا توجد أنواع بيانات متاحة للتصدير.'"
+                                            pickHint="'اختر نوع البيانات التي تريد تصديرها:'"
                                             onSelect.bind="selectTarget"/>
                     </t>
                     <t t-elif="state.step === 'period'">
@@ -95,13 +96,11 @@ export class ExportModal extends Component {
                         <p class="o_baha_import_targets__hint">اختر صيغة التصدير:</p>
                         <div class="o_baha_export_formats">
                             <button type="button" class="o_baha_export_format"
-                                    t-att-disabled="state.downloading"
                                     t-on-click="() => this.download('pdf')">
                                 <i class="fa fa-file-pdf-o o_baha_export_format__icon"/>
                                 <span class="o_baha_export_format__label">PDF</span>
                             </button>
                             <button type="button" class="o_baha_export_format"
-                                    t-att-disabled="state.downloading"
                                     t-on-click="() => this.download('xlsx')">
                                 <i class="fa fa-file-excel-o o_baha_export_format__icon"/>
                                 <span class="o_baha_export_format__label">Excel</span>
@@ -147,7 +146,6 @@ export class ExportModal extends Component {
             from: f.from || f.date || todayISO(),
             to: f.to || f.date || todayISO(),
             qnum, year,
-            downloading: false,
         });
 
         onWillStart(async () => {
@@ -227,24 +225,23 @@ export class ExportModal extends Component {
     }
 
     download(format) {
-        if (!this.state.targetKey || this.state.downloading) return;
-        this.state.downloading = true;
-        try {
-            const filter = this.selectedFilterable ? this.buildFilter() : {};
-            const params = new URLSearchParams({
-                target: this.state.targetKey,
-                format,
-                filter: JSON.stringify(filter),
-            });
-            const link = document.createElement("a");
-            link.href = `/dashboard_app/export/download?${params.toString()}`;
-            link.download = `export_${this.state.targetKey}.${format}`;
-            document.body.appendChild(link);
-            link.click();
-            link.remove();
-            this.props.onClose();
-        } finally {
-            this.state.downloading = false;
-        }
+        // The modal closes right after triggering the download, so there is
+        // no window in which a "downloading" disabled-state would ever be
+        // observed — a state flag reset in the same synchronous call is
+        // dead weight, not a guard. Nothing to make meaningful here.
+        if (!this.state.targetKey) return;
+        const filter = this.selectedFilterable ? this.buildFilter() : {};
+        const params = new URLSearchParams({
+            target: this.state.targetKey,
+            export_format: format,
+            filter: JSON.stringify(filter),
+        });
+        const link = document.createElement("a");
+        link.href = `/dashboard_app/export/download?${params.toString()}`;
+        link.download = `export_${this.state.targetKey}.${format}`;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        this.props.onClose();
     }
 }
