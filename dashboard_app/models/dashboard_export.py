@@ -1,7 +1,7 @@
 import io
 
 from odoo import api, fields, models
-from odoo.exceptions import UserError
+from odoo.exceptions import AccessError, UserError
 
 from .dashboard_filter import domain as filter_domain
 from .dashboard_filter import normalize
@@ -33,7 +33,7 @@ class DashboardExport(models.AbstractModel):
     def build_export_xlsx(self, target_key, dashboard_filter):
         """Generate an Excel export for the given target, filtered by dashboard_filter."""
         if not self.env.user.sudo().dashboard_access:
-            raise UserError("يلزم الوصول إلى لوحة التحكم.")
+            raise AccessError("يلزم الوصول إلى لوحة التحكم.")
         import xlsxwriter  # noqa: PLC0415
 
         spec = self._resolve_target(target_key)
@@ -50,27 +50,34 @@ class DashboardExport(models.AbstractModel):
         cell_fmt = workbook.add_format({"border": 1})
         note_fmt = workbook.add_format({"italic": True, "font_color": "#717680"})
 
-        # SQL NULL never satisfies "<=", so a date filter silently drops
-        # records with an empty date field. Surface that instead of hiding it.
-        header_row = 0
-        note = self._date_filter_note(spec, dashboard_filter)
-        if note:
-            sheet.write(header_row, 0, note, note_fmt)
-            header_row += 2
-
         for col, header in enumerate(data["headers"]):
-            sheet.write(header_row, col, header, header_fmt)
+            sheet.write(0, col, header, header_fmt)
             sheet.set_column(col, col, 22)
 
-        for r, row in enumerate(data["rows"], start=header_row + 1):
+        for r, row in enumerate(data["rows"], start=1):
             for c, value in enumerate(row):
                 sheet.write(r, c, value, cell_fmt)
 
+        # Notes go on a SEPARATE sheet so the data sheet stays byte-compatible
+        # with build_template_xlsx and can be re-imported. dashboard_import
+        # reads wb.active (sheet 0) only: it takes row 0 as the headers, and
+        # then treats every row with any non-empty cell as a record — so a note
+        # placed above OR below the data would break the
+        # export -> edit -> re-import round-trip these sheets exist to support.
+        notes = []
+        note = self._date_filter_note(spec, dashboard_filter)
+        if note:
+            notes.append(note)
         if data["truncated"]:
-            sheet.write(
-                header_row + len(data["rows"]) + 2, 0,
-                "تم عرض أول %d سجل فقط، ولم يتم تضمين بقية السجلات." % data["row_limit"],
+            notes.append(
+                "تم عرض أول %d سجل فقط، ولم يتم تضمين بقية السجلات." % data["row_limit"]
             )
+        if notes:
+            notes_sheet = workbook.add_worksheet("ملاحظات")
+            notes_sheet.right_to_left()
+            notes_sheet.set_column(0, 0, 80)
+            for r, text in enumerate(notes):
+                notes_sheet.write(r, 0, text, note_fmt)
 
         workbook.close()
         output.seek(0)
@@ -80,7 +87,7 @@ class DashboardExport(models.AbstractModel):
     def build_export_pdf(self, target_key, dashboard_filter):
         """Generate a PDF export for the given target, filtered by dashboard_filter."""
         if not self.env.user.sudo().dashboard_access:
-            raise UserError("يلزم الوصول إلى لوحة التحكم.")
+            raise AccessError("يلزم الوصول إلى لوحة التحكم.")
 
         spec = self._resolve_target(target_key)
         data = self._fetch_rows(spec, dashboard_filter, row_limit=EXPORT_ROW_LIMIT_PDF)
@@ -103,11 +110,13 @@ class DashboardExport(models.AbstractModel):
             "company_name": company.name,
             "logo": logo,
         }
-        # _get_report() already sudos internally so the report/paperformat
-        # lookup is unrestricted while the evaluation context (and therefore
-        # the report layout's language/direction) stays the current user's —
-        # sudoing the whole call would make it render as OdooBot (LTR/en-US).
-        content, _report_type = self.env["ir.actions.report"]._render_qweb_pdf(
+        # sudo() is needed for the report infrastructure itself: report.paperformat
+        # read is granted to group_user only (base/security/ir.model.access.csv,
+        # despite the misleading paperformat_access_portal id), and portal users
+        # are this feature's primary audience. It does not change who the report
+        # renders as — sudo() only flips env.su; _render_template browses the real
+        # user, so language and direction still follow env.user.
+        content, _report_type = self.env["ir.actions.report"].sudo()._render_qweb_pdf(
             "dashboard_app.action_report_export", res_ids=[], data=report_data
         )
         return content
@@ -189,16 +198,18 @@ class DashboardExport(models.AbstractModel):
 
     @api.model
     def _date_filter_note(self, spec, dashboard_filter):
-        """SQL NULL never satisfies "<=", so a date filter silently drops
-        records with an empty date field. Only surface the note when a filter
-        is genuinely in effect (not "all" mode) on a filterable target — the
-        filter semantics themselves must stay identical to the dashboard's.
+        """An empty period never satisfies the filter's comparison, so filtered
+        exports silently drop records with no date/period set. Only surface the
+        note when a filter is genuinely in effect (not "all" mode) on a
+        filterable target — the filter semantics themselves must stay identical
+        to the dashboard's. The filtered field is a real Date for some targets
+        and a Char period ("2025-Q1", "2025-06") for others, hence the wording.
         """
         if not spec.get("date_field"):
             return False
         if normalize(dashboard_filter)["mode"] == "all":
             return False
-        return "لا تشمل السجلات بدون تاريخ"
+        return "لا تشمل السجلات التي ليس لها تاريخ أو فترة محددة."
 
     @api.model
     def _filter_label(self, spec, dashboard_filter):
