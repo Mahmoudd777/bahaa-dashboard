@@ -1,3 +1,4 @@
+import base64
 import io
 
 from odoo import api, fields, models
@@ -94,10 +95,10 @@ class DashboardExport(models.AbstractModel):
         company = self.env.company
         # res.company.logo falls back to Odoo's stock "Your logo" placeholder
         # when nobody uploaded one, which is what this deployment still has.
-        # website_logo is the real Al-Baha mark (set by _set_company_website_logo).
-        logo = company.website_logo or company.logo
-        if isinstance(logo, bytes):
-            logo = logo.decode()
+        # website_logo is the real Al-Baha mark (set by _set_company_website_logo),
+        # but it is an SVG while logo is a PNG — the data: URI must carry the
+        # right mime or the image is silently dropped from the report.
+        logo, logo_mime = self._logo_data(company)
 
         report_data = {
             "target_label": spec["label"],
@@ -112,6 +113,7 @@ class DashboardExport(models.AbstractModel):
             ),
             "company_name": company.name,
             "logo": logo,
+            "logo_mime": logo_mime,
         }
         # sudo() is needed for the report infrastructure itself: report.paperformat
         # read is granted to group_user only (base/security/ir.model.access.csv,
@@ -123,6 +125,36 @@ class DashboardExport(models.AbstractModel):
             "dashboard_app.action_report_export", res_ids=[], data=report_data
         )
         return content
+
+    @api.model
+    def _logo_data(self, company):
+        """Return (base64_str, mime) for the report header logo.
+
+        Prefer website_logo (the real Al-Baha mark) over logo, which is still
+        Odoo's stock "Your logo" placeholder here. Sniff the mime from the
+        decoded bytes rather than assuming PNG: website_logo is an SVG, and a
+        data: URI with the wrong mime is dropped silently by wkhtmltopdf.
+        """
+        for field in ("website_logo", "logo"):
+            value = company[field]
+            if not value:
+                continue
+            try:
+                raw = base64.b64decode(value)
+            except Exception:  # noqa: BLE001 - a corrupt logo must not kill the export
+                continue
+            if raw.startswith(b"\x89PNG"):
+                mime = "image/png"
+            elif raw.startswith(b"\xff\xd8"):
+                mime = "image/jpeg"
+            elif raw.startswith(b"GIF"):
+                mime = "image/gif"
+            elif raw.lstrip()[:5] in (b"<?xml", b"<svg "):
+                mime = "image/svg+xml"
+            else:
+                continue
+            return (value.decode() if isinstance(value, bytes) else value), mime
+        return False, False
 
     @api.model
     def _resolve_target(self, target_key):

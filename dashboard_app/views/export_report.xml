@@ -56,7 +56,8 @@
                  ever reaching an attribute/subscript access. -->
             <div class="page o_baha_export_page" dir="rtl">
                 <div class="o_baha_export_page__header">
-                    <img t-if="logo" t-att-src="'data:image/png;base64,%s' % logo"
+                    <img t-if="logo and logo_mime"
+                         t-att-src="'data:%s;base64,%s' % (logo_mime, logo)"
                          class="o_baha_export_page__logo"/>
                     <div class="o_baha_export_page__titles">
                         <h2 t-if="target_label" t-esc="target_label"/>
