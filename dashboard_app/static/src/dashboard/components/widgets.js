@@ -658,7 +658,12 @@ export class BarChartV extends Component {
                 </div>
                 <div class="o_baha_barv__cols">
                     <t t-foreach="props.comp.data.items or []" t-as="item" t-key="item_index">
-                        <div class="o_baha_barv__col">
+                        <div class="o_baha_barv__col"
+                             t-att-class="clickableClass(item)"
+                             t-att-tabindex="isClickable(item) ? 0 : undefined"
+                             t-att-role="isClickable(item) ? 'button' : undefined"
+                             t-on-click="() => this.openItem(item)"
+                             t-on-keydown="(ev) => this.onItemKeydown(ev, item)">
                             <div class="o_baha_barv__bars">
                                 <t t-if="item.bars">
                                     <t t-foreach="item.bars" t-as="b" t-key="b_index">
@@ -1215,7 +1220,11 @@ export class StatGrid extends Component {
             <div class="o_baha_statgrid__grid" t-attf-style="grid-template-columns: repeat({{props.comp.data.cols or 2}}, 1fr);">
                 <t t-foreach="props.comp.data.items or []" t-as="s" t-key="s_index">
                     <div class="o_baha_card o_baha_stat"
-                         t-att-class="{ 'o_baha_stat--big': s.big }">
+                         t-att-class="{ 'o_baha_stat--big': s.big, 'o_baha_clickable': isClickable(s) }"
+                         t-att-tabindex="isClickable(s) ? 0 : undefined"
+                         t-att-role="isClickable(s) ? 'button' : undefined"
+                         t-on-click="() => this.openItem(s)"
+                         t-on-keydown="(ev) => this.onItemKeydown(ev, s)">
                         <span class="o_baha_stat__icon" t-if="s.icon">
                             <t t-if="iconSvg(s.icon)" t-out="iconSvg(s.icon)"/>
                             <i t-else="" t-attf-class="fa {{s.icon}}"/>

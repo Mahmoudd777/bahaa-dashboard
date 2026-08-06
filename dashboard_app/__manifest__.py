@@ -1,6 +1,6 @@
 {
     "name": "Dashboard App",
-    "version": "19.0.1.4.2",
+    "version": "19.0.1.4.3",
     "summary": "Al-Baha Strategic Office dashboard (white-labelled, dynamic, themeable)",
     "category": "Productivity",
     "author": "Global Solutions",
