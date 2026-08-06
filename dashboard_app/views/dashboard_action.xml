@@ -11,9 +11,11 @@
         <field name="target">current</field>
     </record>
 
-    <!-- Reachable from the apps menu too (not only as the home action). -->
+    <!-- Reachable from the apps menu too (not only as the home action). The
+         root menu is what the navbar shows next to the apps-menu icon, so it
+         carries the organisation name rather than repeating the page title. -->
     <menuitem id="menu_dashboard_root"
-              name="لوحة التحكم"
+              name="الباحة"
               sequence="1"/>
     <menuitem id="menu_dashboard_main"
               name="لوحة التحكم"

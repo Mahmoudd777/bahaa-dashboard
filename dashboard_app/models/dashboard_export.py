@@ -8,6 +8,12 @@ from .dashboard_filter import domain as filter_domain
 from .dashboard_filter import normalize
 from .dashboard_import_registry import get_target, list_targets
 
+# Every static string in the export (titles, headers, notes) is Arabic, so the
+# data is rendered in Arabic too rather than following the user's UI language —
+# otherwise selection labels come out English inside an otherwise Arabic RTL
+# document. Falls back to the user's language if Arabic isn't installed.
+EXPORT_LANG = "ar_001"
+
 EXPORT_ROW_LIMIT = 5000
 # wkhtmltopdf's RSS regularly exceeds 1 GB rendering large landscape tables; the
 # droplet is 1 vCPU / 2 GB with no swap, so PDF gets its own, much lower cap.
@@ -38,7 +44,7 @@ class DashboardExport(models.AbstractModel):
         import xlsxwriter  # noqa: PLC0415
 
         spec = self._resolve_target(target_key)
-        data = self._fetch_rows(spec, dashboard_filter)
+        data = self._in_export_lang()._fetch_rows(spec, dashboard_filter)
 
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {"in_memory": True})
@@ -91,7 +97,8 @@ class DashboardExport(models.AbstractModel):
             raise AccessError("يلزم الوصول إلى لوحة التحكم.")
 
         spec = self._resolve_target(target_key)
-        data = self._fetch_rows(spec, dashboard_filter, row_limit=EXPORT_ROW_LIMIT_PDF)
+        localized = self._in_export_lang()
+        data = localized._fetch_rows(spec, dashboard_filter, row_limit=EXPORT_ROW_LIMIT_PDF)
         company = self.env.company
         # res.company.logo falls back to Odoo's stock "Your logo" placeholder
         # when nobody uploaded one, which is what this deployment still has.
@@ -121,10 +128,25 @@ class DashboardExport(models.AbstractModel):
         # are this feature's primary audience. It does not change who the report
         # renders as — sudo() only flips env.su; _render_template browses the real
         # user, so language and direction still follow env.user.
-        content, _report_type = self.env["ir.actions.report"].sudo()._render_qweb_pdf(
-            "dashboard_app.action_report_export", res_ids=[], data=report_data
+        content, _report_type = (
+            localized.env["ir.actions.report"]
+            .sudo()
+            ._render_qweb_pdf("dashboard_app.action_report_export", res_ids=[], data=report_data)
         )
         return content
+
+    @api.model
+    def _in_export_lang(self):
+        """Self, switched to the export language when it is actually installed.
+
+        Guarded because with_context(lang=...) for an uninstalled language just
+        silently falls back, which would be an invisible way to ship English
+        labels in an Arabic document.
+        """
+        installed = self.env["res.lang"].sudo().search_count(
+            [("code", "=", EXPORT_LANG), ("active", "=", True)]
+        )
+        return self.with_context(lang=EXPORT_LANG) if installed else self
 
     @api.model
     def _logo_data(self, company):

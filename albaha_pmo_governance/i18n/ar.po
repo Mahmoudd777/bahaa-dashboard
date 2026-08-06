@@ -1,0 +1,588 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* albaha_pmo_governance
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0-20260630\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-06 00:45+0000\n"
+"PO-Revision-Date: 2026-08-06 00:45+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: albaha_pmo_governance
+#: model:ir.model,name:albaha_pmo_governance.model_albaha_governance
+msgid "A PMO governance policy or reference document"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model,name:albaha_pmo_governance.model_albaha_lesson
+msgid "A lesson learned captured from a project"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model,name:albaha_pmo_governance.model_albaha_closure
+msgid "A project closure record"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model,name:albaha_pmo_governance.model_albaha_stakeholder
+msgid "A project/program stakeholder"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model,name:albaha_pmo_governance.model_albaha_steerco
+msgid "A steering committee decision"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_steerco__accountable_id
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_governance.view_albaha_steerco_search
+msgid "Accountable"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_lesson__adopted_as_policy
+msgid "Adopted as Policy"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.ui.menu,name:albaha_pmo_governance.menu_albaha_pmo_governance_root
+msgid "Al-Baha PMO - Governance & Closure"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model,name:albaha_pmo_governance.model_albaha_strategy_bridge
+msgid "Alignment of a project to a strategic pillar and Vision 2030"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_lesson__applicability
+msgid "Applicability"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields.selection,name:albaha_pmo_governance.selection__albaha_steerco__decision_type__approval
+msgid "Approval"
+msgstr "اعتماد"
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_governance__approver_id
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_governance.view_albaha_governance_search
+msgid "Approver"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_closure__archive_ref
+msgid "Archive Reference"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_strategy_bridge__baseline_value
+msgid "Baseline Value"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_closure__benefits_realization_pct
+msgid "Benefits Realization %"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.actions.act_window,name:albaha_pmo_governance.action_albaha_strategy_bridge
+#: model:ir.ui.menu,name:albaha_pmo_governance.menu_albaha_strategy_bridge
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_governance.view_albaha_strategy_bridge_list
+msgid "Bridges"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_closure__budget_variance_pct
+msgid "Budget Variance %"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields.selection,name:albaha_pmo_governance.selection__albaha_closure__closure_type__cancelled
+msgid "Cancelled"
+msgstr "ملغى"
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_lesson__category
+msgid "Category"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields.selection,name:albaha_pmo_governance.selection__albaha_governance__policy_type__charter
+msgid "Charter"
+msgstr "ميثاق"
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields.selection,name:albaha_pmo_governance.selection__albaha_lesson__phase_captured__closing
+msgid "Closing"
+msgstr "الإغلاق"
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_closure__closure_type
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_governance.view_albaha_closure_search
+msgid "Closure Type"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.actions.act_window,name:albaha_pmo_governance.action_albaha_closure
+#: model:ir.ui.menu,name:albaha_pmo_governance.menu_albaha_closure
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_governance.view_albaha_closure_list
+msgid "Closures"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_steerco__committee_name
+msgid "Committee Name"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_stakeholder__contact_channel
+msgid "Contact Channel"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_strategy_bridge__contribution_pct
+msgid "Contribution %"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_closure__create_uid
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_governance__create_uid
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_lesson__create_uid
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_stakeholder__create_uid
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_steerco__create_uid
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_strategy_bridge__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_closure__create_date
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_governance__create_date
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_lesson__create_date
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_stakeholder__create_date
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_steerco__create_date
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_strategy_bridge__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_steerco__name
+msgid "Decision Text"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_steerco__decision_type
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_governance.view_albaha_steerco_search
+msgid "Decision Type"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields.selection,name:albaha_pmo_governance.selection__albaha_steerco__decision_type__directive
+msgid "Directive"
+msgstr "توجيه"
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_closure__display_name
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_governance__display_name
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_lesson__display_name
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_stakeholder__display_name
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_steerco__display_name
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_strategy_bridge__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_governance__document_url
+msgid "Document URL"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields.selection,name:albaha_pmo_governance.selection__albaha_steerco__execution_status__done
+msgid "Done"
+msgstr "منجز"
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_steerco__due_date
+msgid "Due Date"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields.selection,name:albaha_pmo_governance.selection__albaha_closure__closure_type__early
+msgid "Early"
+msgstr "مبكر"
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_governance__effective_date
+msgid "Effective Date"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_stakeholder__engagement_strategy
+msgid "Engagement Strategy"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_stakeholder__entity_name
+msgid "Entity Name"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields.selection,name:albaha_pmo_governance.selection__albaha_steerco__decision_type__escalation
+msgid "Escalation"
+msgstr "تصعيد"
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields.selection,name:albaha_pmo_governance.selection__albaha_lesson__phase_captured__executing
+msgid "Executing"
+msgstr "التنفيذ"
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_steerco__execution_status
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_governance.view_albaha_steerco_search
+msgid "Execution Status"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields.selection,name:albaha_pmo_governance.selection__albaha_stakeholder__stakeholder_type__external
+msgid "External"
+msgstr "خارجي"
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_closure__final_cost
+msgid "Final Cost (SAR m)"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_closure__final_progress_pct
+msgid "Final Progress %"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_stakeholder__name
+msgid "Full Name (Arabic)"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.actions.act_window,name:albaha_pmo_governance.action_albaha_governance
+#: model:ir.ui.menu,name:albaha_pmo_governance.menu_albaha_governance
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_governance.view_albaha_governance_list
+msgid "Governances"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields.selection,name:albaha_pmo_governance.selection__albaha_stakeholder__stakeholder_type__government
+msgid "Government"
+msgstr "حكومي"
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields.selection,name:albaha_pmo_governance.selection__albaha_stakeholder__influence_level__high
+#: model:ir.model.fields.selection,name:albaha_pmo_governance.selection__albaha_stakeholder__interest_level__high
+msgid "High"
+msgstr "مرتفع"
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_closure__id
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_governance__id
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_lesson__id
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_stakeholder__id
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_steerco__id
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_strategy_bridge__id
+msgid "ID"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields.selection,name:albaha_pmo_governance.selection__albaha_steerco__execution_status__in_progress
+msgid "In Progress"
+msgstr "قيد التنفيذ"
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_stakeholder__influence_level
+msgid "Influence"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_governance.view_albaha_stakeholder_search
+msgid "Influence Level"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields.selection,name:albaha_pmo_governance.selection__albaha_lesson__phase_captured__initiating
+msgid "Initiating"
+msgstr "البدء"
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_stakeholder__interest_level
+msgid "Interest"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_governance.view_albaha_stakeholder_search
+msgid "Interest Level"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields.selection,name:albaha_pmo_governance.selection__albaha_stakeholder__stakeholder_type__internal
+msgid "Internal"
+msgstr "داخلي"
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_strategy_bridge__kpi_name
+msgid "KPI Name"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields.selection,name:albaha_pmo_governance.selection__albaha_stakeholder__engagement_strategy__keep_informed
+msgid "Keep Informed"
+msgstr "إبقاؤه على اطلاع"
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields.selection,name:albaha_pmo_governance.selection__albaha_stakeholder__engagement_strategy__keep_satisfied
+msgid "Keep Satisfied"
+msgstr "إبقاؤه راضياً"
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_closure__write_uid
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_governance__write_uid
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_lesson__write_uid
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_stakeholder__write_uid
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_steerco__write_uid
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_strategy_bridge__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_closure__write_date
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_governance__write_date
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_lesson__write_date
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_stakeholder__write_date
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_steerco__write_date
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_strategy_bridge__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_lesson__code
+msgid "Lesson Code"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.actions.act_window,name:albaha_pmo_governance.action_albaha_lesson
+#: model:ir.ui.menu,name:albaha_pmo_governance.menu_albaha_lesson
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_governance.view_albaha_lesson_list
+msgid "Lessons"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_steerco__linked_cr_ref
+msgid "Linked CR Reference"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_lesson__linked_policy_id
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_governance.view_albaha_lesson_search
+msgid "Linked Policy"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields.selection,name:albaha_pmo_governance.selection__albaha_stakeholder__influence_level__low
+#: model:ir.model.fields.selection,name:albaha_pmo_governance.selection__albaha_stakeholder__interest_level__low
+msgid "Low"
+msgstr "منخفض"
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields.selection,name:albaha_pmo_governance.selection__albaha_stakeholder__engagement_strategy__manage_closely
+msgid "Manage Closely"
+msgstr "إدارة عن قرب"
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_strategy_bridge__measurement_unit
+msgid "Measurement Unit"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields.selection,name:albaha_pmo_governance.selection__albaha_stakeholder__influence_level__medium
+#: model:ir.model.fields.selection,name:albaha_pmo_governance.selection__albaha_stakeholder__interest_level__medium
+msgid "Medium"
+msgstr "متوسط"
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_steerco__meeting_date
+msgid "Meeting Date"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields.selection,name:albaha_pmo_governance.selection__albaha_stakeholder__engagement_strategy__monitor
+msgid "Monitor"
+msgstr "مراقبة"
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields.selection,name:albaha_pmo_governance.selection__albaha_closure__closure_type__normal
+msgid "Normal"
+msgstr "عادي"
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields.selection,name:albaha_pmo_governance.selection__albaha_steerco__decision_type__noted
+msgid "Noted"
+msgstr "للعلم"
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_closure__official_closure_date
+msgid "Official Closure Date"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields.selection,name:albaha_pmo_governance.selection__albaha_steerco__execution_status__open
+msgid "Open"
+msgstr "مفتوح"
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields.selection,name:albaha_pmo_governance.selection__albaha_stakeholder__stakeholder_type__partner
+msgid "Partner"
+msgstr "شريك"
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_lesson__phase_captured
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_governance.view_albaha_lesson_search
+msgid "Phase Captured"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields.selection,name:albaha_pmo_governance.selection__albaha_lesson__phase_captured__planning
+msgid "Planning"
+msgstr "التخطيط"
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_governance__code
+msgid "Policy Code"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_governance__name
+msgid "Policy Name"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_governance__policy_type
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_governance.view_albaha_governance_search
+msgid "Policy Type"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields.selection,name:albaha_pmo_governance.selection__albaha_governance__policy_type__process
+msgid "Process"
+msgstr "عملية"
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_closure__project_id
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_lesson__project_id
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_strategy_bridge__project_id
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_governance.view_albaha_closure_search
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_governance.view_albaha_lesson_search
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_governance.view_albaha_strategy_bridge_search
+msgid "Project"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_lesson__recommendation
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_governance.view_albaha_lesson_form
+msgid "Recommendation"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_closure__name
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_strategy_bridge__name
+msgid "Reference"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_stakeholder__role_title
+msgid "Role / Title"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_lesson__root_cause
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_governance.view_albaha_lesson_form
+msgid "Root Cause"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_closure__schedule_variance_days
+msgid "Schedule Variance (days)"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_lesson__name
+msgid "Situation"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_closure__sponsor_signoff
+msgid "Sponsor Sign-off"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_stakeholder__code
+msgid "Stakeholder Code"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_governance.view_albaha_stakeholder_search
+msgid "Stakeholder Type"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.actions.act_window,name:albaha_pmo_governance.action_albaha_stakeholder
+#: model:ir.ui.menu,name:albaha_pmo_governance.menu_albaha_stakeholder
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_governance.view_albaha_stakeholder_list
+msgid "Stakeholders"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields.selection,name:albaha_pmo_governance.selection__albaha_governance__policy_type__standard
+msgid "Standard"
+msgstr "قياسي"
+
+#. module: albaha_pmo_governance
+#: model:ir.actions.act_window,name:albaha_pmo_governance.action_albaha_steerco
+#: model:ir.ui.menu,name:albaha_pmo_governance.menu_albaha_steerco
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_governance.view_albaha_steerco_list
+msgid "Steercos"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_strategy_bridge__pillar_id
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_governance.view_albaha_strategy_bridge_search
+msgid "Strategic Pillar"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_strategy_bridge__target_value
+msgid "Target Value"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields.selection,name:albaha_pmo_governance.selection__albaha_governance__policy_type__template
+msgid "Template"
+msgstr "قالب"
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_stakeholder__stakeholder_type
+msgid "Type"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_governance__version
+msgid "Version"
+msgstr ""
+
+#. module: albaha_pmo_governance
+#: model:ir.model.fields,field_description:albaha_pmo_governance.field_albaha_strategy_bridge__vision2030_objective
+msgid "Vision 2030 Objective"
+msgstr ""

@@ -1,0 +1,397 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* albaha_pmo_delivery
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0-20260630\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-06 00:45+0000\n"
+"PO-Revision-Date: 2026-08-06 00:45+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: albaha_pmo_delivery
+#: model:ir.model,name:albaha_pmo_delivery.model_albaha_schedule_task
+msgid "A WBS schedule task (supports parent/child hierarchy)"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model,name:albaha_pmo_delivery.model_albaha_deliverable
+msgid "A project deliverable"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model,name:albaha_pmo_delivery.model_albaha_health
+msgid "A project health (RAG) snapshot"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model,name:albaha_pmo_delivery.model_albaha_resource
+msgid "A resource allocation on a project"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_deliverable__acceptance_criteria
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_delivery.view_albaha_deliverable_form
+msgid "Acceptance Criteria"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_deliverable__acceptance_status
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_delivery.view_albaha_deliverable_search
+msgid "Acceptance Status"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields.selection,name:albaha_pmo_delivery.selection__albaha_deliverable__acceptance_status__accepted
+msgid "Accepted"
+msgstr "مقبول"
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_deliverable__accepted_date
+msgid "Accepted Date"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_schedule_task__actual_finish
+msgid "Actual Finish"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_schedule_task__actual_start
+msgid "Actual Start"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_resource__utilization_actual
+msgid "Actual Utilization %"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.ui.menu,name:albaha_pmo_delivery.menu_albaha_pmo_delivery_root
+msgid "Al-Baha PMO - Delivery"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_resource__allocation_pct
+msgid "Allocation %"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields.selection,name:albaha_pmo_delivery.selection__albaha_health__cost_rag__amber
+#: model:ir.model.fields.selection,name:albaha_pmo_delivery.selection__albaha_health__overall_rag__amber
+#: model:ir.model.fields.selection,name:albaha_pmo_delivery.selection__albaha_health__risk_rag__amber
+#: model:ir.model.fields.selection,name:albaha_pmo_delivery.selection__albaha_health__schedule_rag__amber
+#: model:ir.model.fields.selection,name:albaha_pmo_delivery.selection__albaha_health__scope_rag__amber
+msgid "Amber"
+msgstr "أصفر"
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_deliverable__approver_id
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_delivery.view_albaha_deliverable_search
+msgid "Approver"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_schedule_task__baseline_finish
+msgid "Baseline Finish"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_schedule_task__baseline_start
+msgid "Baseline Start"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_resource__billable_rate_sar_hr
+msgid "Billable Rate (SAR/hr)"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_deliverable__category
+msgid "Category"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_resource__conflict_flag
+msgid "Conflict"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_health__cost_rag
+msgid "Cost RAG"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_delivery.view_albaha_health_search
+msgid "Cost Rag"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_deliverable__create_uid
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_health__create_uid
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_resource__create_uid
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_schedule_task__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_deliverable__create_date
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_health__create_date
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_resource__create_date
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_schedule_task__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields.selection,name:albaha_pmo_delivery.selection__albaha_health__trend__down
+msgid "Declining"
+msgstr "متراجع"
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_deliverable__code
+msgid "Deliverable Code"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_deliverable__name
+msgid "Deliverable Name"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.actions.act_window,name:albaha_pmo_delivery.action_albaha_deliverable
+#: model:ir.ui.menu,name:albaha_pmo_delivery.menu_albaha_deliverable
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_delivery.view_albaha_deliverable_list
+msgid "Deliverables"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_deliverable__display_name
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_health__display_name
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_resource__display_name
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_schedule_task__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_deliverable__due_date
+msgid "Due Date"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_schedule_task__duration_days
+msgid "Duration (days)"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_resource__employee_id
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_delivery.view_albaha_resource_search
+msgid "Employee"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_resource__end_date
+msgid "End Date"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields.selection,name:albaha_pmo_delivery.selection__albaha_health__cost_rag__green
+#: model:ir.model.fields.selection,name:albaha_pmo_delivery.selection__albaha_health__overall_rag__green
+#: model:ir.model.fields.selection,name:albaha_pmo_delivery.selection__albaha_health__risk_rag__green
+#: model:ir.model.fields.selection,name:albaha_pmo_delivery.selection__albaha_health__schedule_rag__green
+#: model:ir.model.fields.selection,name:albaha_pmo_delivery.selection__albaha_health__scope_rag__green
+msgid "Green"
+msgstr "أخضر"
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields.selection,name:albaha_pmo_delivery.selection__albaha_health__cost_rag__grey
+#: model:ir.model.fields.selection,name:albaha_pmo_delivery.selection__albaha_health__overall_rag__grey
+#: model:ir.model.fields.selection,name:albaha_pmo_delivery.selection__albaha_health__risk_rag__grey
+#: model:ir.model.fields.selection,name:albaha_pmo_delivery.selection__albaha_health__schedule_rag__grey
+#: model:ir.model.fields.selection,name:albaha_pmo_delivery.selection__albaha_health__scope_rag__grey
+msgid "Grey"
+msgstr "رمادي"
+
+#. module: albaha_pmo_delivery
+#: model:ir.actions.act_window,name:albaha_pmo_delivery.action_albaha_health
+#: model:ir.ui.menu,name:albaha_pmo_delivery.menu_albaha_health
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_delivery.view_albaha_health_list
+msgid "Healths"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_deliverable__id
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_health__id
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_resource__id
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_schedule_task__id
+msgid "ID"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields.selection,name:albaha_pmo_delivery.selection__albaha_health__trend__up
+msgid "Improving"
+msgstr "متحسّن"
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_deliverable__write_uid
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_health__write_uid
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_resource__write_uid
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_schedule_task__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_deliverable__write_date
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_health__write_date
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_resource__write_date
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_schedule_task__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_health__narrative
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_delivery.view_albaha_health_form
+msgid "Narrative"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_schedule_task__is_critical_path
+msgid "On Critical Path"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_health__overall_rag
+msgid "Overall RAG"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_schedule_task__parent_task_id
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_delivery.view_albaha_schedule_task_search
+msgid "Parent Task"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields.selection,name:albaha_pmo_delivery.selection__albaha_deliverable__acceptance_status__pending
+msgid "Pending"
+msgstr "قيد الانتظار"
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_schedule_task__progress_pct
+msgid "Progress %"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_deliverable__project_id
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_health__project_id
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_resource__project_id
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_schedule_task__project_id
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_delivery.view_albaha_deliverable_search
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_delivery.view_albaha_health_search
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_delivery.view_albaha_resource_search
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_delivery.view_albaha_schedule_task_search
+msgid "Project"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_deliverable__quality_score
+msgid "Quality Score"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields.selection,name:albaha_pmo_delivery.selection__albaha_health__cost_rag__red
+#: model:ir.model.fields.selection,name:albaha_pmo_delivery.selection__albaha_health__overall_rag__red
+#: model:ir.model.fields.selection,name:albaha_pmo_delivery.selection__albaha_health__risk_rag__red
+#: model:ir.model.fields.selection,name:albaha_pmo_delivery.selection__albaha_health__schedule_rag__red
+#: model:ir.model.fields.selection,name:albaha_pmo_delivery.selection__albaha_health__scope_rag__red
+msgid "Red"
+msgstr "أحمر"
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_health__name
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_resource__name
+msgid "Reference"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields.selection,name:albaha_pmo_delivery.selection__albaha_deliverable__acceptance_status__rejected
+msgid "Rejected"
+msgstr "مرفوض"
+
+#. module: albaha_pmo_delivery
+#: model:ir.actions.act_window,name:albaha_pmo_delivery.action_albaha_resource
+#: model:ir.ui.menu,name:albaha_pmo_delivery.menu_albaha_resource
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_delivery.view_albaha_resource_list
+msgid "Resources"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_health__risk_rag
+msgid "Risk RAG"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_resource__role_on_project
+msgid "Role on Project"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_health__schedule_rag
+msgid "Schedule RAG"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_delivery.view_albaha_health_search
+msgid "Schedule Rag"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_health__scope_rag
+msgid "Scope RAG"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_schedule_task__slack_days
+msgid "Slack (days)"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_health__snapshot_date
+msgid "Snapshot Date"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields.selection,name:albaha_pmo_delivery.selection__albaha_health__trend__flat
+msgid "Stable"
+msgstr "مستقر"
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_resource__start_date
+msgid "Start Date"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_schedule_task__name
+msgid "Task Name"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.actions.act_window,name:albaha_pmo_delivery.action_albaha_schedule_task
+#: model:ir.ui.menu,name:albaha_pmo_delivery.menu_albaha_schedule_task
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_delivery.view_albaha_schedule_task_list
+msgid "Tasks"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_health__trend
+msgid "Trend"
+msgstr ""
+
+#. module: albaha_pmo_delivery
+#: model:ir.model.fields,field_description:albaha_pmo_delivery.field_albaha_schedule_task__wbs_code
+msgid "WBS Code"
+msgstr ""
