@@ -2647,6 +2647,26 @@ body.o_baha_dash_active {
     box-shadow: 0 2px 8px rgba(24, 29, 39, 0.15);
 }
 
+// Way out of "viewing as another user". Sits at the far end of the banner so it
+// is the obvious control there — exiting edit mode does not leave this mode.
+.o_baha_asuser__exit {
+    margin-inline-start: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.65);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    font: inherit;
+    cursor: pointer;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.24);
+    }
+}
+
 // remove (×) button on each edit card — shown on hover
 .o_baha_gs_remove {
     position: absolute;

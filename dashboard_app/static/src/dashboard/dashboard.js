@@ -68,6 +68,10 @@ export class Dashboard extends Component {
             <div t-if="state.layout.edit_user_id" class="o_baha_asuser">
                 <i class="fa fa-user-circle"/>
                 <span>أنت تعرّض وتحرّر لوحة المستخدم: <b t-esc="state.layout.edit_user_name"/></span>
+                <button class="o_baha_asuser__exit" t-on-click="exitAsUser">
+                    <i class="fa fa-sign-out"/>
+                    <span>إنهاء والعودة إلى المستخدم</span>
+                </button>
             </div>
             <t t-if="state.errorMsg">
                 <div class="o_baha_dash__empty" style="flex-direction:column;color:#b00;padding:24px;text-align:center;">
@@ -1068,6 +1072,23 @@ export class Dashboard extends Component {
 
     closeImport() {
         this.state.importOpen = false;
+    }
+
+    // Leaving "viewing as another user". Exiting edit mode only drops the layout
+    // editor — it still leaves the admin inside the other user's dashboard, with
+    // no way back, because this banner used to be a label with no control on it.
+    exitAsUser() {
+        // action_open_user_dashboard opens with target="new", so normally there
+        // is an opener and closing the tab returns the admin to the user form.
+        if (window.opener && !window.opener.closed) {
+            window.close();
+            return;
+        }
+        // Navigated here directly (pasted URL, reused tab): go to the user form.
+        const uid = this.state.layout.edit_user_id;
+        window.location.href = uid
+            ? `/odoo/action-base.action_res_users/${uid}`
+            : "/odoo/action-base.action_res_users";
     }
 
     closeExport() {
