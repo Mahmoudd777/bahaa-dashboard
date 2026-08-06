@@ -92,7 +92,10 @@ class DashboardExport(models.AbstractModel):
         spec = self._resolve_target(target_key)
         data = self._fetch_rows(spec, dashboard_filter, row_limit=EXPORT_ROW_LIMIT_PDF)
         company = self.env.company
-        logo = company.logo
+        # res.company.logo falls back to Odoo's stock "Your logo" placeholder
+        # when nobody uploaded one, which is what this deployment still has.
+        # website_logo is the real Al-Baha mark (set by _set_company_website_logo).
+        logo = company.website_logo or company.logo
         if isinstance(logo, bytes):
             logo = logo.decode()
 

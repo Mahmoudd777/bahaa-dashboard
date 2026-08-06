@@ -19,10 +19,23 @@
 
     <template id="report_export_document">
         <t t-call="web.html_container">
+            <!-- REQUIRED, do not remove. _render_qweb_pdf does not hand the
+                 whole document to wkhtmltopdf: _prepare_html (ir_actions_report
+                 .py) keeps only the children of <main> and writes that fragment
+                 to a temp file, so the <head> and its <meta charset> are thrown
+                 away — and Odoo passes no encoding flag to wkhtmltopdf either.
+                 Without a charset
+                 declaration inside the fragment itself, wkhtmltopdf falls back
+                 to latin-1 and every Arabic character comes out as mojibake
+                 ("الاعتماد" -> "Ø§Ù„Ø§Ø¹ØªÙ…Ø§Ø¯"). -->
+            <meta charset="utf-8"/>
             <!-- Reports render outside the dashboard's asset bundle, so the
-                 (deliberately minimal) styling is inlined here. -->
+                 (deliberately minimal) styling is inlined here. Tajawal ships
+                 as woff2 for the web UI and is not installed in the container;
+                 DejaVu Sans is the only Arabic-capable font wkhtmltopdf has, so
+                 name it explicitly rather than relying on the fallback. -->
             <style>
-                .o_baha_export_page { font-family: "Tajawal", "Arial", sans-serif; }
+                .o_baha_export_page { font-family: "Tajawal", "DejaVu Sans", "Arial", sans-serif; }
                 .o_baha_export_page__header { display: flex; align-items: center; gap: 14px; margin-bottom: 6px; }
                 .o_baha_export_page__logo { max-width: 120px; max-height: 60px; }
                 .o_baha_export_page__titles h2 { margin: 0; font-size: 20px; }
