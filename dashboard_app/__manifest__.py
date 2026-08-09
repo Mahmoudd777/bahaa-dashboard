@@ -1,11 +1,15 @@
 {
     "name": "Dashboard App",
-    "version": "19.0.1.4.3",
+    "version": "19.0.1.4.4",
     "summary": "Al-Baha Strategic Office dashboard (white-labelled, dynamic, themeable)",
     "category": "Productivity",
     "author": "Global Solutions",
     "license": "LGPL-3",
-    "depends": ["base", "web"],
+    # portal is a real dependency, not incidental: its controllers override the
+    # login redirect and / to send every non-internal user to /my. Declaring it
+    # puts this module's controllers after portal's in the MRO, so the overrides
+    # in controllers/main.py actually win.
+    "depends": ["base", "web", "portal"],
     "data": [
         "security/ir.model.access.csv",
         "data/theme_data.xml",

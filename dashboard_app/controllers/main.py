@@ -7,10 +7,25 @@ from odoo import http
 from odoo.exceptions import AccessError, UserError
 from odoo.http import request
 
+from odoo.addons.portal.controllers.portal import CustomerPortal
 from odoo.addons.web.controllers.home import Home
 from odoo.addons.web.controllers.utils import is_user_internal
 
 _logger = logging.getLogger(__name__)
+
+# Landing targets that mean "no deliberate destination" for a dashboard user.
+# /my and /my/home are portal's own home: portal._login_redirect substitutes
+# them for an EMPTY redirect, so by the time this module's override runs the
+# "user asked for nothing in particular" signal is already gone.
+_DEFAULT_LANDINGS = ("/web", "/odoo", "/my")
+
+
+def _lands_on_dashboard(uid):
+    """A non-internal user with dashboard access belongs on /dashboard."""
+    if not uid or is_user_internal(uid):
+        return False
+    user = request.env["res.users"].sudo().browse(uid).exists()
+    return bool(user and user.dashboard_access)
 
 
 class DashboardHome(Home):
@@ -21,14 +36,34 @@ class DashboardHome(Home):
     """
 
     def _login_redirect(self, uid, redirect=None):
-        if not is_user_internal(uid):
-            if not redirect or redirect.startswith(("/web", "/odoo")):
+        if _lands_on_dashboard(uid):
+            if not redirect or redirect.startswith(_DEFAULT_LANDINGS):
                 return "/dashboard"
         return super()._login_redirect(uid, redirect=redirect)
 
+    @http.route()
+    def index(self, *args, **kw):
+        # portal.Home.index sends every non-internal user to /my; dashboard
+        # users go to their dashboard instead.
+        if _lands_on_dashboard(request.session.uid):
+            return request.redirect("/dashboard")
+        return super().index(*args, **kw)
+
+
+class DashboardPortalHome(CustomerPortal):
+    """/my is portal's home. For a dashboard user it is not a place they should
+    ever land — it offers invoices and address management they have no use for.
+    """
+
+    @http.route()
+    def home(self, **kw):
+        if _lands_on_dashboard(request.session.uid):
+            return request.redirect("/dashboard")
+        return super().home(**kw)
+
     @http.route("/web/login_successful", type="http", auth="user", website=True, sitemap=False)
     def login_successful_external_user(self, **kwargs):
-        if request.session.uid and not is_user_internal(request.session.uid):
+        if _lands_on_dashboard(request.session.uid):
             return request.redirect("/dashboard")
         return super().login_successful_external_user(**kwargs)
 
