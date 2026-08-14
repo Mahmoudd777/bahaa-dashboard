@@ -168,7 +168,66 @@ class DashboardDashboard(models.Model):
         rec = self.env[model].sudo().browse(int(res_id or 0)).exists()
         if not rec:
             raise MissingError("The requested dashboard record no longer exists.")
-        return registry[model](rec)
+        payload = registry[model](rec)
+        payload["logs"] = self._record_logs(model, rec.id)
+        return payload
+
+    # --- record notes ------------------------------------------------------
+    # albaha_log is an optional companion module, so every entry point checks
+    # the registry rather than importing it: dashboard_app must keep working
+    # when it is not installed.
+
+    LOG_MODEL = "albaha.record.log"
+    LOG_LIMIT = 50
+
+    @api.model
+    def _serialize_log(self, log):
+        return {
+            "id": log.id,
+            "note": log.note or "",
+            "user_name": log.user_id.name or "",
+            "date": fields.Datetime.context_timestamp(
+                self, log.create_date).strftime("%Y-%m-%d %H:%M") if log.create_date else "",
+        }
+
+    @api.model
+    def _record_logs(self, model, res_id):
+        if self.LOG_MODEL not in self.env.registry.models:
+            return []
+        logs = self.env[self.LOG_MODEL].sudo().search(
+            [("res_model", "=", model), ("res_id", "=", res_id)], limit=self.LOG_LIMIT)
+        return [self._serialize_log(log) for log in logs]
+
+    @api.model
+    def add_record_note(self, model, res_id, note):
+        """Append a note to one dashboard record's log.
+
+        Same shape as the rest of this endpoint family: gate on dashboard_access,
+        resolve the model through the drill-down whitelist (never straight from
+        user input), then write with sudo — portal users hold no ACLs on
+        albaha.* but are exactly who this feature is for.
+        """
+        if not self.env.user.sudo().dashboard_access:
+            raise AccessError("يلزم الوصول إلى لوحة التحكم.")
+        if model not in self._detail_registry():
+            raise UserError("نوع السجل غير مدعوم.")
+        if self.LOG_MODEL not in self.env.registry.models:
+            raise UserError("وحدة سجل الملاحظات غير مثبتة.")
+        note = (note or "").strip()
+        if not note:
+            raise UserError("لا يمكن حفظ ملاحظة فارغة.")
+
+        rec = self.env[model].sudo().browse(int(res_id or 0)).exists()
+        if not rec:
+            raise MissingError("السجل لم يعد موجوداً.")
+
+        log = self.env[self.LOG_MODEL].sudo().create({
+            "res_model": model,
+            "res_id": rec.id,
+            "note": note,
+            "user_id": self.env.uid,
+        })
+        return self._serialize_log(log)
 
     @api.model
     def get_aggregate_records(self, aggregate, dashboard_filter=None):

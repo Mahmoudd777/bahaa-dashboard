@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- The log is append-only: no create/edit/delete from any of these views.
+         Notes are written from the dashboard wizard or the per-record page. -->
+    <record id="view_albaha_record_log_list" model="ir.ui.view">
+        <field name="name">albaha.record.log.list</field>
+        <field name="model">albaha.record.log</field>
+        <field name="arch" type="xml">
+            <list string="سجل الملاحظات" create="0" edit="0" delete="0">
+                <field name="create_date" string="التاريخ"/>
+                <field name="user_id" string="بواسطة"/>
+                <field name="model_label" string="نوع السجل"/>
+                <field name="record_ref" string="السجل"/>
+                <field name="note" string="الملاحظة"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_albaha_record_log_form" model="ir.ui.view">
+        <field name="name">albaha.record.log.form</field>
+        <field name="model">albaha.record.log</field>
+        <field name="arch" type="xml">
+            <form string="ملاحظة" create="0" edit="0" delete="0">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="model_label"/>
+                            <field name="record_ref"/>
+                        </group>
+                        <group>
+                            <field name="user_id"/>
+                            <field name="create_date"/>
+                        </group>
+                    </group>
+                    <group string="الملاحظة">
+                        <field name="note" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_albaha_record_log_search" model="ir.ui.view">
+        <field name="name">albaha.record.log.search</field>
+        <field name="model">albaha.record.log</field>
+        <field name="arch" type="xml">
+            <search string="سجل الملاحظات">
+                <field name="note"/>
+                <field name="user_id"/>
+                <field name="record_ref"/>
+                <filter name="group_model" string="نوع السجل" context="{'group_by': 'res_model'}"/>
+                <filter name="group_user" string="بواسطة" context="{'group_by': 'user_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_albaha_record_log" model="ir.actions.act_window">
+        <field name="name">سجل الملاحظات</field>
+        <field name="res_model">albaha.record.log</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Technical menu: the per-record page is the everyday surface; this
+         central list is for audit. -->
+    <menuitem id="menu_albaha_record_log"
+              name="سجل ملاحظات الباحة"
+              parent="base.menu_custom"
+              action="action_albaha_record_log"
+              sequence="90"/>
+
+</odoo>

@@ -1,0 +1,751 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- One inherited form per albaha model, adding its own log thread.
+         Every one of these forms has a <sheet> and only three have a
+         <notebook>, so the page is appended into //sheet uniformly rather than
+         special-casing three of them. Read-only: notes are appended, never
+         edited (see albaha.record.log.write/unlink). -->
+
+    <record id="view_albaha_budget_form_log" model="ir.ui.view">
+        <field name="name">albaha.budget.form.log</field>
+        <field name="model">albaha.budget</field>
+        <field name="inherit_id" ref="albaha_pmo_finance.view_albaha_budget_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="السجل" name="albaha_log">
+                    <field name="log_ids" nolabel="1" readonly="1">
+                        <list create="0" edit="0" delete="0">
+                            <field name="create_date" string="التاريخ"/>
+                            <field name="user_id" string="بواسطة"/>
+                            <field name="note" string="الملاحظة"/>
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_albaha_change_request_form_log" model="ir.ui.view">
+        <field name="name">albaha.change.request.form.log</field>
+        <field name="model">albaha.change.request</field>
+        <field name="inherit_id" ref="albaha_pmo_risk.view_albaha_change_request_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="السجل" name="albaha_log">
+                    <field name="log_ids" nolabel="1" readonly="1">
+                        <list create="0" edit="0" delete="0">
+                            <field name="create_date" string="التاريخ"/>
+                            <field name="user_id" string="بواسطة"/>
+                            <field name="note" string="الملاحظة"/>
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_albaha_closure_form_log" model="ir.ui.view">
+        <field name="name">albaha.closure.form.log</field>
+        <field name="model">albaha.closure</field>
+        <field name="inherit_id" ref="albaha_pmo_governance.view_albaha_closure_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="السجل" name="albaha_log">
+                    <field name="log_ids" nolabel="1" readonly="1">
+                        <list create="0" edit="0" delete="0">
+                            <field name="create_date" string="التاريخ"/>
+                            <field name="user_id" string="بواسطة"/>
+                            <field name="note" string="الملاحظة"/>
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_albaha_committee_form_log" model="ir.ui.view">
+        <field name="name">albaha.committee.form.log</field>
+        <field name="model">albaha.committee</field>
+        <field name="inherit_id" ref="albaha_governance.view_albaha_committee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="السجل" name="albaha_log">
+                    <field name="log_ids" nolabel="1" readonly="1">
+                        <list create="0" edit="0" delete="0">
+                            <field name="create_date" string="التاريخ"/>
+                            <field name="user_id" string="بواسطة"/>
+                            <field name="note" string="الملاحظة"/>
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_albaha_contract_form_log" model="ir.ui.view">
+        <field name="name">albaha.contract.form.log</field>
+        <field name="model">albaha.contract</field>
+        <field name="inherit_id" ref="albaha_pmo_finance.view_albaha_contract_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="السجل" name="albaha_log">
+                    <field name="log_ids" nolabel="1" readonly="1">
+                        <list create="0" edit="0" delete="0">
+                            <field name="create_date" string="التاريخ"/>
+                            <field name="user_id" string="بواسطة"/>
+                            <field name="note" string="الملاحظة"/>
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_albaha_decision_form_log" model="ir.ui.view">
+        <field name="name">albaha.decision.form.log</field>
+        <field name="model">albaha.decision</field>
+        <field name="inherit_id" ref="albaha_governance.view_albaha_decision_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="السجل" name="albaha_log">
+                    <field name="log_ids" nolabel="1" readonly="1">
+                        <list create="0" edit="0" delete="0">
+                            <field name="create_date" string="التاريخ"/>
+                            <field name="user_id" string="بواسطة"/>
+                            <field name="note" string="الملاحظة"/>
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_albaha_deliverable_form_log" model="ir.ui.view">
+        <field name="name">albaha.deliverable.form.log</field>
+        <field name="model">albaha.deliverable</field>
+        <field name="inherit_id" ref="albaha_pmo_delivery.view_albaha_deliverable_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="السجل" name="albaha_log">
+                    <field name="log_ids" nolabel="1" readonly="1">
+                        <list create="0" edit="0" delete="0">
+                            <field name="create_date" string="التاريخ"/>
+                            <field name="user_id" string="بواسطة"/>
+                            <field name="note" string="الملاحظة"/>
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_albaha_dependency_form_log" model="ir.ui.view">
+        <field name="name">albaha.dependency.form.log</field>
+        <field name="model">albaha.dependency</field>
+        <field name="inherit_id" ref="albaha_initiative.view_albaha_dependency_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="السجل" name="albaha_log">
+                    <field name="log_ids" nolabel="1" readonly="1">
+                        <list create="0" edit="0" delete="0">
+                            <field name="create_date" string="التاريخ"/>
+                            <field name="user_id" string="بواسطة"/>
+                            <field name="note" string="الملاحظة"/>
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_albaha_financial_form_log" model="ir.ui.view">
+        <field name="name">albaha.financial.form.log</field>
+        <field name="model">albaha.financial</field>
+        <field name="inherit_id" ref="albaha_pmo_finance.view_albaha_financial_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="السجل" name="albaha_log">
+                    <field name="log_ids" nolabel="1" readonly="1">
+                        <list create="0" edit="0" delete="0">
+                            <field name="create_date" string="التاريخ"/>
+                            <field name="user_id" string="بواسطة"/>
+                            <field name="note" string="الملاحظة"/>
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_albaha_governance_form_log" model="ir.ui.view">
+        <field name="name">albaha.governance.form.log</field>
+        <field name="model">albaha.governance</field>
+        <field name="inherit_id" ref="albaha_pmo_governance.view_albaha_governance_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="السجل" name="albaha_log">
+                    <field name="log_ids" nolabel="1" readonly="1">
+                        <list create="0" edit="0" delete="0">
+                            <field name="create_date" string="التاريخ"/>
+                            <field name="user_id" string="بواسطة"/>
+                            <field name="note" string="الملاحظة"/>
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_albaha_health_form_log" model="ir.ui.view">
+        <field name="name">albaha.health.form.log</field>
+        <field name="model">albaha.health</field>
+        <field name="inherit_id" ref="albaha_pmo_delivery.view_albaha_health_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="السجل" name="albaha_log">
+                    <field name="log_ids" nolabel="1" readonly="1">
+                        <list create="0" edit="0" delete="0">
+                            <field name="create_date" string="التاريخ"/>
+                            <field name="user_id" string="بواسطة"/>
+                            <field name="note" string="الملاحظة"/>
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_albaha_initiative_form_log" model="ir.ui.view">
+        <field name="name">albaha.initiative.form.log</field>
+        <field name="model">albaha.initiative</field>
+        <field name="inherit_id" ref="albaha_initiative.view_albaha_initiative_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="السجل" name="albaha_log">
+                    <field name="log_ids" nolabel="1" readonly="1">
+                        <list create="0" edit="0" delete="0">
+                            <field name="create_date" string="التاريخ"/>
+                            <field name="user_id" string="بواسطة"/>
+                            <field name="note" string="الملاحظة"/>
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_albaha_initiative_progress_form_log" model="ir.ui.view">
+        <field name="name">albaha.initiative.progress.form.log</field>
+        <field name="model">albaha.initiative.progress</field>
+        <field name="inherit_id" ref="albaha_initiative.view_albaha_initiative_progress_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="السجل" name="albaha_log">
+                    <field name="log_ids" nolabel="1" readonly="1">
+                        <list create="0" edit="0" delete="0">
+                            <field name="create_date" string="التاريخ"/>
+                            <field name="user_id" string="بواسطة"/>
+                            <field name="note" string="الملاحظة"/>
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_albaha_issue_form_log" model="ir.ui.view">
+        <field name="name">albaha.issue.form.log</field>
+        <field name="model">albaha.issue</field>
+        <field name="inherit_id" ref="albaha_pmo_risk.view_albaha_issue_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="السجل" name="albaha_log">
+                    <field name="log_ids" nolabel="1" readonly="1">
+                        <list create="0" edit="0" delete="0">
+                            <field name="create_date" string="التاريخ"/>
+                            <field name="user_id" string="بواسطة"/>
+                            <field name="note" string="الملاحظة"/>
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_albaha_kpi_form_log" model="ir.ui.view">
+        <field name="name">albaha.kpi.form.log</field>
+        <field name="model">albaha.kpi</field>
+        <field name="inherit_id" ref="albaha_kpi.view_albaha_kpi_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="السجل" name="albaha_log">
+                    <field name="log_ids" nolabel="1" readonly="1">
+                        <list create="0" edit="0" delete="0">
+                            <field name="create_date" string="التاريخ"/>
+                            <field name="user_id" string="بواسطة"/>
+                            <field name="note" string="الملاحظة"/>
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_albaha_kpi_value_form_log" model="ir.ui.view">
+        <field name="name">albaha.kpi.value.form.log</field>
+        <field name="model">albaha.kpi.value</field>
+        <field name="inherit_id" ref="albaha_kpi.view_albaha_kpi_value_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="السجل" name="albaha_log">
+                    <field name="log_ids" nolabel="1" readonly="1">
+                        <list create="0" edit="0" delete="0">
+                            <field name="create_date" string="التاريخ"/>
+                            <field name="user_id" string="بواسطة"/>
+                            <field name="note" string="الملاحظة"/>
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_albaha_lesson_form_log" model="ir.ui.view">
+        <field name="name">albaha.lesson.form.log</field>
+        <field name="model">albaha.lesson</field>
+        <field name="inherit_id" ref="albaha_pmo_governance.view_albaha_lesson_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="السجل" name="albaha_log">
+                    <field name="log_ids" nolabel="1" readonly="1">
+                        <list create="0" edit="0" delete="0">
+                            <field name="create_date" string="التاريخ"/>
+                            <field name="user_id" string="بواسطة"/>
+                            <field name="note" string="الملاحظة"/>
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_albaha_milestone_form_log" model="ir.ui.view">
+        <field name="name">albaha.milestone.form.log</field>
+        <field name="model">albaha.milestone</field>
+        <field name="inherit_id" ref="albaha_pmo.view_albaha_milestone_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="السجل" name="albaha_log">
+                    <field name="log_ids" nolabel="1" readonly="1">
+                        <list create="0" edit="0" delete="0">
+                            <field name="create_date" string="التاريخ"/>
+                            <field name="user_id" string="بواسطة"/>
+                            <field name="note" string="الملاحظة"/>
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_albaha_objective_form_log" model="ir.ui.view">
+        <field name="name">albaha.objective.form.log</field>
+        <field name="model">albaha.objective</field>
+        <field name="inherit_id" ref="albaha_strategy.view_albaha_objective_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="السجل" name="albaha_log">
+                    <field name="log_ids" nolabel="1" readonly="1">
+                        <list create="0" edit="0" delete="0">
+                            <field name="create_date" string="التاريخ"/>
+                            <field name="user_id" string="بواسطة"/>
+                            <field name="note" string="الملاحظة"/>
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_albaha_pillar_form_log" model="ir.ui.view">
+        <field name="name">albaha.pillar.form.log</field>
+        <field name="model">albaha.pillar</field>
+        <field name="inherit_id" ref="albaha_strategy.view_albaha_pillar_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="السجل" name="albaha_log">
+                    <field name="log_ids" nolabel="1" readonly="1">
+                        <list create="0" edit="0" delete="0">
+                            <field name="create_date" string="التاريخ"/>
+                            <field name="user_id" string="بواسطة"/>
+                            <field name="note" string="الملاحظة"/>
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_albaha_portfolio_form_log" model="ir.ui.view">
+        <field name="name">albaha.portfolio.form.log</field>
+        <field name="model">albaha.portfolio</field>
+        <field name="inherit_id" ref="albaha_pmo.view_albaha_portfolio_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="السجل" name="albaha_log">
+                    <field name="log_ids" nolabel="1" readonly="1">
+                        <list create="0" edit="0" delete="0">
+                            <field name="create_date" string="التاريخ"/>
+                            <field name="user_id" string="بواسطة"/>
+                            <field name="note" string="الملاحظة"/>
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_albaha_procurement_form_log" model="ir.ui.view">
+        <field name="name">albaha.procurement.form.log</field>
+        <field name="model">albaha.procurement</field>
+        <field name="inherit_id" ref="albaha_pmo_finance.view_albaha_procurement_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="السجل" name="albaha_log">
+                    <field name="log_ids" nolabel="1" readonly="1">
+                        <list create="0" edit="0" delete="0">
+                            <field name="create_date" string="التاريخ"/>
+                            <field name="user_id" string="بواسطة"/>
+                            <field name="note" string="الملاحظة"/>
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_albaha_program_form_log" model="ir.ui.view">
+        <field name="name">albaha.program.form.log</field>
+        <field name="model">albaha.program</field>
+        <field name="inherit_id" ref="albaha_strategy.view_albaha_program_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="السجل" name="albaha_log">
+                    <field name="log_ids" nolabel="1" readonly="1">
+                        <list create="0" edit="0" delete="0">
+                            <field name="create_date" string="التاريخ"/>
+                            <field name="user_id" string="بواسطة"/>
+                            <field name="note" string="الملاحظة"/>
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_albaha_program_pmo_form_log" model="ir.ui.view">
+        <field name="name">albaha.program.pmo.form.log</field>
+        <field name="model">albaha.program.pmo</field>
+        <field name="inherit_id" ref="albaha_pmo.view_albaha_program_pmo_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="السجل" name="albaha_log">
+                    <field name="log_ids" nolabel="1" readonly="1">
+                        <list create="0" edit="0" delete="0">
+                            <field name="create_date" string="التاريخ"/>
+                            <field name="user_id" string="بواسطة"/>
+                            <field name="note" string="الملاحظة"/>
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_albaha_project_form_log" model="ir.ui.view">
+        <field name="name">albaha.project.form.log</field>
+        <field name="model">albaha.project</field>
+        <field name="inherit_id" ref="albaha_pmo.view_albaha_project_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="السجل" name="albaha_log">
+                    <field name="log_ids" nolabel="1" readonly="1">
+                        <list create="0" edit="0" delete="0">
+                            <field name="create_date" string="التاريخ"/>
+                            <field name="user_id" string="بواسطة"/>
+                            <field name="note" string="الملاحظة"/>
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_albaha_project_dependency_form_log" model="ir.ui.view">
+        <field name="name">albaha.project.dependency.form.log</field>
+        <field name="model">albaha.project.dependency</field>
+        <field name="inherit_id" ref="albaha_pmo_risk.view_albaha_project_dependency_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="السجل" name="albaha_log">
+                    <field name="log_ids" nolabel="1" readonly="1">
+                        <list create="0" edit="0" delete="0">
+                            <field name="create_date" string="التاريخ"/>
+                            <field name="user_id" string="بواسطة"/>
+                            <field name="note" string="الملاحظة"/>
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_albaha_regional_indicator_form_log" model="ir.ui.view">
+        <field name="name">albaha.regional.indicator.form.log</field>
+        <field name="model">albaha.regional.indicator</field>
+        <field name="inherit_id" ref="albaha_kpi.view_albaha_regional_indicator_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="السجل" name="albaha_log">
+                    <field name="log_ids" nolabel="1" readonly="1">
+                        <list create="0" edit="0" delete="0">
+                            <field name="create_date" string="التاريخ"/>
+                            <field name="user_id" string="بواسطة"/>
+                            <field name="note" string="الملاحظة"/>
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_albaha_resource_form_log" model="ir.ui.view">
+        <field name="name">albaha.resource.form.log</field>
+        <field name="model">albaha.resource</field>
+        <field name="inherit_id" ref="albaha_pmo_delivery.view_albaha_resource_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="السجل" name="albaha_log">
+                    <field name="log_ids" nolabel="1" readonly="1">
+                        <list create="0" edit="0" delete="0">
+                            <field name="create_date" string="التاريخ"/>
+                            <field name="user_id" string="بواسطة"/>
+                            <field name="note" string="الملاحظة"/>
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_albaha_review_form_log" model="ir.ui.view">
+        <field name="name">albaha.review.form.log</field>
+        <field name="model">albaha.review</field>
+        <field name="inherit_id" ref="albaha_governance.view_albaha_review_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="السجل" name="albaha_log">
+                    <field name="log_ids" nolabel="1" readonly="1">
+                        <list create="0" edit="0" delete="0">
+                            <field name="create_date" string="التاريخ"/>
+                            <field name="user_id" string="بواسطة"/>
+                            <field name="note" string="الملاحظة"/>
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_albaha_risk_form_log" model="ir.ui.view">
+        <field name="name">albaha.risk.form.log</field>
+        <field name="model">albaha.risk</field>
+        <field name="inherit_id" ref="albaha_pmo_risk.view_albaha_risk_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="السجل" name="albaha_log">
+                    <field name="log_ids" nolabel="1" readonly="1">
+                        <list create="0" edit="0" delete="0">
+                            <field name="create_date" string="التاريخ"/>
+                            <field name="user_id" string="بواسطة"/>
+                            <field name="note" string="الملاحظة"/>
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_albaha_schedule_task_form_log" model="ir.ui.view">
+        <field name="name">albaha.schedule.task.form.log</field>
+        <field name="model">albaha.schedule.task</field>
+        <field name="inherit_id" ref="albaha_pmo_delivery.view_albaha_schedule_task_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="السجل" name="albaha_log">
+                    <field name="log_ids" nolabel="1" readonly="1">
+                        <list create="0" edit="0" delete="0">
+                            <field name="create_date" string="التاريخ"/>
+                            <field name="user_id" string="بواسطة"/>
+                            <field name="note" string="الملاحظة"/>
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_albaha_sector_form_log" model="ir.ui.view">
+        <field name="name">albaha.sector.form.log</field>
+        <field name="model">albaha.sector</field>
+        <field name="inherit_id" ref="albaha_strategy.view_albaha_sector_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="السجل" name="albaha_log">
+                    <field name="log_ids" nolabel="1" readonly="1">
+                        <list create="0" edit="0" delete="0">
+                            <field name="create_date" string="التاريخ"/>
+                            <field name="user_id" string="بواسطة"/>
+                            <field name="note" string="الملاحظة"/>
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_albaha_sector_kpi_form_log" model="ir.ui.view">
+        <field name="name">albaha.sector.kpi.form.log</field>
+        <field name="model">albaha.sector.kpi</field>
+        <field name="inherit_id" ref="albaha_kpi.view_albaha_sector_kpi_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="السجل" name="albaha_log">
+                    <field name="log_ids" nolabel="1" readonly="1">
+                        <list create="0" edit="0" delete="0">
+                            <field name="create_date" string="التاريخ"/>
+                            <field name="user_id" string="بواسطة"/>
+                            <field name="note" string="الملاحظة"/>
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_albaha_stakeholder_form_log" model="ir.ui.view">
+        <field name="name">albaha.stakeholder.form.log</field>
+        <field name="model">albaha.stakeholder</field>
+        <field name="inherit_id" ref="albaha_pmo_governance.view_albaha_stakeholder_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="السجل" name="albaha_log">
+                    <field name="log_ids" nolabel="1" readonly="1">
+                        <list create="0" edit="0" delete="0">
+                            <field name="create_date" string="التاريخ"/>
+                            <field name="user_id" string="بواسطة"/>
+                            <field name="note" string="الملاحظة"/>
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_albaha_steerco_form_log" model="ir.ui.view">
+        <field name="name">albaha.steerco.form.log</field>
+        <field name="model">albaha.steerco</field>
+        <field name="inherit_id" ref="albaha_pmo_governance.view_albaha_steerco_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="السجل" name="albaha_log">
+                    <field name="log_ids" nolabel="1" readonly="1">
+                        <list create="0" edit="0" delete="0">
+                            <field name="create_date" string="التاريخ"/>
+                            <field name="user_id" string="بواسطة"/>
+                            <field name="note" string="الملاحظة"/>
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_albaha_strategic_risk_form_log" model="ir.ui.view">
+        <field name="name">albaha.strategic.risk.form.log</field>
+        <field name="model">albaha.strategic.risk</field>
+        <field name="inherit_id" ref="albaha_governance.view_albaha_strategic_risk_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="السجل" name="albaha_log">
+                    <field name="log_ids" nolabel="1" readonly="1">
+                        <list create="0" edit="0" delete="0">
+                            <field name="create_date" string="التاريخ"/>
+                            <field name="user_id" string="بواسطة"/>
+                            <field name="note" string="الملاحظة"/>
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_albaha_strategy_bridge_form_log" model="ir.ui.view">
+        <field name="name">albaha.strategy.bridge.form.log</field>
+        <field name="model">albaha.strategy.bridge</field>
+        <field name="inherit_id" ref="albaha_pmo_governance.view_albaha_strategy_bridge_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="السجل" name="albaha_log">
+                    <field name="log_ids" nolabel="1" readonly="1">
+                        <list create="0" edit="0" delete="0">
+                            <field name="create_date" string="التاريخ"/>
+                            <field name="user_id" string="بواسطة"/>
+                            <field name="note" string="الملاحظة"/>
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_albaha_transformation_form_log" model="ir.ui.view">
+        <field name="name">albaha.transformation.form.log</field>
+        <field name="model">albaha.transformation</field>
+        <field name="inherit_id" ref="albaha_governance.view_albaha_transformation_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="السجل" name="albaha_log">
+                    <field name="log_ids" nolabel="1" readonly="1">
+                        <list create="0" edit="0" delete="0">
+                            <field name="create_date" string="التاريخ"/>
+                            <field name="user_id" string="بواسطة"/>
+                            <field name="note" string="الملاحظة"/>
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_albaha_vision_alignment_form_log" model="ir.ui.view">
+        <field name="name">albaha.vision.alignment.form.log</field>
+        <field name="model">albaha.vision.alignment</field>
+        <field name="inherit_id" ref="albaha_initiative.view_albaha_vision_alignment_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="السجل" name="albaha_log">
+                    <field name="log_ids" nolabel="1" readonly="1">
+                        <list create="0" edit="0" delete="0">
+                            <field name="create_date" string="التاريخ"/>
+                            <field name="user_id" string="بواسطة"/>
+                            <field name="note" string="الملاحظة"/>
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

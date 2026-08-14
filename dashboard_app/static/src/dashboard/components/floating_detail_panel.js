@@ -1,6 +1,6 @@
 /** @odoo-module **/
 
-import { Component, onWillUnmount, useRef, xml } from "@odoo/owl";
+import { Component, onWillUnmount, useEffect, useRef, useState, xml } from "@odoo/owl";
 
 /**
  * A record's detail as a floating, draggable window rather than a modal.
@@ -115,6 +115,48 @@ export class FloatingDetailPanel extends Component {
                         </div>
                     </section>
                 </t>
+
+                <section t-if="props.onAddNote" class="o_baha_notes">
+                    <div class="o_baha_notes__head">
+                        <span class="o_baha_notes__title">الملاحظات</span>
+                        <button t-if="!state.adding" class="o_baha_btn o_baha_btn--text"
+                                t-on-click="startNote">
+                            <i class="fa fa-plus"/>
+                            <span>إضافة ملاحظة</span>
+                        </button>
+                    </div>
+
+                    <div t-if="state.adding" class="o_baha_notes__editor">
+                        <textarea class="o_baha_notes__input" t-ref="noteInput"
+                                  placeholder="اكتب الملاحظة ثم اضغط Enter للحفظ (Shift+Enter لسطر جديد)"
+                                  t-att-disabled="state.saving"
+                                  t-on-keydown="onNoteKeydown"/>
+                        <div class="o_baha_notes__actions">
+                            <button class="o_baha_btn o_baha_btn--text" t-on-click="cancelNote"
+                                    t-att-disabled="state.saving">إلغاء</button>
+                            <button class="o_baha_btn o_baha_btn--primary" t-on-click="saveNote"
+                                    t-att-disabled="state.saving">
+                                <t t-if="state.saving">جارٍ الحفظ...</t>
+                                <t t-else="">حفظ</t>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="o_baha_notes__list">
+                        <t t-if="!(detail.logs or []).length">
+                            <p class="o_baha_notes__empty">لا توجد ملاحظات على هذا السجل بعد.</p>
+                        </t>
+                        <t t-foreach="detail.logs or []" t-as="log" t-key="log.id">
+                            <div class="o_baha_notes__item">
+                                <div class="o_baha_notes__meta">
+                                    <span class="o_baha_notes__user" t-esc="log.user_name"/>
+                                    <span class="o_baha_notes__date" t-esc="log.date"/>
+                                </div>
+                                <div class="o_baha_notes__text" t-esc="log.note"/>
+                            </div>
+                        </t>
+                    </div>
+                </section>
             </div>
 
             <div class="o_baha_float__foot">
@@ -128,14 +170,62 @@ export class FloatingDetailPanel extends Component {
             </div>
         </div>`;
 
-    static props = ["panel", "onClose", "onFocus", "onMove", "onOpenFull?"];
+    static props = ["panel", "onClose", "onFocus", "onMove", "onAddNote?", "onOpenFull?"];
 
     setup() {
         this.panelRef = useRef("panel");
+        this.noteInput = useRef("noteInput");
+        this.state = useState({ adding: false, saving: false });
         this._stopDrag = null;
         // A panel can be closed mid-drag (Esc, or the parent dropping it);
         // without this the window-level listeners would outlive the component.
         onWillUnmount(() => this._stopDrag && this._stopDrag());
+        // The textarea only exists once state.adding flips, so focus has to
+        // wait for the patch rather than happening in the click handler.
+        useEffect(
+            (el) => { el && el.focus(); },
+            () => [this.noteInput.el]
+        );
+    }
+
+    // --- notes -------------------------------------------------------------
+    startNote() {
+        this.state.adding = true;
+    }
+
+    cancelNote() {
+        this.state.adding = false;
+    }
+
+    async saveNote() {
+        const el = this.noteInput.el;
+        const note = (el && el.value || "").trim();
+        if (!note || this.state.saving) {
+            return;
+        }
+        this.state.saving = true;
+        try {
+            const ok = await this.props.onAddNote(this.props.panel.id, note);
+            if (ok) {
+                // Only collapse on success — a failed save keeps the text so it
+                // does not have to be retyped.
+                this.state.adding = false;
+            }
+        } finally {
+            this.state.saving = false;
+        }
+    }
+
+    onNoteKeydown(ev) {
+        // Enter saves; Shift+Enter is a newline, since a note can be long.
+        if (ev.key === "Enter" && !ev.shiftKey) {
+            ev.preventDefault();
+            this.saveNote();
+        } else if (ev.key === "Escape") {
+            ev.preventDefault();
+            ev.stopPropagation();
+            this.cancelNote();
+        }
     }
 
     get detail() {

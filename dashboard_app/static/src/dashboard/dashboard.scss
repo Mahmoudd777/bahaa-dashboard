@@ -1367,6 +1367,93 @@ body.o_baha_dash_active {
 // ============================================================
 // Deliberately NOT modal — no backdrop — so the dashboard stays readable
 // behind them and two records can be compared side by side.
+// Record notes inside a detail panel. Append-only, so the list is display only
+// and the editor is the single point of entry.
+.o_baha_notes {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--dash-line, #e9eaeb);
+
+    &__head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8px;
+    }
+
+    &__title {
+        font-weight: 700;
+        font-size: 13px;
+        color: var(--dash-ink, #181d27);
+    }
+
+    &__editor {
+        margin-bottom: 10px;
+    }
+
+    &__input {
+        width: 100%;
+        min-height: 76px;
+        resize: vertical;
+        padding: 8px 10px;
+        border: 1px solid var(--dash-line, #d5d7da);
+        border-radius: 8px;
+        font: inherit;
+        line-height: 1.6;
+
+        &:focus {
+            outline: none;
+            border-color: var(--dash-accent, #00ab9d);
+        }
+    }
+
+    &__actions {
+        display: flex;
+        justify-content: flex-start;
+        gap: 8px;
+        margin-top: 6px;
+    }
+
+    &__list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    &__empty {
+        margin: 0;
+        color: var(--dash-muted, #717680);
+        font-size: 12px;
+    }
+
+    &__item {
+        padding: 8px 10px;
+        border: 1px solid var(--dash-line, #e9eaeb);
+        border-radius: 8px;
+        background: var(--dash-surface-2, #fafafa);
+    }
+
+    &__meta {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 4px;
+        font-size: 11px;
+        color: var(--dash-muted, #717680);
+    }
+
+    &__user {
+        font-weight: 700;
+    }
+
+    &__text {
+        font-size: 13px;
+        line-height: 1.7;
+        // Notes are free text and can be long; keep author line breaks.
+        white-space: pre-wrap;
+        word-break: break-word;
+    }
+}
+
 .o_baha_float {
     position: fixed;
     // NB: no CSS min()/max() here. SCSS resolves those as its own numeric

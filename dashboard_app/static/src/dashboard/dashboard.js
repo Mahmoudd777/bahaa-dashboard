@@ -281,6 +281,7 @@ export class Dashboard extends Component {
                                      onClose.bind="closeDetailPanel"
                                      onFocus.bind="focusDetailPanel"
                                      onMove.bind="moveDetailPanel"
+                                     onAddNote.bind="addRecordNote"
                                      onOpenFull="openFullRecord.bind(this)"/>
             </t>
         </div>`;
@@ -1089,6 +1090,28 @@ export class Dashboard extends Component {
         window.location.href = uid
             ? `/odoo/action-base.action_res_users/${uid}`
             : "/odoo/action-base.action_res_users";
+    }
+
+    // Append a note to one record's log. Returns true so the panel knows to
+    // collapse its editor; on failure the text is left in place to retype.
+    async addRecordNote(panelId, note) {
+        const panel = this.state.detailPanels.find((p) => p.id === panelId);
+        if (!panel || !panel.detail) {
+            return false;
+        }
+        try {
+            const log = await rpc(
+                "/web/dataset/call_kw/dashboard.dashboard/add_record_note",
+                { model: "dashboard.dashboard", method: "add_record_note",
+                  args: [panel.model, panel.res_id, note], kwargs: {} }
+            );
+            // Newest first, matching the server's _order.
+            panel.detail.logs = [log, ...(panel.detail.logs || [])];
+            return true;
+        } catch (e) {
+            this.notification.add(e.message || "تعذّر حفظ الملاحظة", { type: "danger" });
+            return false;
+        }
     }
 
     closeExport() {
