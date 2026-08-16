@@ -13,6 +13,12 @@ body.o_baha_locked {
     .o_action_manager { top: 0 !important; }
 }
 
+// Odoo's default OdooBot chat bubble/popup — not part of this app, hidden
+// while the dashboard is shown so it doesn't confuse a client-facing view.
+body.o_baha_dash_active {
+    .o-mail-ChatHub, .o-mail-ChatWindow { display: none !important; }
+}
+
 // Frontend website page wrapper (portal users open the dashboard here)
 .o_baha_dashboard_page {
     min-height: 100vh;
@@ -23,6 +29,12 @@ body.o_baha_locked {
 .o_baha_dash {
     --dash-primary: #5c4b43;
     --dash-accent: #00ab9d;
+    // Focus rings deliberately do NOT follow --dash-accent. That one is
+    // user-customisable, and a dark custom accent renders the ring as a
+    // near-black box that reads as a rendering fault rather than a focus
+    // state. Keeping it fixed means the indicator stays legible and
+    // recognisable whatever palette a user saves.
+    --dash-focus-ring: #00ab9d;
     --dash-success: #00ab9d;
     --dash-warning: #f0974f;
     --dash-danger: #ff5147;
@@ -124,7 +136,7 @@ body.o_baha_locked {
     background: #ffffff;
     border: 1px solid #E8E8E8;
     border-radius: 4px;
-    padding: 20px 24px;
+    padding: 14px 24px 16px;
     height: auto;
     box-shadow: none;
     box-sizing: border-box;
@@ -141,8 +153,8 @@ body.o_baha_locked {
         justify-content: space-between;
         gap: 12px;
         flex-wrap: wrap;
-        margin-bottom: 14px;
-        padding-bottom: 12px;
+        margin-bottom: 8px;
+        padding-bottom: 8px;
         border-bottom: 1px solid #EFEFF0;   // subtle divider line under the title
         position: sticky;
         top: 0;
@@ -161,6 +173,49 @@ body.o_baha_locked {
         font-size: 16px;
     }
     &__menu, &__expand { cursor: pointer; color: #454445; opacity: 0.6; }
+
+    // The ⋮ owns the drill-down action (the stat cards are not clickable).
+    // It only looks interactive when there is actually something to open.
+    &__menuwrap { position: relative; display: inline-flex; }
+    &__menu {
+        border-radius: 6px;
+        padding: 3px 5px;
+        &--active { opacity: 1; color: var(--dash-primary, #5c4b43); }
+        &--active:hover { background: rgba(0, 0, 0, 0.06); }
+        &--on { background: rgba(0, 0, 0, 0.08); }
+    }
+    &__dropdown {
+        // Fixed, not absolute: the grid cell clips with `overflow: hidden`, so
+        // an absolutely-positioned menu gets cut off. Coordinates are set from
+        // the icon's viewport rect when it opens.
+        position: fixed;
+        z-index: 2000;
+        width: 220px;
+        min-width: 220px;
+        padding: 6px;
+        background: #fff;
+        border: 1px solid var(--dash-border, #d5d7da);
+        border-radius: 10px;
+        box-shadow: 0 10px 26px rgba(0, 0, 0, 0.14);
+        text-align: right;
+    }
+    &__dropitem {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+        padding: 7px 9px;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--dash-text-secondary, #414651);
+        background: none;
+        border: 0;
+        border-radius: 6px;
+        cursor: pointer;
+        text-align: right;
+        &:hover { background: var(--dash-bg-tertiary, #f5f5f5); }
+        i { opacity: 0.6; }
+    }
     &__grid {
         // Inner components share the outer 11x-finer row_span scale, so the
         // inner row unit is the legacy 72px divided by 11 — inner panel
@@ -170,7 +225,12 @@ body.o_baha_locked {
         grid-template-columns: repeat(12, minmax(0, 1fr));
         grid-auto-rows: minmax(var(--inner-row-h), auto);
         grid-auto-flow: dense;   // backfill gaps left by hidden inner components
-        gap: 12px;
+        // Row-gap MUST stay 0: rows are 11x finer than the legacy scale, so a
+        // row-gap is paid once per track and a card spanning 15 rows would
+        // accumulate 14 gaps (~168px) of dead space. Vertical separation comes
+        // from the inner cards' own margins; the column gap is unaffected.
+        column-gap: 12px;
+        row-gap: 0;
         align-items: start;
 
         .o_baha_panel__inner_cell {
@@ -331,7 +391,114 @@ body.o_baha_locked {
     background: #fff;
 }
 
-// ---- Status legend chips (مسار صحيح / في خطر / متأخر) ----
+// ============================================================
+//  Scrolling cards: header stays, records move
+// ============================================================
+// One rule for every scrollable card. The card is a flex column that clips;
+// its header is fixed height and never scrolls; `__scroll` takes the rest and
+// is the only thing that moves. Column headers inside it stay pinned via
+// sticky, so a reader scrolling row 40 can still tell which column is which.
+//
+// This replaces putting `overflow-y: auto` on the card itself, which scrolled
+// the title and the legend away with the data — you lost the labels exactly
+// when the list got long enough to need them.
+.o_baha_card,
+.o_baha_panel {
+    &.o_baha_table,
+    &.o_baha_goals,
+    &.o_baha_listcards,
+    &.o_baha_alerts {
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+}
+
+.o_baha_card__head,
+.o_baha_listcards__head,
+.o_baha_panel__head {
+    flex: 0 0 auto;
+}
+
+.o_baha_card__scroll {
+    flex: 1 1 auto;
+    min-height: 0;          // without this a flex child refuses to shrink
+    overflow-y: auto;
+    overflow-x: hidden;     // overflow-y alone promotes overflow-x to auto
+}
+
+// Column headers pinned to the top of their own scroll area.
+.o_baha_card__scroll table thead th,
+.o_baha_detail_table__scroll table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    // Must be opaque, or rows show through as they pass underneath.
+    background: #fafbfc;
+}
+
+// Same rule inside the wizards: the section title ("آخر تقارير التقدم") and
+// the column headers hold still while only the rows move. Without the
+// max-height the table just grows and the whole wizard body scrolls instead,
+// carrying the headings off-screen with it.
+.o_baha_detail_table {
+    display: flex;
+    flex-direction: column;
+    // Never squeezed by the flex body it sits in. Letting it shrink collapsed
+    // the table to about one visible row, so the wizard body scrolls instead.
+    flex: 0 0 auto;
+
+    > h4 { flex: 0 0 auto; }
+}
+.o_baha_detail_table__scroll {
+    // Height follows the rows and is only capped, rather than being stretched
+    // or shrunk to fit leftover space: a short table stays short, a long one
+    // stops here and scrolls. `flex: 1 1 auto` here is what crushed it.
+    max-height: 320px;
+    overflow-y: auto;
+    overflow-x: auto;   // wide tables still scroll sideways, by design
+}
+
+// Every block in a wizard body keeps its natural height. These bodies are
+// flex columns, so by default a tall block gets compressed to fit instead of
+// making the body scroll — which is what reduced a table to a single row.
+.o_baha_float__body > *,
+.o_baha_detail_modal__body > * {
+    flex: 0 0 auto;
+}
+// The expand wizard is a reading view whose table IS the content, so it gets
+// the room rather than being boxed into the same short window.
+.o_baha_lines_table > .o_baha_detail_table__scroll {
+    max-height: 58vh;
+}
+
+// ---- Card header "expand" control ----
+// A real <button> (not an <i>) so it is keyboard-reachable and activates on
+// Enter/Space for free; styled back down to look like the bare icon it replaced.
+.o_baha_expand_btn {
+    border: 0;
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    line-height: 0;
+    cursor: pointer;
+    color: #454445;
+    opacity: 0.6;
+    font-size: 16px;
+    transition: opacity 0.15s ease, color 0.15s ease;
+
+    &:hover { opacity: 1; color: var(--dash-primary, #5c4b43); }
+    // Mouse users get no ring; keyboard users still do. Without the explicit
+    // :focus reset, clicking leaves a box sitting on the card afterwards.
+    &:focus { outline: none; }
+    &:focus-visible {
+        outline: 2px solid var(--dash-focus-ring, #00ab9d);
+        outline-offset: 3px;
+        opacity: 1;
+    }
+}
+
+// ---- Status legend chips (علي المسار / متأخر / متأخر جدا) ----
 .o_baha_legend {
     display: flex;
     gap: 14px;
@@ -347,6 +514,7 @@ body.o_baha_locked {
         &--ok { background: var(--dash-success, #00ab9d); }
         &--risk { background: var(--dash-warning, #f0974f); }
         &--late { background: var(--dash-danger, #ff5147); }
+        &--none { background: #9aa0a6; }
     }
 }
 
@@ -880,6 +1048,10 @@ body.o_baha_locked {
 
 // ---- Horizontal bar chart ----
 .o_baha_barh {
+    // Content taller than the fixed card height (--rows) scrolls instead of
+    // being clipped invisibly by the ancestor .o_baha_dash__cell's overflow:hidden.
+    overflow-y: auto;
+    overflow-x: hidden;   // never a sideways bar: overflow-y alone promotes overflow-x to auto
     &__rows { display: flex; flex-direction: column; gap: 14px; }
     &__row { display: flex; align-items: center; gap: 20px; }
     &__label { flex: 0 0 170px; font-size: 14px; color: #000000; text-align: right; line-height: 1.4; }
@@ -1136,15 +1308,17 @@ body.o_baha_locked {
             border-bottom: 0;
         }
     }
+    // Kept in step with the detail table above — a 14px table next to 12px
+    // field labels in the same window reads as an accident.
     dt {
         color: var(--dash-text-tertiary, #535862);
-        font-size: 12px;
+        font-size: 13px;
         font-weight: 700;
     }
     dd {
         margin: 0;
         color: var(--dash-text-primary, #181d27);
-        font-size: 13px;
+        font-size: 14px;
         font-weight: 800;
         text-align: left;
     }
@@ -1159,24 +1333,31 @@ body.o_baha_locked {
 }
 
 .o_baha_detail_table {
-    overflow: auto;
+    // NB: no `overflow` here. Scrolling belongs to the inner __scroll wrapper,
+    // otherwise the section title scrolls away with the rows it labels.
 
+    // Sized for reading, not for fitting: these tables are the numbers people
+    // actually came to look at. Horizontal scrolling is fine — cramming the
+    // columns small enough to avoid it is not.
     table {
         width: 100%;
         border-collapse: collapse;
-        font-size: 12px;
+        font-size: 14px;
     }
     th,
     td {
-        padding: 10px 12px;
+        padding: 12px 16px;
         border-bottom: 1px solid rgba(213, 215, 218, 0.72);
         text-align: right;
         white-space: nowrap;
+        line-height: 1.5;
     }
     th {
         color: var(--dash-text-secondary, #414651);
         font-weight: 800;
-        background: rgba(255, 255, 255, 0.62);
+    }
+    td {
+        color: var(--dash-text-primary, #181d27);
     }
 }
 
@@ -1220,6 +1401,221 @@ body.o_baha_locked {
         background: rgba(0, 171, 157, 0.16);
         box-shadow: 0 8px 18px rgba(0, 171, 157, 0.16);
     }
+}
+
+// Expanded-card wizard: a grouped panel contributes one titled table per
+// inner component, so they need separating from each other.
+.o_baha_detail_modal__body > .o_baha_lines_table + .o_baha_lines_table {
+    margin-top: 18px;
+}
+.o_baha_lines_table > h4 {
+    margin: 0 0 10px;
+    color: var(--dash-text-primary, #181d27);
+    font-size: 14px;
+    font-weight: 900;
+}
+
+// ============================================================
+//  Floating record windows (draggable, several at once)
+// ============================================================
+// Deliberately NOT modal — no backdrop — so the dashboard stays readable
+// behind them and two records can be compared side by side.
+// Record notes inside a detail panel. Append-only, so the list is display only
+// and the editor is the single point of entry.
+.o_baha_notes {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--dash-line, #e9eaeb);
+
+    &__head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8px;
+    }
+
+    &__title {
+        font-weight: 700;
+        font-size: 13px;
+        color: var(--dash-ink, #181d27);
+    }
+
+    &__editor {
+        margin-bottom: 10px;
+    }
+
+    &__input {
+        width: 100%;
+        min-height: 76px;
+        resize: vertical;
+        padding: 8px 10px;
+        border: 1px solid var(--dash-line, #d5d7da);
+        border-radius: 8px;
+        font: inherit;
+        line-height: 1.6;
+
+        &:focus {
+            outline: none;
+            border-color: var(--dash-accent, #00ab9d);
+        }
+    }
+
+    &__actions {
+        display: flex;
+        justify-content: flex-start;
+        gap: 8px;
+        margin-top: 6px;
+    }
+
+    &__list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    &__empty {
+        margin: 0;
+        color: var(--dash-muted, #717680);
+        font-size: 12px;
+    }
+
+    &__item {
+        padding: 8px 10px;
+        border: 1px solid var(--dash-line, #e9eaeb);
+        border-radius: 8px;
+        background: var(--dash-surface-2, #fafafa);
+    }
+
+    &__meta {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 4px;
+        font-size: 11px;
+        color: var(--dash-muted, #717680);
+    }
+
+    &__user {
+        font-weight: 700;
+    }
+
+    &__text {
+        font-size: 13px;
+        line-height: 1.7;
+        // Notes are free text and can be long; keep author line breaks.
+        white-space: pre-wrap;
+        word-break: break-word;
+    }
+}
+
+.o_baha_float {
+    position: fixed;
+    // NB: no CSS min()/max() here. SCSS resolves those as its own numeric
+    // functions before the browser ever sees them, so min(460px, calc(...))
+    // fails the whole stylesheet to compile. Plain width + max-* does the
+    // same job and survives the preprocessor.
+    // 520px keeps a 5-column history table readable while still letting two
+    // windows sit side by side on a 1280px screen (520*2 + gaps), which is the
+    // whole point of them being movable.
+    width: 520px;
+    max-width: calc(100vw - 32px);
+    max-height: 78vh;
+    display: flex;
+    flex-direction: column;
+    direction: rtl;
+    background: rgba(255, 255, 255, 0.97);
+    border: 1px solid rgba(255, 255, 255, 0.72);
+    border-radius: 14px;
+    box-shadow: 0 22px 60px rgba(24, 29, 39, 0.28);
+    backdrop-filter: blur(14px);
+    font-family: "Tajawal", "Segoe UI", system-ui, sans-serif;
+    overflow: hidden;
+    animation: o_baha_modal_in 0.16s ease-out;
+
+    // While dragging, kill the entry animation and any transition so the
+    // window tracks the pointer exactly instead of easing behind it.
+    &--dragging {
+        animation: none;
+        transition: none;
+        user-select: none;
+        box-shadow: 0 30px 70px rgba(24, 29, 39, 0.34);
+    }
+
+    &__head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--dash-border, #d5d7da);
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.5));
+        cursor: grab;          // the whole header is the drag handle
+        flex: 0 0 auto;
+
+        &:active { cursor: grabbing; }
+    }
+    &__titles { min-width: 0; }
+    &__eyebrow {
+        color: var(--dash-accent, #00ab9d);
+        font-size: 11px;
+        font-weight: 800;
+    }
+    &__title {
+        margin-top: 2px;
+        color: var(--dash-text-primary, #181d27);
+        font-size: 15px;
+        font-weight: 800;
+    }
+    &__subtitle {
+        margin-top: 2px;
+        color: var(--dash-text-tertiary, #535862);
+        font-size: 12px;
+        font-weight: 600;
+    }
+    &__headtools {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex: 0 0 auto;
+    }
+    &__close {
+        border: 0;
+        background: transparent;
+        font-size: 16px;
+        color: #9aa0a6;
+        cursor: pointer;
+        line-height: 1;
+        padding: 2px;
+        &:hover { color: #111827; }
+        &:focus { outline: none; }
+        &:focus-visible {
+            outline: 2px solid var(--dash-focus-ring, #00ab9d);
+            outline-offset: 2px;
+        }
+    }
+
+    &__body {
+        padding: 16px;
+        overflow-y: auto;
+        flex: 1 1 auto;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    &__foot {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 10px;
+        padding: 12px 16px;
+        border-top: 1px solid var(--dash-border, #d5d7da);
+        flex: 0 0 auto;
+    }
+
+    // The summary grid is tighter in a narrow window than in a full modal.
+    .o_baha_detail_summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .o_baha_detail_sections { grid-template-columns: 1fr; }
 }
 
 .o_baha_lines_modal__hint {
@@ -1409,6 +1805,90 @@ body.o_baha_locked {
     }
 }
 
+.o_baha_export_modal {
+    max-width: 640px;
+}
+
+.o_baha_export_period {
+    &__hint {
+        color: var(--dash-text-tertiary, #717680);
+        text-align: center;
+        padding: 24px;
+    }
+    // Reuses .o_baha_filter__opt styling but lays the three mode buttons out
+    // inline instead of as the header's absolutely-positioned dropdown.
+    &__modes {
+        position: static;
+        display: flex;
+        gap: 6px;
+        padding: 0;
+        margin-bottom: 14px;
+        background: transparent;
+        box-shadow: none;
+    }
+    &__controls {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    &__date {
+        height: 40px;
+        padding: 0 10px;
+        border: 1px solid var(--dash-border, #d5d7da);
+        border-radius: 8px;
+        font-size: 13px;
+        color: var(--dash-text-primary, #181d27);
+        background: #fff;
+    }
+    &__sep {
+        color: var(--dash-text-tertiary, #717680);
+    }
+}
+
+.o_baha_export_formats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.o_baha_export_format {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 28px 14px;
+    border: 1px solid var(--dash-border, #d5d7da);
+    border-radius: 12px;
+    background: #fff;
+    cursor: pointer;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+
+    &:hover:not(:disabled) {
+        border-color: var(--dash-accent, #00ab9d);
+        background: rgba(0, 171, 157, 0.04);
+    }
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+    &__icon {
+        font-size: 30px;
+        color: var(--dash-accent, #00ab9d);
+    }
+    &__label {
+        font-weight: 800;
+        color: var(--dash-text-primary, #181d27);
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 560px) {
+    .o_baha_export_formats {
+        grid-template-columns: 1fr;
+    }
+}
+
 .o_baha_dropzone {
     border: 2px dashed var(--dash-border, #d5d7da);
     border-radius: 12px;
@@ -1533,6 +2013,21 @@ body.o_baha_locked {
     &__scale { display: flex; justify-content: space-between; width: 140px; font-size: 11px; color: var(--dash-text-tertiary); }
 }
 
+// Composite grid panels (gauge/stat/kpi/semi) — the grid of cards scrolls
+// independently of the panel head when there are more cards than the fixed
+// card height fits, instead of being clipped invisibly.
+.o_baha_gaugegrid, .o_baha_statgrid, .o_baha_kpigrid, .o_baha_semigrid {
+    display: flex;
+    flex-direction: column;
+    .o_baha_panel__head { flex: 0 0 auto; }
+}
+.o_baha_gaugegrid__grid, .o_baha_statgrid__grid, .o_baha_kpigrid__grid, .o_baha_semigrid__grid {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;   // never a sideways bar: overflow-y alone promotes overflow-x to auto
+}
+
 // KPI gauge card
 .o_baha_kpi {
     &__top { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
@@ -1557,6 +2052,9 @@ body.o_baha_locked {
 
 // planned-vs-actual horizontal bars
 .o_baha_barhp {
+    // Same as .o_baha_barh — scroll rather than clip when the rows overflow.
+    overflow-y: auto;
+    overflow-x: hidden;   // never a sideways bar: overflow-y alone promotes overflow-x to auto
     &__rows { display: flex; flex-direction: column; gap: 14px; }
     &__row { display: flex; align-items: center; gap: 10px; }
     &__label { flex: 0 0 150px; font-size: 12px; color: var(--dash-text-secondary); }
@@ -1609,9 +2107,8 @@ body.o_baha_locked {
 
 // alerts panel
 .o_baha_alerts {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+    // Groups are spaced by the scroll container now, not the card.
+    .o_baha_card__scroll { display: flex; flex-direction: column; gap: 16px; }
     &__group {
         background: rgba(243, 243, 247, 0.2);
         border: 1px solid #E8E8E8;
@@ -1623,8 +2120,9 @@ body.o_baha_locked {
         display: flex; align-items: center; justify-content: space-between; gap: 12px;
         cursor: pointer;
         border-radius: 4px;
+        &:focus { outline: none; }
         &:focus-visible {
-            outline: 2px solid var(--dash-accent, #00ab9d);
+            outline: 2px solid var(--dash-focus-ring, #00ab9d);
             outline-offset: 4px;
         }
     }
@@ -1700,8 +2198,9 @@ body.o_baha_locked {
     &:hover {
         background: rgba(0, 171, 157, 0.07) !important;
     }
+    &:focus { outline: none; }
     &:focus-visible {
-        outline: 2px solid var(--dash-accent, #00ab9d);
+        outline: 2px solid var(--dash-focus-ring, #00ab9d);
         outline-offset: -2px;
         background: rgba(0, 171, 157, 0.09);
     }
@@ -1714,8 +2213,9 @@ body.o_baha_locked {
     &:hover {
         background: rgba(0, 171, 157, 0.06);
     }
+    &:focus { outline: none; }
     &:focus-visible {
-        outline: 2px solid var(--dash-accent, #00ab9d);
+        outline: 2px solid var(--dash-focus-ring, #00ab9d);
         outline-offset: 2px;
     }
 }
@@ -2290,6 +2790,26 @@ body.o_baha_locked {
     box-shadow: 0 2px 8px rgba(24, 29, 39, 0.15);
 }
 
+// Way out of "viewing as another user". Sits at the far end of the banner so it
+// is the obvious control there — exiting edit mode does not leave this mode.
+.o_baha_asuser__exit {
+    margin-inline-start: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.65);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    font: inherit;
+    cursor: pointer;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.24);
+    }
+}
+
 // remove (×) button on each edit card — shown on hover
 .o_baha_gs_remove {
     position: absolute;
@@ -2313,6 +2833,75 @@ body.o_baha_locked {
     &:hover { filter: brightness(0.92); }
 }
 .o_baha_gs_item:hover .o_baha_gs_remove { opacity: 1; }
+
+// ---- Move a card to another page (edit mode) ----
+// Sits beside the × and appears on the same hover, so the two card actions
+// read as one pair rather than the move being hidden somewhere else.
+.o_baha_gs_movewrap {
+    position: absolute;
+    top: 6px;
+    inset-inline-end: 36px;
+    z-index: 9;
+}
+.o_baha_gs_move {
+    width: 24px;
+    height: 24px;
+    border: 0;
+    border-radius: 50%;
+    background: var(--dash-primary, #5c4b43);
+    color: #fff;
+    font-size: 11px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.15s ease, filter 0.15s ease;
+
+    &:hover { filter: brightness(1.15); }
+}
+.o_baha_gs_item:hover .o_baha_gs_move { opacity: 1; }
+// Keep it visible while its menu is open, or the menu looks unanchored.
+.o_baha_gs_movewrap:has(.o_baha_gs_movemenu) .o_baha_gs_move { opacity: 1; }
+
+.o_baha_gs_movemenu {
+    position: absolute;
+    top: calc(100% + 6px);
+    inset-inline-end: 0;
+    min-width: 210px;
+    padding: 6px;
+    background: #fff;
+    border: 1px solid var(--dash-border, #d5d7da);
+    border-radius: 10px;
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.16);
+    text-align: right;
+    z-index: 20;
+
+    &__title {
+        padding: 4px 8px 6px;
+        color: var(--dash-text-tertiary, #717680);
+        font-size: 11px;
+        font-weight: 800;
+    }
+}
+.o_baha_gs_moveitem {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 7px 9px;
+    border: 0;
+    border-radius: 6px;
+    background: none;
+    color: var(--dash-text-secondary, #414651);
+    font-size: 12px;
+    font-weight: 600;
+    text-align: right;
+    cursor: pointer;
+
+    &:hover { background: rgba(0, 171, 157, 0.09); color: var(--dash-teal, #00786e); }
+    i { opacity: 0.6; }
+}
 
 // remove (×) on a tab, edit mode only
 .o_baha_tab__remove {

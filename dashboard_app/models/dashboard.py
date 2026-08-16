@@ -168,7 +168,66 @@ class DashboardDashboard(models.Model):
         rec = self.env[model].sudo().browse(int(res_id or 0)).exists()
         if not rec:
             raise MissingError("The requested dashboard record no longer exists.")
-        return registry[model](rec)
+        payload = registry[model](rec)
+        payload["logs"] = self._record_logs(model, rec.id)
+        return payload
+
+    # --- record notes ------------------------------------------------------
+    # albaha_log is an optional companion module, so every entry point checks
+    # the registry rather than importing it: dashboard_app must keep working
+    # when it is not installed.
+
+    LOG_MODEL = "albaha.record.log"
+    LOG_LIMIT = 50
+
+    @api.model
+    def _serialize_log(self, log):
+        return {
+            "id": log.id,
+            "note": log.note or "",
+            "user_name": log.user_id.name or "",
+            "date": fields.Datetime.context_timestamp(
+                self, log.create_date).strftime("%Y-%m-%d %H:%M") if log.create_date else "",
+        }
+
+    @api.model
+    def _record_logs(self, model, res_id):
+        if self.LOG_MODEL not in self.env.registry.models:
+            return []
+        logs = self.env[self.LOG_MODEL].sudo().search(
+            [("res_model", "=", model), ("res_id", "=", res_id)], limit=self.LOG_LIMIT)
+        return [self._serialize_log(log) for log in logs]
+
+    @api.model
+    def add_record_note(self, model, res_id, note):
+        """Append a note to one dashboard record's log.
+
+        Same shape as the rest of this endpoint family: gate on dashboard_access,
+        resolve the model through the drill-down whitelist (never straight from
+        user input), then write with sudo — portal users hold no ACLs on
+        albaha.* but are exactly who this feature is for.
+        """
+        if not self.env.user.sudo().dashboard_access:
+            raise AccessError("يلزم الوصول إلى لوحة التحكم.")
+        if model not in self._detail_registry():
+            raise UserError("نوع السجل غير مدعوم.")
+        if self.LOG_MODEL not in self.env.registry.models:
+            raise UserError("وحدة سجل الملاحظات غير مثبتة.")
+        note = (note or "").strip()
+        if not note:
+            raise UserError("لا يمكن حفظ ملاحظة فارغة.")
+
+        rec = self.env[model].sudo().browse(int(res_id or 0)).exists()
+        if not rec:
+            raise MissingError("السجل لم يعد موجوداً.")
+
+        log = self.env[self.LOG_MODEL].sudo().create({
+            "res_model": model,
+            "res_id": rec.id,
+            "note": note,
+            "user_id": self.env.uid,
+        })
+        return self._serialize_log(log)
 
     @api.model
     def get_aggregate_records(self, aggregate, dashboard_filter=None):
@@ -1007,7 +1066,8 @@ class DashboardDashboard(models.Model):
         return applied
 
     @api.model
-    def save_layout_edits(self, dashboard_id, sections, layout_version=None, visibility=None, target_user_id=None):
+    def save_layout_edits(self, dashboard_id, sections, layout_version=None, visibility=None,
+                          moves=None, target_user_id=None):
         """Persist component order and grid layout from dashboard edit mode.
 
         ``sections`` is a list of ``{"section_id": id, "items": [...]}``
@@ -1076,7 +1136,50 @@ class DashboardDashboard(models.Model):
                     sec.sudo().visible = bool(vis)
             self.env.flush_all()
 
-        if not sections and not visibility:
+        # Cards moved to another page. Applied before the geometry pass so a
+        # component that just arrived is already on its new section. Both the
+        # source and target section must belong to THIS dashboard — a move is
+        # a rearrangement, never a way to reach another dashboard's pages.
+        if moves:
+            for cid, target_sid in moves.items():
+                comp = Component.browse(int(cid)).exists()
+                target = Section.sudo().browse(int(target_sid)).exists()
+                if not comp or not target:
+                    continue
+                if comp.section_id.dashboard_id != dashboard or target.dashboard_id != dashboard:
+                    raise UserError("Invalid dashboard section for move.")
+                if comp.component_type == "banner":
+                    continue          # the banner is page furniture, not a card
+                # Land it BELOW everything already on the target page.
+                #
+                # Carrying its old page's grid_y across meant it almost always
+                # overlapped a card already sitting there. An overlap makes the
+                # client's sanitiser treat the whole page as corrupt and reflow
+                # it — one arriving card was measured repositioning 6 of the 7
+                # cards around it, wrecking an arrangement the user had already
+                # saved. Placing it at the bottom keeps the page valid, so
+                # nothing else is touched.
+                bottom = 0
+                for sibling in target.component_ids.filtered("visible"):
+                    if sibling.id == comp.id:
+                        continue
+                    top = sibling.group_grid_y if sibling.group_key else sibling.grid_y
+                    height = sibling.group_row_span if sibling.group_key else sibling.row_span
+                    bottom = max(bottom, (top or 0) + (height or 0))
+                seqs = target.component_ids.mapped("sequence") or [0]
+                comp.write({
+                    "section_id": target.id,
+                    "grid_x": 0,
+                    "grid_y": bottom,
+                    "group_grid_x": 0 if comp.group_key else comp.group_grid_x,
+                    "group_grid_y": bottom if comp.group_key else comp.group_grid_y,
+                    # Appended, not interleaved: keeping the old sequence made
+                    # it collide with a card already on the target page.
+                    "sequence": max(seqs) + 10,
+                })
+            self.env.flush_all()
+
+        if not sections and not visibility and not moves:
             raise UserError("No layout changes to save.")
 
         saved = 0
@@ -1120,7 +1223,7 @@ class DashboardDashboard(models.Model):
                     group_rows = entry.get("group_row_span")
                     if group_rows is not None:
                         group_rows = int(group_rows)
-                        if group_rows < 1 or group_rows > 12:
+                        if group_rows < 1 or group_rows > MAX_ROW_SPAN:
                             raise UserError("Invalid group row height: %s" % group_rows)
                         vals["group_row_span"] = group_rows
                     if "group_grid_x" in entry and entry.get("group_grid_x") is not None:

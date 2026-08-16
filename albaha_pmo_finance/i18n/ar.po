@@ -1,0 +1,405 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* albaha_pmo_finance
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0-20260630\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-06 00:45+0000\n"
+"PO-Revision-Date: 2026-08-06 00:45+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: albaha_pmo_finance
+#: model:ir.model,name:albaha_pmo_finance.model_albaha_budget
+msgid "A monthly budget snapshot for a project"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model,name:albaha_pmo_finance.model_albaha_procurement
+msgid "A procurement record for a project"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model,name:albaha_pmo_finance.model_albaha_contract
+msgid "A supplier contract resulting from a procurement"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_financial__ac_actual_cost
+msgid "AC - Actual Cost"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields.selection,name:albaha_pmo_finance.selection__albaha_contract__status__active
+msgid "Active"
+msgstr "نشط"
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_budget__actual_spent
+msgid "Actual Spent (SAR m)"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.ui.menu,name:albaha_pmo_finance.menu_albaha_pmo_finance_root
+msgid "Al-Baha PMO - Finance"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_budget__approved_amount
+msgid "Approved Amount (SAR m)"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields.selection,name:albaha_pmo_finance.selection__albaha_procurement__stage__awarded
+msgid "Awarded"
+msgstr "تمت الترسية"
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_procurement__awarded_supplier
+msgid "Awarded Supplier"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_procurement__awarded_value_sar_m
+msgid "Awarded Value (SAR m)"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_budget__budget_category
+msgid "Budget Category"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.actions.act_window,name:albaha_pmo_finance.action_albaha_budget
+#: model:ir.ui.menu,name:albaha_pmo_finance.menu_albaha_budget
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_finance.view_albaha_budget_list
+msgid "Budgets"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_financial__burn_rate_monthly
+msgid "Burn Rate (monthly)"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_financial__cpi
+msgid "CPI"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_budget__committed_amount
+msgid "Committed Amount (SAR m)"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields.selection,name:albaha_pmo_finance.selection__albaha_procurement__procurement_type__consultancy
+msgid "Consultancy"
+msgstr "استشارات"
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_contract__name
+msgid "Contract Number"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_contract__contract_value_sar_m
+msgid "Contract Value (SAR m)"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields.selection,name:albaha_pmo_finance.selection__albaha_procurement__stage__contracted
+msgid "Contracted"
+msgstr "متعاقد عليه"
+
+#. module: albaha_pmo_finance
+#: model:ir.actions.act_window,name:albaha_pmo_finance.action_albaha_contract
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_procurement__contract_ids
+#: model:ir.ui.menu,name:albaha_pmo_finance.menu_albaha_contract
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_finance.view_albaha_contract_list
+msgid "Contracts"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_budget__create_uid
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_contract__create_uid
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_financial__create_uid
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_procurement__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_budget__create_date
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_contract__create_date
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_financial__create_date
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_procurement__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_contract__currency
+msgid "Currency"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_procurement__cycle_time_days
+msgid "Cycle Time (days)"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_budget__display_name
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_contract__display_name
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_financial__display_name
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_procurement__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields.selection,name:albaha_pmo_finance.selection__albaha_contract__status__draft
+msgid "Draft"
+msgstr "مسودة"
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_financial__eac
+msgid "EAC"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_financial__ev_earned_value
+msgid "EV - Earned Value"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model,name:albaha_pmo_finance.model_albaha_financial
+msgid "Earned Value Management (EVM) figures for a project period"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_contract__end_date
+msgid "End Date"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_procurement__estimated_value_sar_m
+msgid "Estimated Value (SAR m)"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_procurement__tender_ref_etimad
+msgid "Etimad Tender Ref"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields.selection,name:albaha_pmo_finance.selection__albaha_procurement__stage__evaluation
+msgid "Evaluation"
+msgstr "تقييم"
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_procurement__expected_award_date
+msgid "Expected Award Date"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields.selection,name:albaha_pmo_finance.selection__albaha_contract__status__expired
+msgid "Expired"
+msgstr "منتهٍ"
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_contract__extensions_count
+msgid "Extensions Count"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.actions.act_window,name:albaha_pmo_finance.action_albaha_financial
+#: model:ir.ui.menu,name:albaha_pmo_finance.menu_albaha_financial
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_finance.view_albaha_financial_list
+msgid "Financials"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_budget__forecast_eac
+msgid "Forecast EAC (SAR m)"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields.selection,name:albaha_pmo_finance.selection__albaha_procurement__procurement_type__goods
+msgid "Goods"
+msgstr "سلع"
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_budget__id
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_contract__id
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_financial__id
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_procurement__id
+msgid "ID"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_budget__write_uid
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_contract__write_uid
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_financial__write_uid
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_procurement__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_budget__write_date
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_contract__write_date
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_financial__write_date
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_procurement__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_financial__pv_planned_value
+msgid "PV - Planned Value"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_contract__performance_guarantee_pct
+msgid "Performance Guarantee %"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_budget__period_year_month
+msgid "Period (YYYY-MM)"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields.selection,name:albaha_pmo_finance.selection__albaha_procurement__stage__planning
+msgid "Planning"
+msgstr "التخطيط"
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_contract__procurement_id
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_finance.view_albaha_contract_search
+msgid "Procurement"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_procurement__code
+msgid "Procurement Code"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_finance.view_albaha_procurement_search
+msgid "Procurement Type"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.actions.act_window,name:albaha_pmo_finance.action_albaha_procurement
+#: model:ir.ui.menu,name:albaha_pmo_finance.menu_albaha_procurement
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_finance.view_albaha_procurement_list
+msgid "Procurements"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_budget__project_id
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_financial__project_id
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_procurement__project_id
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_finance.view_albaha_budget_search
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_finance.view_albaha_financial_search
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_finance.view_albaha_procurement_search
+msgid "Project"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields.selection,name:albaha_pmo_finance.selection__albaha_procurement__stage__rfp
+msgid "RFP Floated"
+msgstr "طُرح طلب العروض"
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_procurement__rfp_floated_date
+msgid "RFP Floated Date"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_budget__name
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_financial__name
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_procurement__name
+msgid "Reference"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_budget__remaining_amount
+msgid "Remaining Amount (SAR m)"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_financial__reporting_period
+msgid "Reporting Period"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_contract__sla_terms
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_finance.view_albaha_contract_form
+msgid "SLA Terms"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_financial__spi
+msgid "SPI"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields.selection,name:albaha_pmo_finance.selection__albaha_procurement__procurement_type__services
+msgid "Services"
+msgstr "خدمات"
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_contract__signed_date
+msgid "Signed Date"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_procurement__stage
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_finance.view_albaha_procurement_search
+msgid "Stage"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_contract__start_date
+msgid "Start Date"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_contract__status
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_finance.view_albaha_contract_search
+msgid "Status"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_contract__supplier_id
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_finance.view_albaha_contract_search
+msgid "Supplier"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields.selection,name:albaha_pmo_finance.selection__albaha_contract__status__terminated
+msgid "Terminated"
+msgstr "منهي"
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_procurement__procurement_type
+msgid "Type"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_financial__vac
+msgid "VAC"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields,field_description:albaha_pmo_finance.field_albaha_budget__variance_pct
+msgid "Variance %"
+msgstr ""
+
+#. module: albaha_pmo_finance
+#: model:ir.model.fields.selection,name:albaha_pmo_finance.selection__albaha_procurement__procurement_type__works
+msgid "Works"
+msgstr "أشغال"

@@ -479,7 +479,7 @@ export class GaugeCard extends Component {
                 </div>
             </div>
         </div>`;
-    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?"];
+    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?", "onOpenComponent?"];
 
     trendClass(dir) { return trendClass(dir); }
 
@@ -535,7 +535,7 @@ export class StatCard extends Component {
                 </div>
             </div>
         </div>`;
-    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?"];
+    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?", "onOpenComponent?"];
     trendClass(dir) { return trendClass(dir); }
     get cardClass() {
         return {
@@ -582,7 +582,7 @@ export class ProgressCard extends Component {
                 المطلوب: <span t-esc="props.comp.data.required + '%'"/>
             </div>
         </div>`;
-    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?"];
+    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?", "onOpenComponent?"];
     get colorDefault() { return this.props.colors.danger || "#ff5147"; }
     get cardClass() {
         return {
@@ -610,7 +610,7 @@ export class ProgressCard extends Component {
 export class BarChartH extends Component {
     static template = xml`
         <div class="o_baha_card o_baha_barh">
-            <div class="o_baha_card__head" t-if="props.comp.title and !props.comp.data.hide_head"><span class="o_baha_card__title" t-esc="props.comp.title"/><div class="o_baha_card__tools"><span class="o_baha_legend"><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>مسار صحيح</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>في خطر</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر</span></span><i class="fa fa-expand o_baha_panel__expand"/><i class="fa fa-ellipsis-v o_baha_panel__menu"/></div></div>
+            <div class="o_baha_card__head" t-if="props.comp.title and !props.comp.data.hide_head"><span class="o_baha_card__title" t-esc="props.comp.title"/><div class="o_baha_card__tools"><span class="o_baha_legend"><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>علي المسار</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>متأخر</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر جدا</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--none"/>لم يتم القياس</span></span><button t-if="props.onOpenComponent" class="o_baha_expand_btn" title="عرض كامل البيانات" t-on-click="() => props.onOpenComponent(props.comp)"><i class="fa fa-expand"/></button></div></div>
             <div class="o_baha_barh__rows">
                 <t t-foreach="props.comp.data.items or []" t-as="item" t-key="item_index">
                     <div class="o_baha_barh__row"
@@ -629,7 +629,7 @@ export class BarChartH extends Component {
                 </t>
             </div>
         </div>`;
-    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?"];
+    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?", "onOpenComponent?"];
     get colorAccent() { return this.props.colors.accent || "#00ab9d"; }
     isClickable(item) { return isClickable(item); }
     clickableClass(item) { return clickableClass(item); }
@@ -639,7 +639,10 @@ export class BarChartH extends Component {
         const items = this.props.comp.data.items || [];
         return this.props.comp.data.max || Math.max(1, ...items.map((i) => i.value || 0));
     }
-    pct(v) { return Math.round(((v || 0) / this.max) * 100); }
+    // Bar GEOMETRY only — clamped to 0..100 so a value above `max` (a KPI that
+    // beat its target, e.g. 118%) cannot render a fill wider than its track.
+    // The label still shows the true value; only the drawing is capped.
+    pct(v) { return Math.max(0, Math.min(100, Math.round(((v || 0) / this.max) * 100))); }
 }
 
 // ---------------------------------------------------------------------------
@@ -675,7 +678,7 @@ export class BarChartV extends Component {
                 </div>
             </div>
         </div>`;
-    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?"];
+    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?", "onOpenComponent?"];
     get colorAccent() { return this.props.colors.accent || "#00ab9d"; }
     isClickable(item) { return isClickable(item); }
     clickableClass(item) { return clickableClass(item); }
@@ -685,7 +688,9 @@ export class BarChartV extends Component {
         const items = this.props.comp.data.items || [];
         return this.props.comp.data.max || Math.max(1, ...items.map((i) => i.value || 0));
     }
-    pct(v) { return Math.round(((v || 0) / this.max) * 100); }
+    // Clamped for the same reason as BarChartH — a value over `max` must not
+    // draw a column taller than the plot area.
+    pct(v) { return Math.max(0, Math.min(100, Math.round(((v || 0) / this.max) * 100))); }
 }
 
 // ---------------------------------------------------------------------------
@@ -694,7 +699,8 @@ export class BarChartV extends Component {
 export class DataTable extends Component {
     static template = xml`
         <div class="o_baha_card o_baha_table">
-            <div class="o_baha_card__head" t-if="props.comp.title and !props.comp.data.hide_head"><span class="o_baha_card__title" t-esc="props.comp.title"/><div class="o_baha_card__tools"><span class="o_baha_legend"><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>مسار صحيح</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>في خطر</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر</span></span><i class="fa fa-expand o_baha_panel__expand"/><i class="fa fa-ellipsis-v o_baha_panel__menu"/></div></div>
+            <div class="o_baha_card__head" t-if="props.comp.title and !props.comp.data.hide_head"><span class="o_baha_card__title" t-esc="props.comp.title"/><div class="o_baha_card__tools"><span class="o_baha_legend"><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>علي المسار</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>متأخر</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر جدا</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--none"/>لم يتم القياس</span></span><button t-if="props.onOpenComponent" class="o_baha_expand_btn" title="عرض كامل البيانات" t-on-click="() => props.onOpenComponent(props.comp)"><i class="fa fa-expand"/></button></div></div>
+            <div class="o_baha_card__scroll">
             <table>
                 <thead>
                     <tr>
@@ -727,6 +733,16 @@ export class DataTable extends Component {
                                     <t t-elif="cell and cell.type === 'tag'">
                                         <span class="o_baha_tag" t-attf-style="{{cell.color ? 'color:'+cell.color+';border-color:'+cell.color : ''}}" t-esc="cell.label"/>
                                     </t>
+                                    <t t-elif="cell and cell.type === 'trend'">
+                                        <span t-if="cell.label" class="o_baha_trend"
+                                              t-attf-class="o_baha_trend--{{cell.good ? 'up' : 'down'}}">
+                                            <span class="o_baha_trend__pct" t-esc="cell.label"/>
+                                            <span class="o_baha_trend__badge">
+                                                <i t-attf-class="fa {{cell.dir === 'down' ? 'fa-arrow-down' : 'fa-arrow-up'}}"/>
+                                            </span>
+                                        </span>
+                                        <span t-else="">—</span>
+                                    </t>
                                     <t t-else=""><span t-esc="cell"/></t>
                                 </td>
                             </t>
@@ -734,8 +750,9 @@ export class DataTable extends Component {
                     </t>
                 </tbody>
             </table>
+            </div>
         </div>`;
-    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?"];
+    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?", "onOpenComponent?"];
     get colorAccent() { return this.props.colors.accent || "#00ab9d"; }
     isClickable(row) { return isClickable(row); }
     openRow(row) {
@@ -776,7 +793,7 @@ export class GaugeSemi extends Component {
                 <span t-esc="props.comp.data.delta"/>
             </div>
         </div>`;
-    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?"];
+    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?", "onOpenComponent?"];
     get trendCls() { return trendClass(this.props.comp.data.trend); }
     get cardClass() {
         return {
@@ -841,7 +858,7 @@ export class KpiGaugeCard extends Component {
                 </div>
             </div>
         </div>`;
-    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?"];
+    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?", "onOpenComponent?"];
     get cardClass() {
         return {
             "o_baha_clickable": isClickable(this.props.comp.data),
@@ -879,7 +896,7 @@ export class BudgetSplitBar extends Component {
              t-att-role="cardRole"
              t-on-click="() => this.openSelf()"
              t-on-keydown="onSelfKeydown">
-            <div class="o_baha_card__head" t-if="props.comp.title and !props.comp.data.hide_head"><span class="o_baha_card__title" t-esc="props.comp.title"/><div class="o_baha_card__tools"><span class="o_baha_legend"><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>مسار صحيح</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>في خطر</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر</span></span><i class="fa fa-expand o_baha_panel__expand"/><i class="fa fa-ellipsis-v o_baha_panel__menu"/></div></div>
+            <div class="o_baha_card__head" t-if="props.comp.title and !props.comp.data.hide_head"><span class="o_baha_card__title" t-esc="props.comp.title"/><div class="o_baha_card__tools"><span class="o_baha_legend"><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>علي المسار</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>متأخر</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر جدا</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--none"/>لم يتم القياس</span></span><button t-if="props.onOpenComponent" class="o_baha_expand_btn" title="عرض كامل البيانات" t-on-click="() => props.onOpenComponent(props.comp)"><i class="fa fa-expand"/></button></div></div>
             <div class="o_baha_split__bar">
                 <div class="o_baha_split__seg o_baha_split__seg--spent"
                      t-attf-style="width:{{props.comp.data.spent_pct}}%;" t-esc="props.comp.data.spent_label"/>
@@ -891,7 +908,7 @@ export class BudgetSplitBar extends Component {
                 <span><i class="o_baha_dot o_baha_dot--rem"/> متبقي</span>
             </div>
         </div>`;
-    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?"];
+    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?", "onOpenComponent?"];
     get cardClass() {
         return {
             "o_baha_clickable": isClickable(this.props.comp.data),
@@ -918,7 +935,7 @@ export class BudgetSplitBar extends Component {
 export class BarChartHPlanned extends Component {
     static template = xml`
         <div class="o_baha_card o_baha_barhp">
-            <div class="o_baha_card__head" t-if="props.comp.title and !props.comp.data.hide_head"><span class="o_baha_card__title" t-esc="props.comp.title"/><div class="o_baha_card__tools"><span class="o_baha_legend"><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>مسار صحيح</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>في خطر</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر</span></span><i class="fa fa-expand o_baha_panel__expand"/><i class="fa fa-ellipsis-v o_baha_panel__menu"/></div></div>
+            <div class="o_baha_card__head" t-if="props.comp.title and !props.comp.data.hide_head"><span class="o_baha_card__title" t-esc="props.comp.title"/><div class="o_baha_card__tools"><span class="o_baha_legend"><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>علي المسار</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>متأخر</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر جدا</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--none"/>لم يتم القياس</span></span><button t-if="props.onOpenComponent" class="o_baha_expand_btn" title="عرض كامل البيانات" t-on-click="() => props.onOpenComponent(props.comp)"><i class="fa fa-expand"/></button></div></div>
             <div class="o_baha_barhp__rows">
                 <t t-foreach="props.comp.data.items or []" t-as="item" t-key="item_index">
                     <div class="o_baha_barhp__row"
@@ -931,19 +948,22 @@ export class BarChartHPlanned extends Component {
                         <div class="o_baha_barhp__track">
                             <div class="o_baha_barhp__plan"/>
                             <div class="o_baha_barhp__fill"
-                                 t-attf-style="width:{{item.value}}%;background:{{item.color or colorAccent}};"/>
+                                 t-attf-style="width:{{pct(item.value)}}%;background:{{item.color or colorAccent}};"/>
                         </div>
                         <span class="o_baha_barhp__budget" t-esc="item.budget"/>
                     </div>
                 </t>
             </div>
         </div>`;
-    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?"];
+    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?", "onOpenComponent?"];
     get colorAccent() { return this.props.colors.accent || "#00ab9d"; }
     isClickable(item) { return isClickable(item); }
     clickableClass(item) { return clickableClass(item); }
     openItem(item) { dispatchItemClick(item, this.props.onOpenRecord, this.props.onOpenDrilldown); }
     onItemKeydown(ev, item) { onItemKeydown(ev, item, this.props.onOpenRecord, this.props.onOpenDrilldown); }
+    // Actual-vs-planned values are already percentages; clamp the drawn width
+    // so an over-100% actual stays inside its planned track.
+    pct(v) { return Math.max(0, Math.min(100, Math.round(v || 0))); }
 }
 
 // ---------------------------------------------------------------------------
@@ -952,7 +972,8 @@ export class BarChartHPlanned extends Component {
 export class GoalsList extends Component {
     static template = xml`
         <div class="o_baha_card o_baha_goals">
-            <div class="o_baha_card__head" t-if="props.comp.title and !props.comp.data.hide_head"><span class="o_baha_card__title" t-esc="props.comp.title"/><div class="o_baha_card__tools"><span class="o_baha_legend"><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>مسار صحيح</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>في خطر</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر</span></span><i class="fa fa-expand o_baha_panel__expand"/><i class="fa fa-ellipsis-v o_baha_panel__menu"/></div></div>
+            <div class="o_baha_card__head" t-if="props.comp.title and !props.comp.data.hide_head"><span class="o_baha_card__title" t-esc="props.comp.title"/><div class="o_baha_card__tools"><span class="o_baha_legend"><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>علي المسار</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>متأخر</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر جدا</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--none"/>لم يتم القياس</span></span><button t-if="props.onOpenComponent" class="o_baha_expand_btn" title="عرض كامل البيانات" t-on-click="() => props.onOpenComponent(props.comp)"><i class="fa fa-expand"/></button></div></div>
+            <div class="o_baha_card__scroll">
             <t t-foreach="props.comp.data.items or []" t-as="g" t-key="g_index">
                 <div class="o_baha_goals__row"
                      t-att-class="clickableClass(g)"
@@ -977,8 +998,9 @@ export class GoalsList extends Component {
                     </div>
                 </div>
             </t>
+            </div>
         </div>`;
-    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?"];
+    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?", "onOpenComponent?"];
     isClickable(item) { return isClickable(item); }
     clickableClass(item) { return clickableClass(item); }
     openItem(item) { dispatchItemClick(item, this.props.onOpenRecord, this.props.onOpenDrilldown); }
@@ -1003,13 +1025,16 @@ export class ListCards extends Component {
                     <span t-if="props.comp.data.count" class="o_baha_listcards__count" t-esc="props.comp.data.count"/>
                 </div>
                 <div class="o_baha_card__tools">
-                    <span t-if="props.comp.data.filter_label" class="o_baha_chip">
-                        <span t-esc="props.comp.data.filter_label"/><i class="fa fa-angle-down"/>
-                    </span>
-                    <i class="fa fa-expand o_baha_panel__expand"/>
-                    <i class="fa fa-ellipsis-v o_baha_panel__menu"/>
+                    <!-- Filter chip parked — see PARKED_UI.md. It rendered a
+                         dropdown affordance with no dropdown behind it. -->
+                    <button t-if="props.onOpenComponent" class="o_baha_expand_btn"
+                            title="عرض كامل البيانات"
+                            t-on-click="() => props.onOpenComponent(props.comp)">
+                        <i class="fa fa-expand"/>
+                    </button>
                 </div>
             </div>
+            <div class="o_baha_card__scroll">
             <t t-foreach="props.comp.data.items or []" t-as="it" t-key="it_index">
                 <div class="o_baha_listcards__item"
                      t-attf-class="o_baha_listcards__item--{{it.level or 'mid'}} {{clickableClass(it)}}"
@@ -1026,8 +1051,9 @@ export class ListCards extends Component {
                     <div t-if="it.decision" class="o_baha_listcards__decision" t-esc="it.decision"/>
                 </div>
             </t>
+            </div>
         </div>`;
-    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?"];
+    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?", "onOpenComponent?"];
     isClickable(item) { return isClickable(item); }
     clickableClass(item) { return clickableClass(item); }
     openItem(item) { dispatchItemClick(item, this.props.onOpenRecord, this.props.onOpenDrilldown); }
@@ -1040,7 +1066,8 @@ export class ListCards extends Component {
 export class AlertsPanel extends Component {
     static template = xml`
         <div class="o_baha_card o_baha_alerts">
-            <div class="o_baha_card__head" t-if="props.comp.title and !props.comp.data.hide_head"><span class="o_baha_card__title" t-esc="props.comp.title"/><div class="o_baha_card__tools"><span class="o_baha_legend"><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>مسار صحيح</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>في خطر</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر</span></span><i class="fa fa-expand o_baha_panel__expand"/><i class="fa fa-ellipsis-v o_baha_panel__menu"/></div></div>
+            <div class="o_baha_card__head" t-if="props.comp.title and !props.comp.data.hide_head"><span class="o_baha_card__title" t-esc="props.comp.title"/><div class="o_baha_card__tools"><span class="o_baha_legend"><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>علي المسار</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>متأخر</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر جدا</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--none"/>لم يتم القياس</span></span><button t-if="props.onOpenComponent" class="o_baha_expand_btn" title="عرض كامل البيانات" t-on-click="() => props.onOpenComponent(props.comp)"><i class="fa fa-expand"/></button></div></div>
+            <div class="o_baha_card__scroll">
             <t t-foreach="props.comp.data.groups or []" t-as="grp" t-key="grp_index">
                 <div class="o_baha_alerts__group"
                      t-att-class="{ 'o_baha_alerts__group--open': this.isGroupOpen(grp_index) }">
@@ -1075,8 +1102,9 @@ export class AlertsPanel extends Component {
                     </div>
                 </div>
             </t>
+            </div>
         </div>`;
-    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?"];
+    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?", "onOpenComponent?"];
     setup() {
         this.state = useState({ openGroups: {} });
     }
@@ -1107,13 +1135,19 @@ export class GaugeGrid extends Component {
             <div class="o_baha_panel__head" t-if="!props.comp.data.hide_head">
                 <span class="o_baha_panel__title" t-esc="props.comp.title"/>
                 <div class="o_baha_panel__headtools">
-                    <div class="o_baha_legend">
-                        <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>مسار صحيح</span>
-                        <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>في خطر</span>
-                        <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر</span>
+                    <!-- hide_legend: for panels showing plain figures rather
+                         than items tracked against a target, where a RAG key
+                         implies a status the numbers do not carry. -->
+                    <div class="o_baha_legend" t-if="!props.comp.data.hide_legend">
+                        <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>علي المسار</span>
+                        <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>متأخر</span>
+                        <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر جدا</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--none"/>لم يتم القياس</span>
                     </div>
-                    <i class="fa fa-expand o_baha_panel__expand"/>
-                    <i class="fa fa-ellipsis-v o_baha_panel__menu"/>
+                    <button t-if="props.onOpenComponent" class="o_baha_expand_btn"
+                            title="عرض كامل البيانات"
+                            t-on-click="() => props.onOpenComponent(props.comp)">
+                        <i class="fa fa-expand"/>
+                    </button>
                 </div>
             </div>
             <div class="o_baha_gaugegrid__grid" t-attf-style="grid-template-columns: repeat({{props.comp.data.cols or 4}}, 1fr);">
@@ -1143,7 +1177,7 @@ export class GaugeGrid extends Component {
                 </t>
             </div>
         </div>`;
-    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?"];
+    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?", "onOpenComponent?"];
     trendClass(dir) { return trendClass(dir); }
     isClickable(item) { return isClickable(item); }
     clickableClass(item, extra = "") { return clickableClass(item, extra); }
@@ -1168,19 +1202,25 @@ export class StatGrid extends Component {
             <div class="o_baha_panel__head" t-if="!props.comp.data.hide_head">
                 <span class="o_baha_panel__title" t-esc="props.comp.title"/>
                 <div class="o_baha_panel__headtools">
-                    <div class="o_baha_legend">
-                        <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>مسار صحيح</span>
-                        <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>في خطر</span>
-                        <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر</span>
+                    <!-- hide_legend: for panels showing plain figures rather
+                         than items tracked against a target, where a RAG key
+                         implies a status the numbers do not carry. -->
+                    <div class="o_baha_legend" t-if="!props.comp.data.hide_legend">
+                        <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>علي المسار</span>
+                        <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>متأخر</span>
+                        <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر جدا</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--none"/>لم يتم القياس</span>
                     </div>
-                    <i class="fa fa-expand o_baha_panel__expand"/>
-                    <i class="fa fa-ellipsis-v o_baha_panel__menu"/>
+                    <button t-if="props.onOpenComponent" class="o_baha_expand_btn"
+                            title="عرض كامل البيانات"
+                            t-on-click="() => props.onOpenComponent(props.comp)">
+                        <i class="fa fa-expand"/>
+                    </button>
                 </div>
             </div>
             <div class="o_baha_statgrid__grid" t-attf-style="grid-template-columns: repeat({{props.comp.data.cols or 2}}, 1fr);">
                 <t t-foreach="props.comp.data.items or []" t-as="s" t-key="s_index">
                     <div class="o_baha_card o_baha_stat"
-                         t-att-class="{ 'o_baha_stat--big': s.big, 'o_baha_clickable': isClickable(s), 'o_baha_clickable--card': isClickable(s) }"
+                         t-att-class="{ 'o_baha_stat--big': s.big, 'o_baha_clickable': isClickable(s) }"
                          t-att-tabindex="isClickable(s) ? 0 : undefined"
                          t-att-role="isClickable(s) ? 'button' : undefined"
                          t-on-click="() => this.openItem(s)"
@@ -1204,7 +1244,7 @@ export class StatGrid extends Component {
                 </t>
             </div>
         </div>`;
-    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?"];
+    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?", "onOpenComponent?"];
     statusOf(s) { return s.status || (s.delta_dir === "down" ? "bad" : "ok"); }
     numHead(v) { const s = String(v == null ? "" : v); const i = s.indexOf("/"); return i >= 0 ? s.slice(0, i) : s; }
     numTail(v) { const s = String(v == null ? "" : v); const i = s.indexOf("/"); return i >= 0 ? s.slice(i) : ""; }
@@ -1224,13 +1264,19 @@ export class KpiGrid extends Component {
             <div class="o_baha_panel__head" t-if="!props.comp.data.hide_head">
                 <span class="o_baha_panel__title" t-esc="props.comp.title"/>
                 <div class="o_baha_panel__headtools">
-                    <div class="o_baha_legend">
-                        <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>مسار صحيح</span>
-                        <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>في خطر</span>
-                        <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر</span>
+                    <!-- hide_legend: for panels showing plain figures rather
+                         than items tracked against a target, where a RAG key
+                         implies a status the numbers do not carry. -->
+                    <div class="o_baha_legend" t-if="!props.comp.data.hide_legend">
+                        <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>علي المسار</span>
+                        <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>متأخر</span>
+                        <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر جدا</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--none"/>لم يتم القياس</span>
                     </div>
-                    <i class="fa fa-expand o_baha_panel__expand"/>
-                    <i class="fa fa-ellipsis-v o_baha_panel__menu"/>
+                    <button t-if="props.onOpenComponent" class="o_baha_expand_btn"
+                            title="عرض كامل البيانات"
+                            t-on-click="() => props.onOpenComponent(props.comp)">
+                        <i class="fa fa-expand"/>
+                    </button>
                 </div>
             </div>
             <div class="o_baha_kpigrid__grid" t-attf-style="grid-template-columns: repeat({{props.comp.data.cols or 2}}, 1fr);">
@@ -1262,7 +1308,7 @@ export class KpiGrid extends Component {
                 </t>
             </div>
         </div>`;
-    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?"];
+    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?", "onOpenComponent?"];
     isClickable(item) { return isClickable(item); }
     clickableClass(item, extra = "") { return clickableClass(item, extra); }
     openItem(item) { dispatchItemClick(item, this.props.onOpenRecord, this.props.onOpenDrilldown); }
@@ -1285,13 +1331,19 @@ export class SemiGrid extends Component {
             <div class="o_baha_panel__head" t-if="!props.comp.data.hide_head">
                 <span class="o_baha_panel__title" t-esc="props.comp.title"/>
                 <div class="o_baha_panel__headtools">
-                    <div class="o_baha_legend">
-                        <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>مسار صحيح</span>
-                        <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>في خطر</span>
-                        <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر</span>
+                    <!-- hide_legend: for panels showing plain figures rather
+                         than items tracked against a target, where a RAG key
+                         implies a status the numbers do not carry. -->
+                    <div class="o_baha_legend" t-if="!props.comp.data.hide_legend">
+                        <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>علي المسار</span>
+                        <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>متأخر</span>
+                        <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر جدا</span><span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--none"/>لم يتم القياس</span>
                     </div>
-                    <i class="fa fa-expand o_baha_panel__expand"/>
-                    <i class="fa fa-ellipsis-v o_baha_panel__menu"/>
+                    <button t-if="props.onOpenComponent" class="o_baha_expand_btn"
+                            title="عرض كامل البيانات"
+                            t-on-click="() => props.onOpenComponent(props.comp)">
+                        <i class="fa fa-expand"/>
+                    </button>
                 </div>
             </div>
             <div class="o_baha_semigrid__grid" t-attf-style="grid-template-columns: repeat({{props.comp.data.cols or 5}}, 1fr);">
@@ -1324,7 +1376,7 @@ export class SemiGrid extends Component {
                 </t>
             </div>
         </div>`;
-    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?"];
+    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?", "onOpenComponent?"];
     trendClass(dir) { return trendClass(dir); }
     isClickable(item) { return isClickable(item); }
     clickableClass(item, extra = "") { return clickableClass(item, extra); }

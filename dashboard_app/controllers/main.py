@@ -1,11 +1,31 @@
 import base64
 import json
+import logging
+from datetime import date
 
 from odoo import http
+from odoo.exceptions import AccessError, UserError
 from odoo.http import request
 
+from odoo.addons.portal.controllers.portal import CustomerPortal
 from odoo.addons.web.controllers.home import Home
 from odoo.addons.web.controllers.utils import is_user_internal
+
+_logger = logging.getLogger(__name__)
+
+# Landing targets that mean "no deliberate destination" for a dashboard user.
+# /my and /my/home are portal's own home: portal._login_redirect substitutes
+# them for an EMPTY redirect, so by the time this module's override runs the
+# "user asked for nothing in particular" signal is already gone.
+_DEFAULT_LANDINGS = ("/web", "/odoo", "/my")
+
+
+def _lands_on_dashboard(uid):
+    """A non-internal user with dashboard access belongs on /dashboard."""
+    if not uid or is_user_internal(uid):
+        return False
+    user = request.env["res.users"].sudo().browse(uid).exists()
+    return bool(user and user.dashboard_access)
 
 
 class DashboardHome(Home):
@@ -16,14 +36,34 @@ class DashboardHome(Home):
     """
 
     def _login_redirect(self, uid, redirect=None):
-        if not is_user_internal(uid):
-            if not redirect or redirect.startswith(("/web", "/odoo")):
+        if _lands_on_dashboard(uid):
+            if not redirect or redirect.startswith(_DEFAULT_LANDINGS):
                 return "/dashboard"
         return super()._login_redirect(uid, redirect=redirect)
 
+    @http.route()
+    def index(self, *args, **kw):
+        # portal.Home.index sends every non-internal user to /my; dashboard
+        # users go to their dashboard instead.
+        if _lands_on_dashboard(request.session.uid):
+            return request.redirect("/dashboard")
+        return super().index(*args, **kw)
+
+
+class DashboardPortalHome(CustomerPortal):
+    """/my is portal's home. For a dashboard user it is not a place they should
+    ever land — it offers invoices and address management they have no use for.
+    """
+
+    @http.route()
+    def home(self, **kw):
+        if _lands_on_dashboard(request.session.uid):
+            return request.redirect("/dashboard")
+        return super().home(**kw)
+
     @http.route("/web/login_successful", type="http", auth="user", website=True, sitemap=False)
     def login_successful_external_user(self, **kwargs):
-        if request.session.uid and not is_user_internal(request.session.uid):
+        if _lands_on_dashboard(request.session.uid):
             return request.redirect("/dashboard")
         return super().login_successful_external_user(**kwargs)
 
@@ -57,15 +97,30 @@ class DashboardImportController(http.Controller):
         if not target:
             return request.make_response(
                 "Missing target parameter",
-                headers=[("Content-Type", "text/plain")],
+                headers=[("Content-Type", "text/plain; charset=utf-8")],
                 status=400,
             )
         try:
             content, spec = request.env["dashboard.import"].build_template_xlsx(target, mode)
-        except Exception as err:
+        except AccessError as err:
             return request.make_response(
                 str(err),
-                headers=[("Content-Type", "text/plain")],
+                headers=[("Content-Type", "text/plain; charset=utf-8")],
+                status=403,
+            )
+        except UserError as err:
+            return request.make_response(
+                str(err),
+                headers=[("Content-Type", "text/plain; charset=utf-8")],
+                status=400,
+            )
+        except Exception:
+            # Anything else is a genuine fault: openpyxl/xlsxwriter internals
+            # would leak file paths and zip member names to the browser.
+            _logger.exception("Import template failed for target=%s mode=%s", target, mode)
+            return request.make_response(
+                "تعذّر إنشاء ملف القالب. يرجى المحاولة لاحقًا أو التواصل مع الدعم الفني.",
+                headers=[("Content-Type", "text/plain; charset=utf-8")],
                 status=400,
             )
         prefix = "advanced_import" if mode == "advanced" else "import"
@@ -85,14 +140,14 @@ class DashboardImportController(http.Controller):
         if not target:
             return request.make_response(
                 json.dumps({"error": "لم يتم تحديد نوع البيانات."}),
-                headers=[("Content-Type", "application/json")],
+                headers=[("Content-Type", "application/json; charset=utf-8")],
             )
 
         files = request.httprequest.files.getlist("ufile")
         if not files:
             return request.make_response(
                 json.dumps({"error": "لم يتم اختيار أي ملف."}),
-                headers=[("Content-Type", "application/json")],
+                headers=[("Content-Type", "application/json; charset=utf-8")],
             )
 
         results = []
@@ -101,10 +156,19 @@ class DashboardImportController(http.Controller):
                 content = f.read()
                 result = request.env["dashboard.import"].process_upload(target, content, f.filename)
                 results.append(result)
-        except Exception as err:
+        except UserError as err:
+            # Validation feedback the import modal shows verbatim — already
+            # Arabic and safe. AccessError subclasses UserError and is equally
+            # safe to surface here.
             return request.make_response(
                 json.dumps({"error": str(err)}),
-                headers=[("Content-Type", "application/json")],
+                headers=[("Content-Type", "application/json; charset=utf-8")],
+            )
+        except Exception:
+            _logger.exception("Import upload failed for target=%s", target)
+            return request.make_response(
+                json.dumps({"error": "تعذّر معالجة الملف. يرجى التأكد من صحته أو التواصل مع الدعم الفني."}),
+                headers=[("Content-Type", "application/json; charset=utf-8")],
             )
 
         if len(results) == 1:
@@ -121,4 +185,69 @@ class DashboardImportController(http.Controller):
         return request.make_response(
             json.dumps(payload),
             headers=[("Content-Type", "application/json")],
+        )
+
+
+class DashboardExportController(http.Controller):
+
+    @http.route("/dashboard_app/export/download", type="http", auth="user", readonly=True)
+    def export_download(self, target=None, export_format=None, filter=None, **kwargs):
+        """Stream a PDF or Excel export of the selected target, date-filtered."""
+        if not target:
+            return request.make_response(
+                "Missing target parameter",
+                headers=[("Content-Type", "text/plain; charset=utf-8")],
+                status=400,
+            )
+        if export_format not in ("xlsx", "pdf"):
+            return request.make_response(
+                "Invalid format parameter",
+                headers=[("Content-Type", "text/plain; charset=utf-8")],
+                status=400,
+            )
+        try:
+            dashboard_filter = json.loads(filter) if filter else None
+        except ValueError:
+            dashboard_filter = None
+
+        try:
+            if export_format == "xlsx":
+                content = request.env["dashboard.export"].build_export_xlsx(target, dashboard_filter)
+                content_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            else:
+                content = request.env["dashboard.export"].build_export_pdf(target, dashboard_filter)
+                content_type = "application/pdf"
+        except AccessError as err:
+            # A revoked dashboard_access is a routine denial, not a fault: the
+            # message is already Arabic and safe, and telling the user to "try
+            # again later" would send them retrying something that can't work.
+            _logger.info("Dashboard export denied for target=%s: %s", target, err)
+            return request.make_response(
+                str(err),
+                headers=[("Content-Type", "text/plain; charset=utf-8")],
+                status=403,
+            )
+        except UserError as err:
+            return request.make_response(
+                str(err),
+                headers=[("Content-Type", "text/plain; charset=utf-8")],
+                status=400,
+            )
+        except Exception:
+            # Don't leak internal details (e.g. QWeb template ids) to the
+            # browser — log the real exception server-side instead.
+            _logger.exception("Dashboard export failed for target=%s format=%s", target, export_format)
+            return request.make_response(
+                "تعذّر إنشاء ملف التصدير. يرجى المحاولة لاحقًا أو التواصل مع الدعم الفني.",
+                headers=[("Content-Type", "text/plain; charset=utf-8")],
+                status=400,
+            )
+
+        filename = "export_%s_%s.%s" % (target, date.today().strftime("%Y%m%d"), export_format)
+        return request.make_response(
+            content,
+            headers=[
+                ("Content-Type", content_type),
+                ("Content-Disposition", "attachment; filename=%s" % filename),
+            ],
         )

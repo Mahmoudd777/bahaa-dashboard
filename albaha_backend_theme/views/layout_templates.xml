@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        The browser tab reads "Odoo" on every backend page, because web.layout
+        hard-codes it as the fallback title. Swapping the fallback rebrands the
+        tab, window title and any bookmark the user saves — while still letting
+        each view set its own more specific title when it has one.
+    -->
+    <template id="albaha_layout_title" inherit_id="web.layout">
+        <xpath expr="//title" position="replace">
+            <title t-esc="title or 'المكتب الاستراتيجي لتطوير منطقة الباحة'"/>
+        </xpath>
+    </template>
+
+</odoo>

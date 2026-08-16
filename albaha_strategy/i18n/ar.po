@@ -1,0 +1,420 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* albaha_strategy
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0-20260630\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-06 00:45+0000\n"
+"PO-Revision-Date: 2026-08-06 00:45+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: albaha_strategy
+#: model:ir.model,name:albaha_strategy.model_albaha_objective
+msgid "A strategic objective belonging to a pillar"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.model,name:albaha_strategy.model_albaha_pillar
+msgid "A strategic pillar of the Al-Baha regional strategy"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.model,name:albaha_strategy.model_albaha_program
+msgid "A strategic program grouping initiatives under a pillar"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.model.fields.selection,name:albaha_strategy.selection__albaha_objective__status__active
+#: model:ir.model.fields.selection,name:albaha_strategy.selection__albaha_pillar__status__active
+#: model:ir.model.fields.selection,name:albaha_strategy.selection__albaha_program__status__active
+#: model:ir.model.fields.selection,name:albaha_strategy.selection__albaha_sector__status__active
+#: model_terms:ir.ui.view,arch_db:albaha_strategy.view_albaha_objective_search
+#: model_terms:ir.ui.view,arch_db:albaha_strategy.view_albaha_pillar_search
+#: model_terms:ir.ui.view,arch_db:albaha_strategy.view_albaha_program_search
+#: model_terms:ir.ui.view,arch_db:albaha_strategy.view_albaha_sector_search
+msgid "Active"
+msgstr "نشط"
+
+#. module: albaha_strategy
+#: model:ir.ui.menu,name:albaha_strategy.menu_albaha_root
+msgid "Al-Baha Strategy"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.model,name:albaha_strategy.model_albaha_sector
+msgid "An economic sector tracked by the strategy"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_objective__baseline_value
+msgid "Baseline Value"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.model.fields.selection,name:albaha_strategy.selection__albaha_objective__status__closed
+#: model:ir.model.fields.selection,name:albaha_strategy.selection__albaha_pillar__status__closed
+#: model:ir.model.fields.selection,name:albaha_strategy.selection__albaha_program__status__closed
+#: model:ir.model.fields.selection,name:albaha_strategy.selection__albaha_sector__status__closed
+#: model_terms:ir.ui.view,arch_db:albaha_strategy.view_albaha_objective_search
+#: model_terms:ir.ui.view,arch_db:albaha_strategy.view_albaha_pillar_search
+#: model_terms:ir.ui.view,arch_db:albaha_strategy.view_albaha_program_search
+#: model_terms:ir.ui.view,arch_db:albaha_strategy.view_albaha_sector_search
+msgid "Closed"
+msgstr "مغلق"
+
+#. module: albaha_strategy
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_pillar__color_hex
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_program__color_hex
+msgid "Color"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_sector__contribution_pct_current
+msgid "Contribution Current %"
+msgstr ""
+
+#. module: albaha_strategy
+#: model_terms:ir.ui.view,arch_db:albaha_strategy.view_albaha_sector_form
+msgid "Contribution Metrics"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_sector__contribution_pct_target
+msgid "Contribution Target %"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_objective__create_uid
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_pillar__create_uid
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_program__create_uid
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_sector__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_objective__create_date
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_pillar__create_date
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_program__create_date
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_sector__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_objective__description
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_pillar__description
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_program__description
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_sector__description
+msgid "Description"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_objective__display_name
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_pillar__display_name
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_program__display_name
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_sector__display_name
+#: model:ir.model.fields,field_description:albaha_strategy.field_res_users__display_name
+msgid "Display Name"
+msgstr "اسم العرض"
+
+#. module: albaha_strategy
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_program__end_date
+msgid "End Date"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_objective__id
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_pillar__id
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_program__id
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_sector__id
+#: model:ir.model.fields,field_description:albaha_strategy.field_res_users__id
+msgid "ID"
+msgstr "المُعرف"
+
+#. module: albaha_strategy
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_program__initiatives_count
+msgid "Initiatives Count"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_objective__write_uid
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_pillar__write_uid
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_program__write_uid
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_sector__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_objective__write_date
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_pillar__write_date
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_program__write_date
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_sector__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_program__lead_owner_id
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_sector__lead_owner_id
+msgid "Lead Owner"
+msgstr ""
+
+#. module: albaha_strategy
+#: model_terms:ir.ui.view,arch_db:albaha_strategy.view_albaha_objective_form
+msgid "Metrics"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_objective__name
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_pillar__name
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_program__name
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_sector__name
+msgid "Name (Arabic)"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_objective__name_en
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_pillar__name_en
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_program__name_en
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_sector__name_en
+msgid "Name (English)"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_objective__code
+msgid "Objective Code"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.actions.act_window,name:albaha_strategy.action_albaha_objective
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_pillar__objective_ids
+#: model:ir.ui.menu,name:albaha_strategy.menu_albaha_objective
+#: model_terms:ir.ui.view,arch_db:albaha_strategy.view_albaha_objective_list
+#: model_terms:ir.ui.view,arch_db:albaha_strategy.view_albaha_pillar_form
+msgid "Objectives"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.model.fields.selection,name:albaha_strategy.selection__albaha_objective__status__onhold
+#: model:ir.model.fields.selection,name:albaha_strategy.selection__albaha_pillar__status__onhold
+#: model:ir.model.fields.selection,name:albaha_strategy.selection__albaha_program__status__onhold
+#: model:ir.model.fields.selection,name:albaha_strategy.selection__albaha_sector__status__onhold
+#: model_terms:ir.ui.view,arch_db:albaha_strategy.view_albaha_objective_search
+#: model_terms:ir.ui.view,arch_db:albaha_strategy.view_albaha_pillar_search
+#: model_terms:ir.ui.view,arch_db:albaha_strategy.view_albaha_program_search
+#: model_terms:ir.ui.view,arch_db:albaha_strategy.view_albaha_sector_search
+msgid "On Hold"
+msgstr "متوقف"
+
+#. module: albaha_strategy
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_objective__owner_id
+msgid "Owner"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_pillar__owner_office
+msgid "Owner Office"
+msgstr ""
+
+#. module: albaha_strategy
+#: model_terms:ir.ui.view,arch_db:albaha_strategy.view_albaha_program_form
+msgid "Ownership"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_objective__pillar_id
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_program__pillar_id
+msgid "Pillar"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_pillar__code
+msgid "Pillar Code"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.actions.act_window,name:albaha_strategy.action_albaha_pillar
+#: model:ir.ui.menu,name:albaha_strategy.menu_albaha_pillar
+#: model_terms:ir.ui.view,arch_db:albaha_strategy.view_albaha_pillar_list
+msgid "Pillars"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_sector__primary_pillar_id
+msgid "Primary Pillar"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_program__code
+msgid "Program Code"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.actions.act_window,name:albaha_strategy.action_albaha_program
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_pillar__program_ids
+#: model:ir.ui.menu,name:albaha_strategy.menu_albaha_program
+#: model_terms:ir.ui.view,arch_db:albaha_strategy.view_albaha_pillar_form
+#: model_terms:ir.ui.view,arch_db:albaha_strategy.view_albaha_program_list
+msgid "Programs"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_sector__code
+msgid "Sector Code"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.actions.act_window,name:albaha_strategy.action_albaha_sector
+#: model:ir.ui.menu,name:albaha_strategy.menu_albaha_sector
+#: model_terms:ir.ui.view,arch_db:albaha_strategy.view_albaha_sector_list
+msgid "Sectors"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_pillar__sequence
+msgid "Sequence"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_objective__sponsor
+msgid "Sponsor"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_program__start_date
+msgid "Start Date"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_objective__status
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_pillar__status
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_program__status
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_sector__status
+msgid "Status"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_objective__target_value
+msgid "Target Value"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_objective__target_year
+msgid "Target Year"
+msgstr ""
+
+#. module: albaha_strategy
+#: model_terms:ir.ui.view,arch_db:albaha_strategy.view_albaha_program_form
+msgid "Timeline & Budget"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_program__total_budget_sar_m
+msgid "Total Budget (SAR m)"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_objective__unit
+msgid "Unit"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.model,name:albaha_strategy.model_res_users
+msgid "User"
+msgstr "المستخدم"
+
+#. module: albaha_strategy
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_pillar__vision_2030_link
+msgid "Vision 2030 Link"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.model.fields,field_description:albaha_strategy.field_albaha_objective__weight_pct
+msgid "Weight %"
+msgstr ""
+
+#. module: albaha_strategy
+#: model_terms:ir.ui.view,arch_db:albaha_strategy.view_users_form_albaha_access
+msgid "الاستراتيجية"
+msgstr ""
+
+#. module: albaha_strategy
+#: model_terms:ir.ui.view,arch_db:albaha_strategy.view_users_form_albaha_access
+msgid "الحوكمة والمخاطر"
+msgstr ""
+
+#. module: albaha_strategy
+#: model_terms:ir.ui.view,arch_db:albaha_strategy.view_users_form_albaha_access
+msgid "المؤشرات والمبادرات"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.model.fields,field_description:albaha_strategy.field_res_users__albaha_can_edit_objective
+#: model:res.groups,name:albaha_strategy.group_albaha_edit_objective
+msgid "تعديل الأهداف الاستراتيجية"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.model.fields,field_description:albaha_strategy.field_res_users__albaha_can_edit_program
+#: model:res.groups,name:albaha_strategy.group_albaha_edit_program
+msgid "تعديل البرامج"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.model.fields,field_description:albaha_strategy.field_res_users__albaha_can_edit_pillar
+#: model:res.groups,name:albaha_strategy.group_albaha_edit_pillar
+msgid "تعديل الركائز"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.model.fields,field_description:albaha_strategy.field_res_users__albaha_can_edit_decision
+#: model:res.groups,name:albaha_strategy.group_albaha_edit_decision
+msgid "تعديل القرارات"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.model.fields,field_description:albaha_strategy.field_res_users__albaha_can_edit_kpi
+#: model:res.groups,name:albaha_strategy.group_albaha_edit_kpi
+msgid "تعديل المؤشرات"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.model.fields,field_description:albaha_strategy.field_res_users__albaha_can_edit_indicator
+#: model:res.groups,name:albaha_strategy.group_albaha_edit_indicator
+msgid "تعديل المؤشرات الإقليمية"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.model.fields,field_description:albaha_strategy.field_res_users__albaha_can_edit_initiative
+#: model:res.groups,name:albaha_strategy.group_albaha_edit_initiative
+msgid "تعديل المبادرات"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.model.fields,field_description:albaha_strategy.field_res_users__albaha_can_edit_risk
+#: model:res.groups,name:albaha_strategy.group_albaha_edit_risk
+msgid "تعديل المخاطر الاستراتيجية"
+msgstr ""
+
+#. module: albaha_strategy
+#: model:ir.model.fields,field_description:albaha_strategy.field_res_users__albaha_can_edit_steerco
+#: model:res.groups,name:albaha_strategy.group_albaha_edit_steerco
+msgid "تعديل قرارات اللجان"
+msgstr ""
+
+#. module: albaha_strategy
+#: model_terms:ir.ui.view,arch_db:albaha_strategy.view_users_form_albaha_access
+msgid "صلاحيات بيانات الباحة"
+msgstr ""
+
+#. module: albaha_strategy
+#: model_terms:ir.ui.view,arch_db:albaha_strategy.view_users_form_albaha_access
+msgid ""
+"كل مستخدم يستطيع قراءة البيانات. فعّل الخيار ليصبح بإمكانه\n"
+"                        <b>تعديل</b> النموذج المقابل (إنشاء/تعديل/حذف)."
+msgstr ""

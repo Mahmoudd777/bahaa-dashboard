@@ -1,6 +1,6 @@
 /** @odoo-module **/
 
-import { Component, onMounted, onWillUnmount, onPatched, useRef, xml } from "@odoo/owl";
+import { Component, onMounted, onWillUnmount, onPatched, useRef, useState, xml } from "@odoo/owl";
 import { UnitContent } from "./unit_content";
 import { cloneUnits, effectiveRows, effectiveSpan } from "./grid_math";
 
@@ -36,6 +36,25 @@ export class GridstackEditor extends Component {
                             <i class="fa fa-arrows"/>
                             <span class="o_baha_gs_size" t-att-data-key="unit.key" t-esc="sizeLabel(unit)"/>
                         </div>
+                        <!-- Move to another page. pointerdown/mousedown are
+                             stopped so Gridstack does not read the press as
+                             the start of a drag. -->
+                        <span t-if="props.moveTargets.length" class="o_baha_gs_movewrap"
+                              t-on-pointerdown.stop="" t-on-mousedown.stop="">
+                            <button class="o_baha_gs_move" title="نقل البطاقة إلى صفحة أخرى"
+                                    t-on-click.stop="() => this.toggleMove(unit.key)">
+                                <i class="fa fa-share"/>
+                            </button>
+                            <div t-if="state.moveFor === unit.key" class="o_baha_gs_movemenu">
+                                <div class="o_baha_gs_movemenu__title">نقل إلى صفحة</div>
+                                <t t-foreach="props.moveTargets" t-as="tab" t-key="tab.id">
+                                    <button class="o_baha_gs_moveitem"
+                                            t-on-click.stop="() => this.pickMove(unit.key, tab.id)">
+                                        <i class="fa fa-arrow-left"/><span t-esc="tab.name"/>
+                                    </button>
+                                </t>
+                            </div>
+                        </span>
                         <button class="o_baha_gs_remove" title="إزالة البطاقة"
                                 t-on-pointerdown.stop=""
                                 t-on-mousedown.stop=""
@@ -48,13 +67,16 @@ export class GridstackEditor extends Component {
         </div>`;
 
     static components = { UnitContent };
-    static props = ["units", "widgetFor", "propsFor", "float", "onChange", "onRemove"];
+    static props = ["units", "widgetFor", "propsFor", "float", "onChange", "onRemove",
+                    "moveTargets", "onMove"];
 
     setup() {
         this.gridRef = useRef("grid");
         this.items = cloneUnits(this.props.units || []);
         this.grid = null;
         this._appliedFloat = this.props.float;
+        // Which card's "move to page" menu is open (only ever one).
+        this.state = useState({ moveFor: null });
         onMounted(() => this._init());
         onWillUnmount(() => this._destroy());
         onPatched(() => {
@@ -71,6 +93,15 @@ export class GridstackEditor extends Component {
 
     sizeLabel(unit) {
         return `${effectiveSpan(unit)}×${effectiveRows(unit)}`;
+    }
+
+    toggleMove(key) {
+        this.state.moveFor = this.state.moveFor === key ? null : key;
+    }
+
+    pickMove(key, sectionId) {
+        this.state.moveFor = null;
+        this.props.onMove(key, sectionId);
     }
 
     _init() {

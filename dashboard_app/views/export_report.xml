@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Wide tables need landscape; the print view is deliberately plain
+         (logo, title, active period, generation date, one bordered table). -->
+    <record id="paperformat_export" model="report.paperformat">
+        <field name="name">تصدير لوحة التحكم - أفقي A4</field>
+        <field name="default" eval="False"/>
+        <field name="format">A4</field>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">18</field>
+        <field name="margin_bottom">18</field>
+        <field name="margin_left">10</field>
+        <field name="margin_right">10</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <template id="report_export_document">
+        <t t-call="web.html_container">
+            <!-- REQUIRED, do not remove. _render_qweb_pdf does not hand the
+                 whole document to wkhtmltopdf: _prepare_html (ir_actions_report
+                 .py) keeps only the children of <main> and writes that fragment
+                 to a temp file, so the <head> and its <meta charset> are thrown
+                 away — and Odoo passes no encoding flag to wkhtmltopdf either.
+                 Without a charset
+                 declaration inside the fragment itself, wkhtmltopdf falls back
+                 to latin-1 and every Arabic character comes out as mojibake
+                 ("الاعتماد" -> "Ø§Ù„Ø§Ø¹ØªÙ…Ø§Ø¯"). -->
+            <meta charset="utf-8"/>
+            <!-- Reports render outside the dashboard's asset bundle, so the
+                 (deliberately minimal) styling is inlined here. Tajawal ships
+                 as woff2 for the web UI and is not installed in the container;
+                 DejaVu Sans is the only Arabic-capable font wkhtmltopdf has, so
+                 name it explicitly rather than relying on the fallback. -->
+            <style>
+                .o_baha_export_page { font-family: "Tajawal", "DejaVu Sans", "Arial", sans-serif; }
+                .o_baha_export_page__header { display: flex; align-items: center; gap: 14px; margin-bottom: 6px; }
+                .o_baha_export_page__logo { max-width: 120px; max-height: 60px; }
+                .o_baha_export_page__titles h2 { margin: 0; font-size: 20px; }
+                .o_baha_export_page__titles div { color: #5C4B43; font-size: 12px; }
+                .o_baha_export_page__meta { display: flex; justify-content: space-between; color: #414651; font-size: 11px; margin-bottom: 10px; border-bottom: 1px solid #d5d7da; padding-bottom: 8px; }
+                .o_baha_export_page__table { width: 100%; border-collapse: collapse; font-size: 10px; }
+                .o_baha_export_page__table th, .o_baha_export_page__table td { border: 1px solid #d5d7da; padding: 4px 6px; text-align: right; }
+                .o_baha_export_page__table th { background: #5C4B43; color: #fff; }
+                .o_baha_export_page__note { margin: 0 0 8px; color: #717680; font-size: 10px; }
+                .o_baha_export_page__truncated { margin-top: 8px; color: #717680; font-size: 10px; }
+            </style>
+            <!-- report_data's keys are merged directly into the top-level QWeb
+                 context by ir.actions.report._get_rendering_context() (there is
+                 no companion report.dashboard_app.report_export_document model
+                 to nest them under a "data" key) — reference them bare. Bare
+                 names resolve to values.get(name), i.e. None when absent, so
+                 t-if guards below are belt-and-braces against a missing key
+                 ever reaching an attribute/subscript access. -->
+            <div class="page o_baha_export_page" dir="rtl">
+                <div class="o_baha_export_page__header">
+                    <img t-if="logo and logo_mime"
+                         t-att-src="'data:%s;base64,%s' % (logo_mime, logo)"
+                         class="o_baha_export_page__logo"/>
+                    <div class="o_baha_export_page__titles">
+                        <h2 t-if="target_label" t-esc="target_label"/>
+                        <div t-if="company_name" t-esc="company_name"/>
+                    </div>
+                </div>
+                <div class="o_baha_export_page__meta">
+                    <span t-if="filter_label" t-esc="filter_label"/>
+                    <span t-if="generated_at">تاريخ الإصدار: <t t-esc="generated_at"/></span>
+                </div>
+                <p t-if="date_filter_note" class="o_baha_export_page__note" t-esc="date_filter_note"/>
+                <table class="o_baha_export_page__table">
+                    <thead>
+                        <tr>
+                            <t t-foreach="headers or []" t-as="header" t-key="header_index">
+                                <th t-esc="header"/>
+                            </t>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="rows or []" t-as="row" t-key="row_index">
+                            <tr>
+                                <t t-foreach="row" t-as="cell" t-key="cell_index">
+                                    <td t-esc="cell"/>
+                                </t>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+                <p t-if="truncated" class="o_baha_export_page__truncated">
+                    تم عرض أول <t t-esc="row_limit"/> سجل فقط، ولم يتم تضمين بقية السجلات في هذا
+                    التقرير. للحصول على المجموعة الكاملة، يرجى استخدام تصدير Excel.
+                </p>
+            </div>
+        </t>
+    </template>
+
+    <record id="action_report_export" model="ir.actions.report">
+        <field name="name">تصدير بيانات لوحة التحكم</field>
+        <field name="model">dashboard.export</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">dashboard_app.report_export_document</field>
+        <field name="report_file">dashboard_app.report_export_document</field>
+        <field name="paperformat_id" ref="paperformat_export"/>
+    </record>
+
+</odoo>

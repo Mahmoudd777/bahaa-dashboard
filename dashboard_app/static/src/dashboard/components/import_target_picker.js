@@ -5,7 +5,9 @@ import { Component, xml } from "@odoo/owl";
 export class ImportTargetPicker extends Component {
     static template = xml`
         <div class="o_baha_import_targets">
-            <p class="o_baha_import_targets__hint">اختر نوع البيانات التي تريد تحديثها:</p>
+            <p class="o_baha_import_targets__hint">
+                <t t-esc="props.pickHint || 'اختر نوع البيانات التي تريد تحديثها:'"/>
+            </p>
             <div class="o_baha_import_targets__grid">
                 <t t-foreach="props.targets" t-as="t" t-key="t.key">
                     <button type="button"
@@ -26,6 +28,7 @@ export class ImportTargetPicker extends Component {
         targets: { type: Array },
         selectedKey: { type: String, optional: true },
         emptyMessage: { type: String, optional: true },
+        pickHint: { type: String, optional: true },
         onSelect: Function,
     };
 }

@@ -4,5 +4,6 @@ from . import dashboard_section
 from . import dashboard_component
 from . import dashboard_import_registry
 from . import dashboard_import
+from . import dashboard_export
 from . import res_users
 from . import res_company

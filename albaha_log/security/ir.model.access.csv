@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_albaha_record_log_user,albaha.record.log.user,model_albaha_record_log,base.group_user,1,0,1,0
+access_albaha_record_log_manager,albaha.record.log.manager,model_albaha_record_log,base.group_system,1,1,1,1

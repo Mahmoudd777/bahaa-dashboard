@@ -1,0 +1,570 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* albaha_governance
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0-20260630\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-06 00:45+0000\n"
+"PO-Revision-Date: 2026-08-06 00:45+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: albaha_governance
+#: model:ir.model,name:albaha_governance.model_albaha_decision
+msgid "A decision taken by a committee"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model,name:albaha_governance.model_albaha_committee
+msgid "A governance committee"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model,name:albaha_governance.model_albaha_review
+msgid "A periodic review of a strategy entity"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model,name:albaha_governance.model_albaha_transformation
+msgid "A regional transformation initiative"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model,name:albaha_governance.model_albaha_strategic_risk
+msgid "A strategic risk on the risk register (5x5 probability x impact)"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields.selection,name:albaha_governance.selection__albaha_committee__status__active
+#: model:ir.model.fields.selection,name:albaha_governance.selection__albaha_transformation__status__active
+msgid "Active"
+msgstr "نشط"
+
+#. module: albaha_governance
+#: model:ir.ui.menu,name:albaha_governance.menu_albaha_governance_root
+msgid "Al-Baha Strategy - Governance & Risk"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields.selection,name:albaha_governance.selection__albaha_review__overall_rating__amber
+#: model:ir.model.fields.selection,name:albaha_governance.selection__albaha_strategic_risk__rag_status__amber
+#: model:ir.model.fields.selection,name:albaha_governance.selection__albaha_transformation__rag_status__amber
+msgid "Amber"
+msgstr "أصفر"
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_review__approved
+msgid "Approved"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_strategic_risk__risk_category
+msgid "Category"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_committee__chair_id
+#: model_terms:ir.ui.view,arch_db:albaha_governance.view_albaha_committee_search
+msgid "Chair"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields.selection,name:albaha_governance.selection__albaha_committee__status__closed
+#: model:ir.model.fields.selection,name:albaha_governance.selection__albaha_strategic_risk__status__closed
+#: model:ir.model.fields.selection,name:albaha_governance.selection__albaha_transformation__status__closed
+msgid "Closed"
+msgstr "مغلق"
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_decision__committee_id
+#: model_terms:ir.ui.view,arch_db:albaha_governance.view_albaha_decision_search
+msgid "Committee"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_committee__code
+msgid "Committee Code"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.actions.act_window,name:albaha_governance.action_albaha_committee
+#: model:ir.ui.menu,name:albaha_governance.menu_albaha_committee
+#: model_terms:ir.ui.view,arch_db:albaha_governance.view_albaha_committee_list
+msgid "Committees"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_committee__create_uid
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_decision__create_uid
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_review__create_uid
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_strategic_risk__create_uid
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_transformation__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_committee__create_date
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_decision__create_date
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_review__create_date
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_strategic_risk__create_date
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_transformation__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields.selection,name:albaha_governance.selection__albaha_decision__priority__critical
+msgid "Critical"
+msgstr "حرج"
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_decision__code
+msgid "Decision Code"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_decision__decision_date
+msgid "Decision Date"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.actions.act_window,name:albaha_governance.action_albaha_decision
+#: model:ir.ui.menu,name:albaha_governance.menu_albaha_decision
+#: model_terms:ir.ui.view,arch_db:albaha_governance.view_albaha_decision_list
+msgid "Decisions"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_decision__description
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_transformation__description
+#: model_terms:ir.ui.view,arch_db:albaha_governance.view_albaha_decision_form
+#: model_terms:ir.ui.view,arch_db:albaha_governance.view_albaha_transformation_form
+msgid "Description"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_committee__display_name
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_decision__display_name
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_review__display_name
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_strategic_risk__display_name
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_transformation__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields.selection,name:albaha_governance.selection__albaha_decision__status__done
+msgid "Done"
+msgstr "منجز"
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_decision__due_date
+msgid "Due Date"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_review__entity_ref
+msgid "Entity Reference"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_review__entity_type
+#: model_terms:ir.ui.view,arch_db:albaha_governance.view_albaha_review_search
+msgid "Entity Type"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields.selection,name:albaha_governance.selection__albaha_committee__tier__executive
+msgid "Executive"
+msgstr "تنفيذي"
+
+#. module: albaha_governance
+#: model:ir.model.fields.selection,name:albaha_governance.selection__albaha_strategic_risk__risk_category__external
+msgid "External"
+msgstr "خارجي"
+
+#. module: albaha_governance
+#: model:ir.model.fields.selection,name:albaha_governance.selection__albaha_strategic_risk__risk_category__financial
+msgid "Financial"
+msgstr "مالي"
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_review__findings
+#: model_terms:ir.ui.view,arch_db:albaha_governance.view_albaha_review_form
+msgid "Findings"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_committee__frequency
+#: model_terms:ir.ui.view,arch_db:albaha_governance.view_albaha_committee_search
+msgid "Frequency"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields.selection,name:albaha_governance.selection__albaha_review__overall_rating__green
+#: model:ir.model.fields.selection,name:albaha_governance.selection__albaha_strategic_risk__rag_status__green
+#: model:ir.model.fields.selection,name:albaha_governance.selection__albaha_transformation__rag_status__green
+msgid "Green"
+msgstr "أخضر"
+
+#. module: albaha_governance
+#: model:ir.model.fields.selection,name:albaha_governance.selection__albaha_strategic_risk__rag_status__grey
+#: model:ir.model.fields.selection,name:albaha_governance.selection__albaha_transformation__rag_status__grey
+msgid "Grey"
+msgstr "رمادي"
+
+#. module: albaha_governance
+#: model:ir.model.fields.selection,name:albaha_governance.selection__albaha_decision__priority__high
+#: model:ir.model.fields.selection,name:albaha_governance.selection__albaha_transformation__impact_level__high
+msgid "High"
+msgstr "مرتفع"
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_committee__id
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_decision__id
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_review__id
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_strategic_risk__id
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_transformation__id
+msgid "ID"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_strategic_risk__identified_date
+msgid "Identified Date"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_strategic_risk__impact
+msgid "Impact (1-5)"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_transformation__impact_level
+#: model_terms:ir.ui.view,arch_db:albaha_governance.view_albaha_transformation_search
+msgid "Impact Level"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_decision__impact_scope
+msgid "Impact Scope"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields.selection,name:albaha_governance.selection__albaha_decision__status__in_progress
+msgid "In Progress"
+msgstr "قيد التنفيذ"
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_strategic_risk__initiative_id
+#: model:ir.model.fields.selection,name:albaha_governance.selection__albaha_review__entity_type__initiative
+#: model_terms:ir.ui.view,arch_db:albaha_governance.view_albaha_strategic_risk_search
+msgid "Initiative"
+msgstr "مبادرة"
+
+#. module: albaha_governance
+#: model:ir.model.fields.selection,name:albaha_governance.selection__albaha_review__entity_type__kpi
+msgid "KPI"
+msgstr "مؤشر أداء"
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_committee__write_uid
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_decision__write_uid
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_review__write_uid
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_strategic_risk__write_uid
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_transformation__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_committee__write_date
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_decision__write_date
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_review__write_date
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_strategic_risk__write_date
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_transformation__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_strategic_risk__likelihood
+msgid "Likelihood (1-5)"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields.selection,name:albaha_governance.selection__albaha_decision__priority__low
+#: model:ir.model.fields.selection,name:albaha_governance.selection__albaha_transformation__impact_level__low
+msgid "Low"
+msgstr "منخفض"
+
+#. module: albaha_governance
+#: model:ir.model.fields.selection,name:albaha_governance.selection__albaha_decision__priority__medium
+#: model:ir.model.fields.selection,name:albaha_governance.selection__albaha_transformation__impact_level__medium
+msgid "Medium"
+msgstr "متوسط"
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_committee__member_ids
+msgid "Members"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_committee__members_count
+msgid "Members Count"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields.selection,name:albaha_governance.selection__albaha_strategic_risk__status__mitigating
+msgid "Mitigating"
+msgstr "قيد التخفيف"
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_strategic_risk__mitigation_action
+#: model_terms:ir.ui.view,arch_db:albaha_governance.view_albaha_strategic_risk_form
+msgid "Mitigation Action"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields.selection,name:albaha_governance.selection__albaha_committee__frequency__monthly
+msgid "Monthly"
+msgstr "شهري"
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_committee__name
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_transformation__name
+msgid "Name (Arabic)"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_committee__name_en
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_transformation__name_en
+msgid "Name (English)"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields.selection,name:albaha_governance.selection__albaha_committee__status__onhold
+#: model:ir.model.fields.selection,name:albaha_governance.selection__albaha_transformation__status__onhold
+msgid "On Hold"
+msgstr "متوقف"
+
+#. module: albaha_governance
+#: model:ir.model.fields.selection,name:albaha_governance.selection__albaha_decision__status__open
+#: model:ir.model.fields.selection,name:albaha_governance.selection__albaha_strategic_risk__status__open
+msgid "Open"
+msgstr "مفتوح"
+
+#. module: albaha_governance
+#: model:ir.model.fields.selection,name:albaha_governance.selection__albaha_committee__tier__operational
+#: model:ir.model.fields.selection,name:albaha_governance.selection__albaha_strategic_risk__risk_category__operational
+msgid "Operational"
+msgstr "تشغيلي"
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_review__overall_rating
+#: model_terms:ir.ui.view,arch_db:albaha_governance.view_albaha_review_search
+msgid "Overall Rating"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_strategic_risk__owner_id
+msgid "Owner"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_review__period
+msgid "Period"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields.selection,name:albaha_governance.selection__albaha_review__entity_type__pillar
+msgid "Pillar"
+msgstr "محور"
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_decision__priority
+#: model_terms:ir.ui.view,arch_db:albaha_governance.view_albaha_decision_search
+msgid "Priority"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields.selection,name:albaha_governance.selection__albaha_review__entity_type__program
+msgid "Program"
+msgstr "برنامج"
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_transformation__progress_pct
+msgid "Progress %"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields.selection,name:albaha_governance.selection__albaha_committee__frequency__quarterly
+msgid "Quarterly"
+msgstr "ربع سنوي"
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_strategic_risk__rag_status
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_transformation__rag_status
+msgid "RAG"
+msgstr ""
+
+#. module: albaha_governance
+#: model_terms:ir.ui.view,arch_db:albaha_governance.view_albaha_strategic_risk_search
+#: model_terms:ir.ui.view,arch_db:albaha_governance.view_albaha_transformation_search
+msgid "Rag Status"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_review__recommendations
+#: model_terms:ir.ui.view,arch_db:albaha_governance.view_albaha_review_form
+msgid "Recommendations"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields.selection,name:albaha_governance.selection__albaha_review__overall_rating__red
+#: model:ir.model.fields.selection,name:albaha_governance.selection__albaha_strategic_risk__rag_status__red
+#: model:ir.model.fields.selection,name:albaha_governance.selection__albaha_transformation__rag_status__red
+msgid "Red"
+msgstr "أحمر"
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_review__name
+msgid "Reference"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields.selection,name:albaha_governance.selection__albaha_strategic_risk__risk_category__regulatory
+msgid "Regulatory"
+msgstr "تنظيمي"
+
+#. module: albaha_governance
+#: model:ir.model.fields.selection,name:albaha_governance.selection__albaha_strategic_risk__risk_category__reputational
+msgid "Reputational"
+msgstr "سمعة"
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_decision__responsible_id
+#: model_terms:ir.ui.view,arch_db:albaha_governance.view_albaha_decision_search
+msgid "Responsible"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_review__review_date
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_strategic_risk__review_date
+msgid "Review Date"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_review__reviewer_id
+#: model_terms:ir.ui.view,arch_db:albaha_governance.view_albaha_review_search
+msgid "Reviewer"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.actions.act_window,name:albaha_governance.action_albaha_review
+#: model:ir.ui.menu,name:albaha_governance.menu_albaha_review
+#: model_terms:ir.ui.view,arch_db:albaha_governance.view_albaha_review_list
+msgid "Reviews"
+msgstr ""
+
+#. module: albaha_governance
+#: model_terms:ir.ui.view,arch_db:albaha_governance.view_albaha_strategic_risk_search
+msgid "Risk Category"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_strategic_risk__code
+msgid "Risk Code"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_strategic_risk__name
+msgid "Risk Description"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.actions.act_window,name:albaha_governance.action_albaha_strategic_risk
+#: model:ir.ui.menu,name:albaha_governance.menu_albaha_strategic_risk
+#: model_terms:ir.ui.view,arch_db:albaha_governance.view_albaha_strategic_risk_list
+msgid "Risks"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_committee__scope
+#: model_terms:ir.ui.view,arch_db:albaha_governance.view_albaha_committee_form
+msgid "Scope"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_strategic_risk__risk_score
+msgid "Score"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_transformation__sponsor_id
+#: model_terms:ir.ui.view,arch_db:albaha_governance.view_albaha_transformation_search
+msgid "Sponsor"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_committee__status
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_decision__status
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_strategic_risk__status
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_transformation__status
+msgid "Status"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields.selection,name:albaha_governance.selection__albaha_committee__tier__strategic
+msgid "Strategic"
+msgstr "استراتيجي"
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_transformation__strategic_value
+#: model_terms:ir.ui.view,arch_db:albaha_governance.view_albaha_transformation_form
+msgid "Strategic Value"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_transformation__target_year
+msgid "Target Year"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields.selection,name:albaha_governance.selection__albaha_strategic_risk__risk_category__technical
+msgid "Technical"
+msgstr "فني"
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_committee__tier
+#: model_terms:ir.ui.view,arch_db:albaha_governance.view_albaha_committee_search
+msgid "Tier"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_decision__name
+msgid "Title"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields,field_description:albaha_governance.field_albaha_transformation__code
+msgid "Transformation Code"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.actions.act_window,name:albaha_governance.action_albaha_transformation
+#: model:ir.ui.menu,name:albaha_governance.menu_albaha_transformation
+#: model_terms:ir.ui.view,arch_db:albaha_governance.view_albaha_transformation_list
+msgid "Transformations"
+msgstr ""
+
+#. module: albaha_governance
+#: model:ir.model.fields.selection,name:albaha_governance.selection__albaha_committee__frequency__weekly
+msgid "Weekly"
+msgstr "أسبوعي"
+
+#. module: albaha_governance
+#: model:ir.model.fields,help:albaha_governance.field_albaha_strategic_risk__risk_score
+msgid "likelihood x impact"
+msgstr ""

@@ -1,0 +1,20 @@
+// ============================================================
+//  Al-Baha brand — Odoo primary SCSS variables
+// ============================================================
+// Odoo paints a lot of its chrome (links, focus rings, active states,
+// app tiles) from these variables. Overriding them here — before Odoo's
+// own `!default` declarations — recolours all of that in one place,
+// instead of chasing every component with `!important` later.
+//
+// Deliberately conservative: only well-established Odoo variables, and
+// only plain colour values. Anything typed (maps, lists) is left alone so
+// a future Odoo version cannot break the asset build from this file.
+
+// The Odoo purple. This single variable is the biggest "this is Odoo"
+// tell in the whole backend.
+$o-brand-odoo: #5c4b43;          // Al-Baha brown
+$o-brand-primary: #00ab9d;       // Al-Baha teal (actions)
+$o-community-color: #5c4b43;
+
+// Starred / favourite icons default to a mustard yellow.
+$o-main-favorite-color: #f0974f;

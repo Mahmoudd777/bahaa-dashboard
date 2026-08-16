@@ -8,9 +8,15 @@ import { user } from "@web/core/user";
 import { _t } from "@web/core/l10n/translation";
 import { WIDGETS } from "./components/widgets";
 import { ImportModal } from "./components/import_modal";
+import { ExportModal } from "./components/export_modal";
 import { AdvancedImportModal } from "./components/advanced_import_modal";
-import { RecordDetailModal } from "./components/record_detail_modal";
+import { FloatingDetailPanel } from "./components/floating_detail_panel";
 import { AggregateListModal } from "./components/aggregate_list_modal";
+import {
+    ComponentDetailModal,
+    sectionForComponent,
+    sectionsForUnit,
+} from "./components/component_detail_modal";
 import {
     cloneUnits,
     normalizeEditUnits,
@@ -62,6 +68,10 @@ export class Dashboard extends Component {
             <div t-if="state.layout.edit_user_id" class="o_baha_asuser">
                 <i class="fa fa-user-circle"/>
                 <span>أنت تعرّض وتحرّر لوحة المستخدم: <b t-esc="state.layout.edit_user_name"/></span>
+                <button class="o_baha_asuser__exit" t-on-click="exitAsUser">
+                    <i class="fa fa-sign-out"/>
+                    <span>إنهاء والعودة إلى المستخدم</span>
+                </button>
             </div>
             <t t-if="state.errorMsg">
                 <div class="o_baha_dash__empty" style="flex-direction:column;color:#b00;padding:24px;text-align:center;">
@@ -106,7 +116,9 @@ export class Dashboard extends Component {
                                          widgetFor.bind="widgetFor"
                                          propsFor.bind="propsFor"
                                          onChange.bind="onGsChange"
-                                         onRemove.bind="onRemoveUnit"/>
+                                         onRemove.bind="onRemoveUnit"
+                                         moveTargets="moveTargets"
+                                         onMove.bind="onMoveUnitToSection"/>
                     </t>
                     <t t-else="">
                         <UnitGrid units="activeUnits" widgetFor.bind="widgetFor" propsFor.bind="propsFor"/>
@@ -244,24 +256,37 @@ export class Dashboard extends Component {
             <ImportModal t-if="state.importOpen"
                          onClose="() => this.closeImport()"
                          onDone="() => this.onImportDone()"/>
+            <ExportModal t-if="state.exportOpen"
+                         onClose="() => this.closeExport()"
+                         filter="state.filter"/>
             <AdvancedImportModal t-if="state.advancedImportOpen"
                                  onClose="() => this.closeAdvancedImport()"
                                  onConfirm="openAdvancedImport.bind(this)"/>
-            <RecordDetailModal t-if="state.recordDetail.open"
-                               detail="state.recordDetail.detail"
-                               loading="state.recordDetail.loading"
-                               error="state.recordDetail.error"
-                               onClose="() => this.closeRecordDetail()"
-                               onOpenFull="openFullRecord.bind(this)"/>
             <AggregateListModal t-if="state.aggregateList.open"
                                 detail="state.aggregateList.detail"
                                 loading="state.aggregateList.loading"
                                 error="state.aggregateList.error"
                                 onClose="() => this.closeAggregateList()"
                                 onOpenRecord="openAggregateRecord.bind(this)"/>
+            <ComponentDetailModal t-if="state.componentDetail.open"
+                                  title="state.componentDetail.title"
+                                  sections="state.componentDetail.sections"
+                                  onClose="() => this.closeComponentDetail()"
+                                  onOpenRecord="openRecordDetail.bind(this)"
+                                  onOpenDrilldown="openDrilldown.bind(this)"/>
+            <!-- Floating record windows sit above the wizards, so opening a row
+                 from inside one brings the record out in front of it. -->
+            <t t-foreach="state.detailPanels" t-as="panel" t-key="panel.id">
+                <FloatingDetailPanel panel="panel"
+                                     onClose.bind="closeDetailPanel"
+                                     onFocus.bind="focusDetailPanel"
+                                     onMove.bind="moveDetailPanel"
+                                     onAddNote.bind="addRecordNote"
+                                     onOpenFull="openFullRecord.bind(this)"/>
+            </t>
         </div>`;
 
-    static components = { ...WIDGETS, ImportModal, AdvancedImportModal, RecordDetailModal, AggregateListModal, UnitGrid, GridstackEditor };
+    static components = { ...WIDGETS, ImportModal, ExportModal, AdvancedImportModal, FloatingDetailPanel, AggregateListModal, ComponentDetailModal, UnitGrid, GridstackEditor };
     static props = ["*"];
 
     setup() {
@@ -293,9 +318,13 @@ export class Dashboard extends Component {
             layout: { sections: [], colors: {}, access: true },
             loading: true,
             importOpen: false,
+            exportOpen: false,
             advancedImportOpen: false,
-            recordDetail: { open: false, loading: false, detail: null, error: "" },
+            // Record details are floating windows, not a modal: several can be
+            // open at once so records can be compared side by side.
+            detailPanels: [],
             aggregateList: { open: false, loading: false, detail: null, error: "" },
+            componentDetail: { open: false, title: "", sections: [] },
             activeTab: 0,
             errorMsg: "",
             filter: savedFilter,
@@ -315,6 +344,12 @@ export class Dashboard extends Component {
         });
         this._editLayoutDraft = null;
         this._editDraftsBySection = {};
+        // Cards queued to change page on the next save: {componentId: sectionId}.
+        this._pendingMoves = {};
+        // Stacking counter for floating record panels. Starts above the modal
+        // layer (2000) so a record always opens in front of the wizard that
+        // spawned it — the bug that made "فتح" look like it did nothing.
+        this._panelZ = 2500;
 
         // Entrance "blow up" animations: run once the section first renders, and
         // again whenever the active tab changes (re-reveals the new tab's blocks).
@@ -342,11 +377,15 @@ export class Dashboard extends Component {
         if (this.locked) {
             document.body.classList.add("o_baha_locked");
         }
+        // Hide Odoo's default OdooBot chat bubble/popup while the dashboard is
+        // shown — it's confusing on a client-facing view and isn't part of this app.
+        document.body.classList.add("o_baha_dash_active");
         onWillUnmount(() => {
             if (this.locked) {
                 document.body.classList.remove("o_baha_locked");
             }
             document.body.classList.remove("o_baha_edit_mode");
+            document.body.classList.remove("o_baha_dash_active");
             document.removeEventListener("keydown", this._onGlobalKeyDown, true);
             window.removeEventListener("beforeunload", this._onBeforeUnload);
         });
@@ -358,14 +397,27 @@ export class Dashboard extends Component {
                     this.closeImport();
                     return;
                 }
+                if (this.state.exportOpen) {
+                    ev.preventDefault();
+                    this.closeExport();
+                    return;
+                }
                 if (this.state.advancedImportOpen) {
                     ev.preventDefault();
                     this.closeAdvancedImport();
                     return;
                 }
-                if (this.state.recordDetail.open) {
+                // Floating panels close one at a time, topmost first, so Esc
+                // does not wipe out a comparison the user is mid-way through.
+                if (this.state.detailPanels.length) {
                     ev.preventDefault();
-                    this.closeRecordDetail();
+                    const top = this.state.detailPanels.reduce((a, b) => (b.z > a.z ? b : a));
+                    this.closeDetailPanel(top.id);
+                    return;
+                }
+                if (this.state.componentDetail.open) {
+                    ev.preventDefault();
+                    this.closeComponentDetail();
                     return;
                 }
                 if (this.state.aggregateList.open) {
@@ -635,6 +687,7 @@ export class Dashboard extends Component {
         const { units: normalized, repaired } = normalizeEditUnitsWithMeta(this.activeUnits);
         this._editDraftsBySection = {};
         this._editSectionVis = {};
+        this._pendingMoves = {};
         this.state.addPanelOpen = false;
         this.state.editing = true;
         this.state.editDirty = repaired;
@@ -697,6 +750,7 @@ export class Dashboard extends Component {
         this._editLayoutDraft = null;
         this._editDraftsBySection = {};
         this._editSectionVis = {};
+        this._pendingMoves = {};
         document.body.classList.remove("o_baha_edit_mode");
     }
 
@@ -784,6 +838,48 @@ export class Dashboard extends Component {
         this.state.draftUnits = this._editLayoutDraft;
         this.state.editSession = Date.now();     // force GridstackEditor remount
         this._syncGlobalEditDirty();
+    }
+
+    /** Other tabs this card could be moved to (everything but the current). */
+    get moveTargets() {
+        const current = this.activeSection?.id;
+        return this.tabs
+            .filter((t) => t.id && t.id !== current)
+            .map((t) => ({ id: t.id, name: t.name }));
+    }
+
+    /** Move a card to another page. Seeded components are pinned to whichever
+     *  page the seed put them on, which is only right until someone disagrees
+     *  — so placement is the user's to change, not ours to fix by re-seeding.
+     *
+     *  The card leaves this tab's draft immediately and is queued for a
+     *  section_id change at save time. It is NOT added to the target's draft:
+     *  that draft may not be loaded, and re-fetching after the save is what
+     *  gives the target its authoritative geometry. */
+    onMoveUnitToSection(key, targetSectionId) {
+        const sectionId = this.activeSection?.id;
+        const draft = this._editDraftsBySection[sectionId];
+        if (!draft || !targetSectionId || targetSectionId === sectionId) {
+            return;
+        }
+        const idx = draft.units.findIndex((u) => u.key === key);
+        if (idx < 0) {
+            return;
+        }
+        const [unit] = draft.units.splice(idx, 1);
+        for (const id of this._unitCompIds(unit)) {
+            this._pendingMoves[id] = targetSectionId;
+        }
+        draft.dirty = true;
+        this._editLayoutDraft = cloneUnits(draft.units);
+        this.state.draftUnits = this._editLayoutDraft;
+        this.state.editSession = Date.now();     // force GridstackEditor remount
+        this._syncGlobalEditDirty();
+        const target = this.tabs.find((t) => t.id === targetSectionId);
+        this.notification.add(
+            _t('سيتم نقل البطاقة إلى "%s" عند حفظ التخطيط', (target && target.name) || ""),
+            { type: "info" }
+        );
     }
 
     /** Re-add a previously removed card (+ in the add panel). */
@@ -886,8 +982,10 @@ export class Dashboard extends Component {
                     items: unitsToSaveItems(this._editDraftsBySection[tab.id].units),
                 }));
             const visibility = this._collectVisibilityChanges();
+            const moves = { ...this._pendingMoves };
             const hasVis = Object.keys(visibility.components).length || Object.keys(visibility.sections).length;
-            if (!sections.length && !hasVis) {
+            const hasMoves = Object.keys(moves).length;
+            if (!sections.length && !hasVis && !hasMoves) {
                 return;
             }
             await rpc("/web/dataset/call_kw/dashboard.dashboard/save_layout_edits", {
@@ -897,9 +995,11 @@ export class Dashboard extends Component {
                 kwargs: {
                     layout_version: this.state.layout.layout_version || null,
                     visibility,
+                    moves,
                     target_user_id: this.editUserId || null,
                 },
             });
+            this._pendingMoves = {};
             for (const section of sections) {
                 const draft = this._editDraftsBySection[section.section_id];
                 if (draft) {
@@ -926,6 +1026,8 @@ export class Dashboard extends Component {
         if (!this.state.editing && INTERACTIVE_WIDGETS.has(comp.type)) {
             props.onOpenRecord = this.openRecordDetail.bind(this);
             props.onOpenDrilldown = this.openDrilldown.bind(this);
+            // The ⤢ expand icon: opens everything this card holds at once.
+            props.onOpenComponent = this.openComponentDetail.bind(this);
         }
         if (comp.type === "toolbar" || comp.type === "banner") {
             props.onAction = this.onAction.bind(this);
@@ -965,12 +1067,55 @@ export class Dashboard extends Component {
             }
             this.state.advancedImportOpen = true;
         } else if (action === "export") {
-            this.notification.add("التصدير غير متاح بعد", { type: "warning" });
+            this.state.exportOpen = true;
         }
     }
 
     closeImport() {
         this.state.importOpen = false;
+    }
+
+    // Leaving "viewing as another user". Exiting edit mode only drops the layout
+    // editor — it still leaves the admin inside the other user's dashboard, with
+    // no way back, because this banner used to be a label with no control on it.
+    exitAsUser() {
+        // action_open_user_dashboard opens with target="new", so normally there
+        // is an opener and closing the tab returns the admin to the user form.
+        if (window.opener && !window.opener.closed) {
+            window.close();
+            return;
+        }
+        // Navigated here directly (pasted URL, reused tab): go to the user form.
+        const uid = this.state.layout.edit_user_id;
+        window.location.href = uid
+            ? `/odoo/action-base.action_res_users/${uid}`
+            : "/odoo/action-base.action_res_users";
+    }
+
+    // Append a note to one record's log. Returns true so the panel knows to
+    // collapse its editor; on failure the text is left in place to retype.
+    async addRecordNote(panelId, note) {
+        const panel = this.state.detailPanels.find((p) => p.id === panelId);
+        if (!panel || !panel.detail) {
+            return false;
+        }
+        try {
+            const log = await rpc(
+                "/web/dataset/call_kw/dashboard.dashboard/add_record_note",
+                { model: "dashboard.dashboard", method: "add_record_note",
+                  args: [panel.model, panel.res_id, note], kwargs: {} }
+            );
+            // Newest first, matching the server's _order.
+            panel.detail.logs = [log, ...(panel.detail.logs || [])];
+            return true;
+        } catch (e) {
+            this.notification.add(e.message || "تعذّر حفظ الملاحظة", { type: "danger" });
+            return false;
+        }
+    }
+
+    closeExport() {
+        this.state.exportOpen = false;
     }
 
     closeAdvancedImport() {
@@ -997,14 +1142,36 @@ export class Dashboard extends Component {
         }
     }
 
+    /** Open a record as a floating panel. Several can be open at once and each
+     *  can be dragged, so two records can be put side by side and compared —
+     *  which a single modal could never do. Re-opening the same record brings
+     *  the existing panel forward instead of stacking a duplicate on top. */
     async openRecordDetail(record) {
         if (!record || !record.model || !record.id) {
             return;
         }
-        this.state.recordDetail.open = true;
-        this.state.recordDetail.loading = true;
-        this.state.recordDetail.error = "";
-        this.state.recordDetail.detail = null;
+        const id = `${record.model}:${record.id}`;
+        const existing = this.state.detailPanels.find((p) => p.id === id);
+        if (existing) {
+            this.focusDetailPanel(id);
+            return;
+        }
+
+        // Cascade each new panel so it does not land exactly on the last one.
+        const step = this.state.detailPanels.length % 6;
+        const panel = {
+            id,
+            model: record.model,
+            res_id: record.id,
+            x: Math.max(16, Math.round(window.innerWidth / 2 - 230) + step * 28),
+            y: Math.max(16, 96 + step * 28),
+            z: ++this._panelZ,
+            loading: true,
+            error: "",
+            detail: null,
+        };
+        this.state.detailPanels.push(panel);
+
         try {
             const detail = await Promise.race([
                 rpc("/web/dataset/call_kw/dashboard.dashboard/get_record_detail",
@@ -1013,20 +1180,50 @@ export class Dashboard extends Component {
                       kwargs: { dashboard_filter: this.state.filter || null } }),
                 new Promise((_, rej) => setTimeout(() => rej(new Error("RPC timeout (8s)")), 8000)),
             ]);
-            this.state.recordDetail.detail = detail;
+            // The panel may have been closed while the request was in flight.
+            const live = this.state.detailPanels.find((p) => p.id === id);
+            if (live) {
+                live.detail = detail;
+            }
         } catch (e) {
-            this.state.recordDetail.error = "تعذّر تحميل تفاصيل السجل";
+            const live = this.state.detailPanels.find((p) => p.id === id);
+            if (live) {
+                live.error = "تعذّر تحميل تفاصيل السجل";
+            }
             this.notification.add(e.message || "تعذّر تحميل تفاصيل السجل", { type: "danger" });
         } finally {
-            this.state.recordDetail.loading = false;
+            const live = this.state.detailPanels.find((p) => p.id === id);
+            if (live) {
+                live.loading = false;
+            }
         }
     }
 
-    closeRecordDetail() {
-        this.state.recordDetail.open = false;
-        this.state.recordDetail.loading = false;
-        this.state.recordDetail.detail = null;
-        this.state.recordDetail.error = "";
+    closeDetailPanel(id) {
+        const idx = this.state.detailPanels.findIndex((p) => p.id === id);
+        if (idx >= 0) {
+            this.state.detailPanels.splice(idx, 1);
+        }
+    }
+
+    closeAllDetailPanels() {
+        this.state.detailPanels.length = 0;
+    }
+
+    /** Raise a panel above its siblings when it is clicked. */
+    focusDetailPanel(id) {
+        const panel = this.state.detailPanels.find((p) => p.id === id);
+        if (panel && panel.z !== this._panelZ) {
+            panel.z = ++this._panelZ;
+        }
+    }
+
+    moveDetailPanel(id, x, y) {
+        const panel = this.state.detailPanels.find((p) => p.id === id);
+        if (panel) {
+            panel.x = x;
+            panel.y = y;
+        }
     }
 
     openFullRecord(detail) {
@@ -1082,6 +1279,28 @@ export class Dashboard extends Component {
             return;
         }
         this.openFullRecord({ model: row.model, res_id: row.res_id });
+    }
+
+    /** The ⤢ expand icon on a card. Unlike the per-item drill-down, this shows
+     *  the card's WHOLE dataset in one wizard — no picker, no choosing. The
+     *  data is already loaded client-side, so this needs no RPC. */
+    openComponentDetail(comp) {
+        if (!comp) {
+            return;
+        }
+        // A grouped panel expands to all of its inner components at once.
+        const sections = comp.kind === "panel" || comp.components
+            ? sectionsForUnit(comp)
+            : [sectionForComponent(comp)];
+        this.state.componentDetail.title = comp.title || comp.name || "تفاصيل المكوّن";
+        this.state.componentDetail.sections = sections;
+        this.state.componentDetail.open = true;
+    }
+
+    closeComponentDetail() {
+        this.state.componentDetail.open = false;
+        this.state.componentDetail.sections = [];
+        this.state.componentDetail.title = "";
     }
 
     // ---- Theme picker (edit mode) -------------------------------------------

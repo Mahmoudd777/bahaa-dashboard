@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Adds a "صلاحيات بيانات الباحة" page to the user form: one read/edit
+         toggle per data model. Ticking a box joins that model's editor group,
+         so the switch drives a real Odoo permission, not just a UI hint. -->
+    <record id="view_users_form_albaha_access" model="ir.ui.view">
+        <field name="name">res.users.form.albaha.access</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="صلاحيات بيانات الباحة" name="albaha_access">
+                    <div class="alert alert-info" role="status">
+                        كل مستخدم يستطيع قراءة البيانات. فعّل الخيار ليصبح بإمكانه
+                        <b>تعديل</b> النموذج المقابل (إنشاء/تعديل/حذف).
+                    </div>
+                    <group>
+                        <group string="الاستراتيجية">
+                            <field name="albaha_can_edit_objective"/>
+                            <field name="albaha_can_edit_pillar"/>
+                            <field name="albaha_can_edit_program"/>
+                        </group>
+                        <group string="المؤشرات والمبادرات">
+                            <field name="albaha_can_edit_kpi"/>
+                            <field name="albaha_can_edit_indicator"/>
+                            <field name="albaha_can_edit_initiative"/>
+                        </group>
+                        <group string="الحوكمة والمخاطر">
+                            <field name="albaha_can_edit_risk"/>
+                            <field name="albaha_can_edit_decision"/>
+                            <field name="albaha_can_edit_steerco"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

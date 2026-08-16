@@ -1,7 +1,13 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_albaha_governance,albaha.governance,model_albaha_governance,base.group_user,1,1,1,1
-access_albaha_steerco,albaha.steerco,model_albaha_steerco,base.group_user,1,1,1,1
-access_albaha_lesson,albaha.lesson,model_albaha_lesson,base.group_user,1,1,1,1
-access_albaha_closure,albaha.closure,model_albaha_closure,base.group_user,1,1,1,1
-access_albaha_strategy_bridge,albaha.strategy.bridge,model_albaha_strategy_bridge,base.group_user,1,1,1,1
-access_albaha_stakeholder,albaha.stakeholder,model_albaha_stakeholder,base.group_user,1,1,1,1
+access_albaha_governance,albaha.governance read,model_albaha_governance,base.group_user,1,0,0,0
+access_albaha_steerco,albaha.steerco read,model_albaha_steerco,base.group_user,1,0,0,0
+access_albaha_lesson,albaha.lesson read,model_albaha_lesson,base.group_user,1,0,0,0
+access_albaha_closure,albaha.closure read,model_albaha_closure,base.group_user,1,0,0,0
+access_albaha_strategy_bridge,albaha.strategy.bridge read,model_albaha_strategy_bridge,base.group_user,1,0,0,0
+access_albaha_stakeholder,albaha.stakeholder read,model_albaha_stakeholder,base.group_user,1,0,0,0
+access_albaha_steerco_edit,albaha.steerco edit,model_albaha_steerco,albaha_strategy.group_albaha_edit_steerco,1,1,1,1
+access_albaha_governance_edit,albaha.governance edit,model_albaha_governance,albaha_strategy.group_albaha_edit_steerco,1,1,1,1
+access_albaha_lesson_edit,albaha.lesson edit,model_albaha_lesson,albaha_strategy.group_albaha_edit_steerco,1,1,1,1
+access_albaha_closure_edit,albaha.closure edit,model_albaha_closure,albaha_strategy.group_albaha_edit_steerco,1,1,1,1
+access_albaha_strategy_bridge_edit,albaha.strategy.bridge edit,model_albaha_strategy_bridge,albaha_strategy.group_albaha_edit_objective,1,1,1,1
+access_albaha_stakeholder_edit,albaha.stakeholder edit,model_albaha_stakeholder,albaha_strategy.group_albaha_edit_steerco,1,1,1,1

@@ -1,0 +1,504 @@
+// ============================================================
+//  Al-Baha Strategic Office — Odoo backend brand theme
+// ============================================================
+// Goal: a user drilling from the dashboard into a record should not feel
+// like they left the product. Tokens below are the SAME ones dashboard.scss
+// uses, so the two surfaces cannot drift apart.
+//
+// Written against Odoo 19 backend classes. Kept to colour / type / spacing —
+// no layout surgery, so an Odoo point release can't silently break the UI.
+// Odoo compiles a mirrored RTL sheet automatically, so plain left/right here
+// is flipped for us; no logical-property gymnastics needed.
+
+:root {
+    --ab-brown: #5c4b43;
+    --ab-brown-dark: #4b3d36;
+    --ab-brown-soft: #6d5c53;
+    --ab-teal: #00ab9d;
+    --ab-teal-dark: #009085;
+    --ab-orange: #f0974f;
+    --ab-red: #ff5147;
+
+    --ab-text: #181d27;
+    --ab-text-soft: #414651;
+    --ab-muted: #717680;
+    --ab-border: #d5d7da;
+    --ab-bg: #f5f5f5;
+    --ab-surface: #ffffff;
+
+    --ab-radius: 4px;
+    --ab-radius-lg: 10px;
+    --ab-font: "Tajawal", "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+// ---- Typography -------------------------------------------------------
+// Tajawal is already bundled into assets_backend by dashboard_app; this
+// just applies it. Arabic content is the default here, so the Arabic-first
+// face matters more than the Latin fallback.
+.o_web_client,
+.o_main_navbar,
+.modal,
+.dropdown-menu,
+.o_notification_manager {
+    font-family: var(--ab-font);
+}
+
+.o_web_client {
+    color: var(--ab-text);
+}
+
+// ---- Top navbar -------------------------------------------------------
+// The single strongest "this is Odoo" signal. Solid brand brown, matching
+// the dashboard header exactly.
+.o_main_navbar {
+    --NavBar-backgroundColor: var(--ab-brown);
+    background-color: var(--ab-brown) !important;
+    border-bottom: 0;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.12);
+
+    .o_menu_brand {
+        font-family: var(--ab-font);
+        font-weight: 700;
+        font-size: 15px;
+        letter-spacing: 0.01em;
+        color: #fff !important;
+
+        &:hover,
+        &:focus {
+            background-color: var(--ab-brown-soft) !important;
+            color: #fff !important;
+        }
+    }
+
+    // Menu entries, systray icons, dropdown toggles
+    > .o_menu_sections .dropdown-toggle,
+    > .o_menu_sections .o_nav_entry,
+    .o_menu_systray .dropdown-toggle,
+    .o_menu_systray > a,
+    .o_navbar_apps_menu .dropdown-toggle {
+        color: rgba(255, 255, 255, 0.88);
+        border-radius: var(--ab-radius);
+        transition: background-color 0.14s ease, color 0.14s ease;
+
+        &:hover,
+        &:focus {
+            background-color: var(--ab-brown-soft);
+            color: #fff;
+        }
+    }
+
+    // Currently-open section
+    > .o_menu_sections .show > .dropdown-toggle,
+    .o_menu_systray .show > .dropdown-toggle {
+        background-color: var(--ab-teal);
+        color: #fff;
+    }
+}
+
+// ---- App tiles (home menu + web_responsive drawer) --------------------
+.o_home_menu,
+.o_app_drawer {
+    background-color: var(--ab-bg);
+}
+
+.o_app,
+.o_draggable .o_app {
+    border-radius: var(--ab-radius-lg);
+    transition: transform 0.15s ease, box-shadow 0.15s ease,
+        background-color 0.15s ease;
+
+    &:hover,
+    &:focus {
+        background-color: rgba(0, 171, 157, 0.08);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(20, 19, 21, 0.1);
+    }
+
+    .o_caption {
+        font-family: var(--ab-font);
+        font-weight: 600;
+        color: var(--ab-text);
+    }
+}
+
+// web_responsive's app-drawer search field
+.o_apps_menu_search input,
+.o_app_drawer input[type="search"] {
+    border-radius: var(--ab-radius);
+    border: 1px solid var(--ab-border);
+
+    &:focus {
+        border-color: var(--ab-teal);
+        box-shadow: 0 0 0 3px rgba(0, 171, 157, 0.18);
+    }
+}
+
+// ---- Buttons ----------------------------------------------------------
+// Teal = "do the thing", brown = brand-neutral secondary. Bootstrap's own
+// blue/purple never appears.
+.btn {
+    border-radius: var(--ab-radius);
+    font-family: var(--ab-font);
+    font-weight: 600;
+    transition: background-color 0.14s ease, border-color 0.14s ease,
+        color 0.14s ease, box-shadow 0.14s ease;
+}
+
+.btn-primary,
+.o_form_button_save,
+.o_list_button_save {
+    background-color: var(--ab-teal);
+    border-color: var(--ab-teal);
+    color: #fff;
+
+    &:hover,
+    &:focus,
+    &:active,
+    &.active {
+        background-color: var(--ab-teal-dark) !important;
+        border-color: var(--ab-teal-dark) !important;
+        color: #fff !important;
+    }
+
+    &:focus-visible {
+        box-shadow: 0 0 0 3px rgba(0, 171, 157, 0.28);
+    }
+
+    &:disabled,
+    &.disabled {
+        background-color: var(--ab-teal);
+        border-color: var(--ab-teal);
+        opacity: 0.45;
+    }
+}
+
+.btn-secondary,
+.o_form_button_cancel,
+.o_list_button_discard {
+    background-color: #fff;
+    border-color: var(--ab-border);
+    color: var(--ab-text-soft);
+
+    &:hover,
+    &:focus {
+        background-color: var(--ab-bg);
+        border-color: var(--ab-brown);
+        color: var(--ab-brown);
+    }
+}
+
+.btn-link {
+    color: var(--ab-teal);
+
+    &:hover {
+        color: var(--ab-teal-dark);
+    }
+}
+
+.btn-danger {
+    background-color: var(--ab-red);
+    border-color: var(--ab-red);
+}
+
+// ---- Control panel (breadcrumb strip) ---------------------------------
+.o_control_panel {
+    background-color: var(--ab-surface);
+    border-bottom: 1px solid var(--ab-border);
+
+    .breadcrumb-item,
+    .o_breadcrumb .o_last_breadcrumb_item {
+        font-family: var(--ab-font);
+        color: var(--ab-text);
+    }
+
+    .breadcrumb-item > a {
+        color: var(--ab-muted);
+
+        &:hover {
+            color: var(--ab-teal);
+        }
+    }
+
+    .o_last_breadcrumb_item {
+        font-weight: 700;
+    }
+}
+
+// ---- Search view ------------------------------------------------------
+.o_searchview {
+    border-radius: var(--ab-radius);
+    border: 1px solid var(--ab-border);
+    background: #fff;
+
+    &:focus-within {
+        border-color: var(--ab-teal);
+        box-shadow: 0 0 0 3px rgba(0, 171, 157, 0.15);
+    }
+
+    .o_searchview_facet {
+        border-radius: var(--ab-radius);
+
+        .o_searchview_facet_label {
+            background-color: var(--ab-teal);
+            color: #fff;
+        }
+    }
+}
+
+// ---- List view --------------------------------------------------------
+.o_list_view {
+    .o_list_table > thead > tr > th {
+        background-color: #fafbfc;
+        color: var(--ab-text-soft);
+        font-family: var(--ab-font);
+        font-weight: 700;
+        border-bottom: 1px solid var(--ab-border);
+    }
+
+    .o_data_row {
+        transition: background-color 0.12s ease;
+
+        &:hover > td {
+            background-color: rgba(0, 171, 157, 0.05);
+        }
+
+        &.o_data_row_selected > td,
+        &.table-info > td {
+            background-color: rgba(0, 171, 157, 0.1) !important;
+        }
+    }
+
+    .o_list_record_selector input:checked {
+        background-color: var(--ab-teal);
+        border-color: var(--ab-teal);
+    }
+
+    // Column-total / aggregate footer
+    tfoot {
+        background-color: #fafbfc;
+        color: var(--ab-text);
+        font-weight: 700;
+        border-top: 2px solid var(--ab-border);
+    }
+}
+
+// ---- Form view --------------------------------------------------------
+.o_form_view {
+    .o_form_sheet {
+        background-color: var(--ab-surface);
+        border: 1px solid #e8e8e8;
+        border-radius: var(--ab-radius);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    }
+
+    .o_form_label,
+    .o_horizontal_separator {
+        font-family: var(--ab-font);
+        color: var(--ab-text-soft);
+        font-weight: 600;
+    }
+
+    .o_horizontal_separator {
+        color: var(--ab-brown);
+        font-weight: 700;
+    }
+
+    // Focused inputs pick up the brand accent instead of Bootstrap blue
+    .o_field_widget input:focus,
+    .o_field_widget textarea:focus,
+    .o_field_widget select:focus,
+    .o_input:focus {
+        border-color: var(--ab-teal) !important;
+        box-shadow: 0 0 0 2px rgba(0, 171, 157, 0.18) !important;
+        outline: none;
+    }
+}
+
+// Status bar (draft → confirmed → done)
+.o_statusbar_status {
+    .o_arrow_button {
+        font-family: var(--ab-font);
+        font-weight: 600;
+
+        &.o_arrow_button_current {
+            background-color: var(--ab-teal) !important;
+            color: #fff !important;
+        }
+
+        &:not(.o_arrow_button_current):hover {
+            background-color: rgba(0, 171, 157, 0.12);
+            color: var(--ab-teal-dark);
+        }
+    }
+}
+
+// Smart buttons (the stat boxes at the top of a form)
+.oe_button_box .oe_stat_button {
+    border-radius: var(--ab-radius);
+    border-color: var(--ab-border);
+
+    &:hover {
+        border-color: var(--ab-teal);
+        background-color: rgba(0, 171, 157, 0.05);
+    }
+
+    .o_stat_value {
+        color: var(--ab-teal);
+        font-weight: 700;
+    }
+
+    .o_button_icon {
+        color: var(--ab-brown);
+    }
+}
+
+// ---- Notebook tabs ----------------------------------------------------
+.o_notebook {
+    .nav-tabs {
+        border-bottom: 1px solid var(--ab-border);
+
+        .nav-link {
+            font-family: var(--ab-font);
+            font-weight: 600;
+            color: var(--ab-muted);
+            border: 0;
+            border-bottom: 2px solid transparent;
+            border-radius: 0;
+
+            &:hover {
+                color: var(--ab-brown);
+                border-bottom-color: rgba(92, 75, 67, 0.35);
+            }
+
+            &.active {
+                color: var(--ab-teal);
+                background: transparent;
+                border-bottom-color: var(--ab-teal);
+            }
+        }
+    }
+}
+
+// ---- Kanban -----------------------------------------------------------
+.o_kanban_view {
+    .o_kanban_record {
+        border-radius: var(--ab-radius);
+        border: 1px solid #e8e8e8;
+        transition: box-shadow 0.15s ease, transform 0.15s ease;
+
+        &:hover {
+            box-shadow: 0 8px 20px rgba(20, 19, 21, 0.08);
+            transform: translateY(-2px);
+        }
+    }
+
+    .o_column_title,
+    .o_kanban_header_title {
+        font-family: var(--ab-font);
+        font-weight: 700;
+        color: var(--ab-text);
+    }
+}
+
+// ---- Dropdowns, dialogs, notifications --------------------------------
+.dropdown-menu {
+    border-radius: var(--ab-radius-lg);
+    border: 1px solid var(--ab-border);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.14);
+
+    .dropdown-item {
+        font-family: var(--ab-font);
+        border-radius: var(--ab-radius);
+
+        &:hover,
+        &:focus {
+            background-color: rgba(0, 171, 157, 0.09);
+            color: var(--ab-teal-dark);
+        }
+
+        &.selected,
+        &.active {
+            background-color: var(--ab-teal);
+            color: #fff;
+        }
+    }
+}
+
+.modal-content {
+    border-radius: var(--ab-radius-lg);
+    border: 0;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.28);
+
+    .modal-header {
+        border-bottom: 1px solid var(--ab-border);
+
+        .modal-title {
+            font-family: var(--ab-font);
+            font-weight: 800;
+            color: var(--ab-text);
+        }
+    }
+}
+
+.o_notification {
+    border-radius: var(--ab-radius-lg);
+    font-family: var(--ab-font);
+
+    &.border-success {
+        border-color: var(--ab-teal) !important;
+    }
+    &.border-warning {
+        border-color: var(--ab-orange) !important;
+    }
+    &.border-danger {
+        border-color: var(--ab-red) !important;
+    }
+}
+
+// ---- Links & selection ------------------------------------------------
+.o_web_client a:not(.btn):not(.dropdown-item):not(.nav-link) {
+    color: var(--ab-teal);
+
+    &:hover {
+        color: var(--ab-teal-dark);
+    }
+}
+
+.o_web_client ::selection {
+    background: rgba(0, 171, 157, 0.22);
+}
+
+// ---- Pager / view switcher -------------------------------------------
+.o_pager button:hover,
+.o_cp_switch_buttons .btn:hover {
+    color: var(--ab-teal);
+}
+
+.o_cp_switch_buttons .btn.active,
+.o_cp_switch_buttons .o_switch_view.active {
+    color: var(--ab-teal);
+    border-color: var(--ab-teal);
+}
+
+// ---- Loading bar ------------------------------------------------------
+.o_rpc_loading,
+.o_loading_indicator {
+    background-color: var(--ab-teal) !important;
+    color: #fff;
+}
+
+// ---- Onboarding tour pointer ------------------------------------------
+// Odoo paints this from a hard-coded purple rather than a brand variable,
+// so it stays Odoo-coloured unless overridden explicitly.
+:root {
+    --TourPointer__color: var(--ab-teal);
+    --TourPointer__color-accent: var(--ab-teal-dark);
+}
+
+// ---- The dashboard's own client action --------------------------------
+// dashboard_app renders inside the backend too; strip the grey chrome so it
+// sits flush the way it does on the public /dashboard page.
+.o_action_manager > .o_baha_dash,
+.o_content > .o_baha_dash {
+    background: var(--ab-bg);
+}

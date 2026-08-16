@@ -1,0 +1,520 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* albaha_pmo
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0-20260630\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-06 00:45+0000\n"
+"PO-Revision-Date: 2026-08-06 00:45+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: albaha_pmo
+#: model:ir.model,name:albaha_pmo.model_albaha_program_pmo
+msgid "A delivery program under a portfolio"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model,name:albaha_pmo.model_albaha_milestone
+msgid "A milestone of a project"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model,name:albaha_pmo.model_albaha_project
+msgid "A project - the central PMO record"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model,name:albaha_pmo.model_albaha_portfolio
+msgid "A strategic portfolio grouping programs"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields.selection,name:albaha_pmo.selection__albaha_portfolio__status__active
+#: model:ir.model.fields.selection,name:albaha_pmo.selection__albaha_program_pmo__status__active
+msgid "Active"
+msgstr "نشط"
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_project__actual_cost_to_date
+msgid "Actual Cost to Date (SAR m)"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_milestone__actual_date
+msgid "Actual Date"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_project__actual_end
+msgid "Actual End"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_project__actual_start
+msgid "Actual Start"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.ui.menu,name:albaha_pmo.menu_albaha_pmo_root
+msgid "Al-Baha PMO - Core"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields.selection,name:albaha_pmo.selection__albaha_project__health_status__amber
+msgid "Amber"
+msgstr "أصفر"
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_project__baseline_cost_sar_m
+msgid "Baseline Cost (SAR m)"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_program_pmo__budget_sar_m
+msgid "Budget (SAR m)"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields.selection,name:albaha_pmo.selection__albaha_portfolio__status__closed
+#: model:ir.model.fields.selection,name:albaha_pmo.selection__albaha_program_pmo__status__closed
+msgid "Closed"
+msgstr "مغلق"
+
+#. module: albaha_pmo
+#: model:ir.model.fields.selection,name:albaha_pmo.selection__albaha_project__phase__closing
+msgid "Closing"
+msgstr "الإغلاق"
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_milestone__create_uid
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_portfolio__create_uid
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_program_pmo__create_uid
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_project__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_milestone__create_date
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_portfolio__create_date
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_program_pmo__create_date
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_project__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields.selection,name:albaha_pmo.selection__albaha_program_pmo__priority__critical
+#: model:ir.model.fields.selection,name:albaha_pmo.selection__albaha_project__priority__critical
+msgid "Critical"
+msgstr "حرج"
+
+#. module: albaha_pmo
+#: model:ir.model.fields.selection,name:albaha_pmo.selection__albaha_milestone__milestone_type__deliverable
+msgid "Deliverable"
+msgstr "مُخرَج"
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_milestone__deliverable_ref
+msgid "Deliverable Reference"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_milestone__display_name
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_portfolio__display_name
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_program_pmo__display_name
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_project__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_project__eac_forecast
+msgid "EAC Forecast (SAR m)"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_portfolio__end_date
+msgid "End Date"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields.selection,name:albaha_pmo.selection__albaha_project__phase__executing
+msgid "Executing"
+msgstr "التنفيذ"
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_program_pmo__expected_benefit
+#: model_terms:ir.ui.view,arch_db:albaha_pmo.view_albaha_program_pmo_form
+msgid "Expected Benefit"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_portfolio__fiscal_year
+msgid "Fiscal Year"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields.selection,name:albaha_pmo.selection__albaha_milestone__milestone_type__gate
+msgid "Gate"
+msgstr "بوابة"
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_project__geo_location
+msgid "Geo Location"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields.selection,name:albaha_pmo.selection__albaha_project__health_status__green
+msgid "Green"
+msgstr "أخضر"
+
+#. module: albaha_pmo
+#: model:ir.model.fields.selection,name:albaha_pmo.selection__albaha_project__health_status__grey
+msgid "Grey"
+msgstr "رمادي"
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_project__health_status
+msgid "Health"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields.selection,name:albaha_pmo.selection__albaha_program_pmo__priority__high
+#: model:ir.model.fields.selection,name:albaha_pmo.selection__albaha_project__priority__high
+msgid "High"
+msgstr "مرتفع"
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_milestone__id
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_portfolio__id
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_program_pmo__id
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_project__id
+msgid "ID"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields.selection,name:albaha_pmo.selection__albaha_project__phase__initiating
+msgid "Initiating"
+msgstr "البدء"
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_portfolio__kpi_target_pct
+msgid "KPI Target %"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_project__last_status_update
+msgid "Last Status Update"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_milestone__write_uid
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_portfolio__write_uid
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_program_pmo__write_uid
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_project__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_milestone__write_date
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_portfolio__write_date
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_program_pmo__write_date
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_project__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields.selection,name:albaha_pmo.selection__albaha_program_pmo__priority__low
+#: model:ir.model.fields.selection,name:albaha_pmo.selection__albaha_project__priority__low
+msgid "Low"
+msgstr "منخفض"
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_program_pmo__manager_id
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_project__manager_id
+msgid "Manager"
+msgstr ""
+
+#. module: albaha_pmo
+#: model_terms:ir.ui.view,arch_db:albaha_pmo.view_albaha_program_pmo_search
+#: model_terms:ir.ui.view,arch_db:albaha_pmo.view_albaha_project_search
+msgid "Manager Id"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields.selection,name:albaha_pmo.selection__albaha_program_pmo__priority__medium
+#: model:ir.model.fields.selection,name:albaha_pmo.selection__albaha_project__priority__medium
+msgid "Medium"
+msgstr "متوسط"
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_milestone__code
+msgid "Milestone Code"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_milestone__name
+msgid "Milestone Name"
+msgstr ""
+
+#. module: albaha_pmo
+#: model_terms:ir.ui.view,arch_db:albaha_pmo.view_albaha_milestone_search
+msgid "Milestone Type"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.actions.act_window,name:albaha_pmo.action_albaha_milestone
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_project__milestone_ids
+#: model:ir.ui.menu,name:albaha_pmo.menu_albaha_milestone
+#: model_terms:ir.ui.view,arch_db:albaha_pmo.view_albaha_milestone_list
+msgid "Milestones"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields.selection,name:albaha_pmo.selection__albaha_milestone__status__missed
+msgid "Missed"
+msgstr "فائت"
+
+#. module: albaha_pmo
+#: model:ir.model.fields.selection,name:albaha_pmo.selection__albaha_project__phase__monitoring
+msgid "Monitoring"
+msgstr "المراقبة"
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_portfolio__name
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_program_pmo__name
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_project__name
+msgid "Name (Arabic)"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_portfolio__name_en
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_program_pmo__name_en
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_project__name_en
+msgid "Name (English)"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_program_pmo__objective
+#: model_terms:ir.ui.view,arch_db:albaha_pmo.view_albaha_program_pmo_form
+msgid "Objective"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields.selection,name:albaha_pmo.selection__albaha_portfolio__status__onhold
+#: model:ir.model.fields.selection,name:albaha_pmo.selection__albaha_program_pmo__status__onhold
+msgid "On Hold"
+msgstr "متوقف"
+
+#. module: albaha_pmo
+#: model:ir.model.fields.selection,name:albaha_pmo.selection__albaha_milestone__milestone_type__payment
+msgid "Payment"
+msgstr "دفعة"
+
+#. module: albaha_pmo
+#: model:ir.model.fields.selection,name:albaha_pmo.selection__albaha_milestone__status__pending
+msgid "Pending"
+msgstr "قيد الانتظار"
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_project__phase
+msgid "Phase"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_project__planned_pct
+msgid "Planned %"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_milestone__planned_date
+msgid "Planned Date"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_project__planned_end
+msgid "Planned End"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_project__planned_start
+msgid "Planned Start"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields.selection,name:albaha_pmo.selection__albaha_project__phase__planning
+msgid "Planning"
+msgstr "التخطيط"
+
+#. module: albaha_pmo
+#: model:ir.actions.act_window,name:albaha_pmo.action_albaha_program_pmo
+#: model:ir.ui.menu,name:albaha_pmo.menu_albaha_program_pmo
+#: model_terms:ir.ui.view,arch_db:albaha_pmo.view_albaha_program_pmo_list
+msgid "Pmos"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_program_pmo__portfolio_id
+msgid "Portfolio"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_portfolio__code
+msgid "Portfolio Code"
+msgstr ""
+
+#. module: albaha_pmo
+#: model_terms:ir.ui.view,arch_db:albaha_pmo.view_albaha_program_pmo_search
+msgid "Portfolio Id"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_portfolio__portfolio_type
+msgid "Portfolio Type"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.actions.act_window,name:albaha_pmo.action_albaha_portfolio
+#: model:ir.ui.menu,name:albaha_pmo.menu_albaha_portfolio
+#: model_terms:ir.ui.view,arch_db:albaha_pmo.view_albaha_portfolio_list
+msgid "Portfolios"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_program_pmo__priority
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_project__priority
+#: model_terms:ir.ui.view,arch_db:albaha_pmo.view_albaha_program_pmo_search
+msgid "Priority"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_project__program_id
+msgid "Program"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_program_pmo__code
+msgid "Program Code"
+msgstr ""
+
+#. module: albaha_pmo
+#: model_terms:ir.ui.view,arch_db:albaha_pmo.view_albaha_project_search
+msgid "Program Id"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_portfolio__program_ids
+msgid "Programs"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_project__progress_pct
+msgid "Progress %"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_milestone__project_id
+msgid "Project"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_project__code
+msgid "Project Code"
+msgstr ""
+
+#. module: albaha_pmo
+#: model_terms:ir.ui.view,arch_db:albaha_pmo.view_albaha_milestone_search
+msgid "Project Id"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_project__project_type
+msgid "Project Type"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.actions.act_window,name:albaha_pmo.action_albaha_project
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_program_pmo__project_ids
+#: model:ir.ui.menu,name:albaha_pmo.menu_albaha_project
+#: model_terms:ir.ui.view,arch_db:albaha_pmo.view_albaha_project_list
+msgid "Projects"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields.selection,name:albaha_pmo.selection__albaha_milestone__status__reached
+msgid "Reached"
+msgstr "تم الوصول"
+
+#. module: albaha_pmo
+#: model:ir.model.fields.selection,name:albaha_pmo.selection__albaha_project__health_status__red
+msgid "Red"
+msgstr "أحمر"
+
+#. module: albaha_pmo
+#: model:ir.model.fields.selection,name:albaha_pmo.selection__albaha_milestone__milestone_type__review
+msgid "Review"
+msgstr "مراجعة"
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_program_pmo__sector
+msgid "Sector"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_milestone__slippage_days
+msgid "Slippage (days)"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_project__sponsor_id
+msgid "Sponsor"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_portfolio__sponsor_entity
+msgid "Sponsor Entity"
+msgstr ""
+
+#. module: albaha_pmo
+#: model_terms:ir.ui.view,arch_db:albaha_pmo.view_albaha_project_search
+msgid "Sponsor Id"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_portfolio__start_date
+msgid "Start Date"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_milestone__status
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_portfolio__status
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_program_pmo__status
+#: model_terms:ir.ui.view,arch_db:albaha_pmo.view_albaha_milestone_search
+#: model_terms:ir.ui.view,arch_db:albaha_pmo.view_albaha_portfolio_search
+msgid "Status"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_project__strategic_pillar_id
+msgid "Strategic Pillar"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_portfolio__total_budget_sar_m
+msgid "Total Budget (SAR m)"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_milestone__milestone_type
+msgid "Type"
+msgstr ""
+
+#. module: albaha_pmo
+#: model:ir.model.fields,field_description:albaha_pmo.field_albaha_milestone__weight_pct
+msgid "Weight %"
+msgstr ""

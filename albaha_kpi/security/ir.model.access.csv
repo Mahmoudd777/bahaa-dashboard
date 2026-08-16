@@ -1,5 +1,9 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_albaha_kpi,albaha.kpi User,model_albaha_kpi,base.group_user,1,1,1,1
-access_albaha_kpi_value,albaha.kpi.value User,model_albaha_kpi_value,base.group_user,1,1,1,1
-access_albaha_regional_indicator,albaha.regional.indicator User,model_albaha_regional_indicator,base.group_user,1,1,1,1
-access_albaha_sector_kpi,albaha.sector.kpi User,model_albaha_sector_kpi,base.group_user,1,1,1,1
+access_albaha_kpi,albaha.kpi read,model_albaha_kpi,base.group_user,1,0,0,0
+access_albaha_kpi_value,albaha.kpi.value read,model_albaha_kpi_value,base.group_user,1,0,0,0
+access_albaha_regional_indicator,albaha.regional.indicator read,model_albaha_regional_indicator,base.group_user,1,0,0,0
+access_albaha_sector_kpi,albaha.sector.kpi read,model_albaha_sector_kpi,base.group_user,1,0,0,0
+access_albaha_kpi_edit,albaha.kpi edit,model_albaha_kpi,albaha_strategy.group_albaha_edit_kpi,1,1,1,1
+access_albaha_kpi_value_edit,albaha.kpi.value edit,model_albaha_kpi_value,albaha_strategy.group_albaha_edit_kpi,1,1,1,1
+access_albaha_sector_kpi_edit,albaha.sector.kpi edit,model_albaha_sector_kpi,albaha_strategy.group_albaha_edit_kpi,1,1,1,1
+access_albaha_regional_indicator_edit,albaha.regional.indicator edit,model_albaha_regional_indicator,albaha_strategy.group_albaha_edit_indicator,1,1,1,1

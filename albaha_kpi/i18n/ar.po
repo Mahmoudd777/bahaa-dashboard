@@ -1,0 +1,577 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* albaha_kpi
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0-20260630\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-06 00:45+0000\n"
+"PO-Revision-Date: 2026-08-06 00:45+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: albaha_kpi
+#: model:ir.model,name:albaha_kpi.model_albaha_kpi
+msgid "A key performance indicator definition"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model,name:albaha_kpi.model_albaha_regional_indicator
+msgid "A region-level macro indicator"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model,name:albaha_kpi.model_albaha_kpi_value
+msgid "A reported value of a KPI for a period (time series)"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model,name:albaha_kpi.model_albaha_sector_kpi
+msgid ""
+"A sector KPI value (generic - covers economic, tourism, agriculture, "
+"quality-of-life, investment)"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model,name:albaha_kpi.model_albaha_objective
+msgid "A strategic objective belonging to a pillar"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_kpi__achievement_pct
+msgid "Achievement %"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_kpi_value__actual_value
+msgid "Actual Value"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields.selection,name:albaha_kpi.selection__albaha_sector_kpi__domain__agriculture
+#: model_terms:ir.ui.view,arch_db:albaha_kpi.view_albaha_sector_kpi_search
+msgid "Agriculture"
+msgstr "الزراعة"
+
+#. module: albaha_kpi
+#: model:ir.ui.menu,name:albaha_kpi.menu_albaha_kpi_root
+msgid "Al-Baha KPIs"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields.selection,name:albaha_kpi.selection__albaha_kpi__rag__amber
+#: model:ir.model.fields.selection,name:albaha_kpi.selection__albaha_kpi_value__rag_status__amber
+#: model:ir.model.fields.selection,name:albaha_kpi.selection__albaha_objective__rag__amber
+#: model:ir.model.fields.selection,name:albaha_kpi.selection__albaha_sector_kpi__rag_status__amber
+msgid "Amber"
+msgstr "أصفر"
+
+#. module: albaha_kpi
+#: model:ir.model.fields.selection,name:albaha_kpi.selection__albaha_kpi__frequency__annual
+msgid "Annual"
+msgstr "سنوي"
+
+#. module: albaha_kpi
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_kpi_value__approval_date
+msgid "Approval Date"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_kpi_value__approved_by
+msgid "Approved By"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_regional_indicator__baseline
+msgid "Baseline"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_kpi__baseline_value
+msgid "Baseline Value"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_kpi__baseline_year
+msgid "Baseline Year"
+msgstr ""
+
+#. module: albaha_kpi
+#: model_terms:ir.ui.view,arch_db:albaha_kpi.view_albaha_kpi_form
+msgid "Calculation Details"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_regional_indicator__category
+#: model_terms:ir.ui.view,arch_db:albaha_kpi.view_albaha_regional_indicator_search
+msgid "Category"
+msgstr ""
+
+#. module: albaha_kpi
+#: model_terms:ir.ui.view,arch_db:albaha_kpi.view_albaha_sector_kpi_form
+msgid "Classification"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_kpi_value__comment
+msgid "Comment"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_kpi__create_uid
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_kpi_value__create_uid
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_regional_indicator__create_uid
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_sector_kpi__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_kpi__create_date
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_kpi_value__create_date
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_regional_indicator__create_date
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_sector_kpi__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_kpi__description
+msgid "Description"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_kpi__direction
+msgid "Direction"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_kpi__display_name
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_kpi_value__display_name
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_objective__display_name
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_regional_indicator__display_name
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_sector_kpi__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_sector_kpi__domain
+#: model_terms:ir.ui.view,arch_db:albaha_kpi.view_albaha_sector_kpi_search
+msgid "Domain"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields.selection,name:albaha_kpi.selection__albaha_regional_indicator__trend__down
+msgid "Down"
+msgstr "هابط"
+
+#. module: albaha_kpi
+#: model:ir.model.fields.selection,name:albaha_kpi.selection__albaha_sector_kpi__domain__economic
+#: model_terms:ir.ui.view,arch_db:albaha_kpi.view_albaha_sector_kpi_search
+msgid "Economic"
+msgstr "اقتصادي"
+
+#. module: albaha_kpi
+#: model:ir.model.fields.selection,name:albaha_kpi.selection__albaha_regional_indicator__trend__flat
+msgid "Flat"
+msgstr "ثابت"
+
+#. module: albaha_kpi
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_kpi__formula
+msgid "Formula"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_kpi__frequency
+#: model_terms:ir.ui.view,arch_db:albaha_kpi.view_albaha_kpi_search
+msgid "Frequency"
+msgstr ""
+
+#. module: albaha_kpi
+#: model_terms:ir.ui.view,arch_db:albaha_kpi.view_albaha_kpi_form
+msgid "General Information"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields.selection,name:albaha_kpi.selection__albaha_kpi__rag__green
+#: model:ir.model.fields.selection,name:albaha_kpi.selection__albaha_kpi_value__rag_status__green
+#: model:ir.model.fields.selection,name:albaha_kpi.selection__albaha_objective__rag__green
+#: model:ir.model.fields.selection,name:albaha_kpi.selection__albaha_sector_kpi__rag_status__green
+msgid "Green"
+msgstr "أخضر"
+
+#. module: albaha_kpi
+#: model:ir.model.fields.selection,name:albaha_kpi.selection__albaha_kpi__rag__grey
+#: model:ir.model.fields.selection,name:albaha_kpi.selection__albaha_kpi_value__rag_status__grey
+#: model:ir.model.fields.selection,name:albaha_kpi.selection__albaha_objective__rag__grey
+#: model:ir.model.fields.selection,name:albaha_kpi.selection__albaha_sector_kpi__rag_status__grey
+msgid "Grey"
+msgstr "رمادي"
+
+#. module: albaha_kpi
+#: model:ir.model.fields.selection,name:albaha_kpi.selection__albaha_kpi__direction__up
+msgid "Higher is better"
+msgstr "الأعلى أفضل"
+
+#. module: albaha_kpi
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_kpi__id
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_kpi_value__id
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_objective__id
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_regional_indicator__id
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_sector_kpi__id
+msgid "ID"
+msgstr ""
+
+#. module: albaha_kpi
+#: model_terms:ir.ui.view,arch_db:albaha_kpi.view_albaha_regional_indicator_form
+msgid "Identification"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields.selection,name:albaha_kpi.selection__albaha_kpi__kpi_type__impact
+msgid "Impact"
+msgstr "أثر"
+
+#. module: albaha_kpi
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_sector_kpi__indicator
+msgid "Indicator"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_regional_indicator__code
+msgid "Indicator Code"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields.selection,name:albaha_kpi.selection__albaha_kpi__kpi_type__input
+msgid "Input"
+msgstr "مُدخَل"
+
+#. module: albaha_kpi
+#: model:ir.model.fields.selection,name:albaha_kpi.selection__albaha_sector_kpi__domain__investment
+#: model_terms:ir.ui.view,arch_db:albaha_kpi.view_albaha_sector_kpi_search
+msgid "Investment"
+msgstr "استثمار"
+
+#. module: albaha_kpi
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_kpi_value__kpi_id
+msgid "KPI"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_kpi__code
+msgid "KPI Code"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.actions.act_window,name:albaha_kpi.action_albaha_kpi
+#: model_terms:ir.ui.view,arch_db:albaha_kpi.view_albaha_kpi_tree
+msgid "KPI Definitions"
+msgstr ""
+
+#. module: albaha_kpi
+#: model_terms:ir.ui.view,arch_db:albaha_kpi.view_albaha_kpi_value_form
+msgid "KPI Reference"
+msgstr ""
+
+#. module: albaha_kpi
+#: model_terms:ir.ui.view,arch_db:albaha_kpi.view_albaha_kpi_search
+msgid "KPI Search"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_kpi__kpi_type
+msgid "KPI Type"
+msgstr ""
+
+#. module: albaha_kpi
+#: model_terms:ir.ui.view,arch_db:albaha_kpi.view_albaha_kpi_value_search
+msgid "KPI Value Search"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.actions.act_window,name:albaha_kpi.action_albaha_kpi_value
+#: model:ir.ui.menu,name:albaha_kpi.menu_albaha_kpi_values
+#: model_terms:ir.ui.view,arch_db:albaha_kpi.view_albaha_kpi_value_tree
+msgid "KPI Values"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.ui.menu,name:albaha_kpi.menu_albaha_kpi_main
+msgid "KPIs"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields,help:albaha_kpi.field_albaha_objective__kpi_ids
+msgid "KPIs measuring this objective; progress = their average achievement."
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_regional_indicator__last_updated
+msgid "Last Updated"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_kpi__write_uid
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_kpi_value__write_uid
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_regional_indicator__write_uid
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_sector_kpi__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_kpi__write_date
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_kpi_value__write_date
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_regional_indicator__write_date
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_sector_kpi__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_kpi__latest_value
+msgid "Latest Value"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_objective__kpi_ids
+msgid "Linked KPIs"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields.selection,name:albaha_kpi.selection__albaha_kpi__direction__down
+msgid "Lower is better"
+msgstr "الأدنى أفضل"
+
+#. module: albaha_kpi
+#: model_terms:ir.ui.view,arch_db:albaha_kpi.view_albaha_sector_kpi_form
+msgid "Measurement"
+msgstr ""
+
+#. module: albaha_kpi
+#: model_terms:ir.ui.view,arch_db:albaha_kpi.view_albaha_regional_indicator_form
+msgid "Metadata"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields.selection,name:albaha_kpi.selection__albaha_kpi_value__period_type__month
+msgid "Month"
+msgstr "شهر"
+
+#. module: albaha_kpi
+#: model:ir.model.fields.selection,name:albaha_kpi.selection__albaha_kpi__frequency__monthly
+msgid "Monthly"
+msgstr "شهري"
+
+#. module: albaha_kpi
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_kpi__name
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_regional_indicator__name
+msgid "Name (Arabic)"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_kpi__name_en
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_regional_indicator__name_en
+msgid "Name (English)"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields.selection,name:albaha_kpi.selection__albaha_kpi__kpi_type__outcome
+msgid "Outcome"
+msgstr "نتيجة"
+
+#. module: albaha_kpi
+#: model:ir.model.fields.selection,name:albaha_kpi.selection__albaha_kpi__kpi_type__output
+msgid "Output"
+msgstr "ناتج"
+
+#. module: albaha_kpi
+#: model_terms:ir.ui.view,arch_db:albaha_kpi.view_albaha_kpi_value_form
+msgid "Performance Metrics"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_kpi_value__period
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_sector_kpi__period
+msgid "Period"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_kpi_value__period_type
+#: model_terms:ir.ui.view,arch_db:albaha_kpi.view_albaha_kpi_value_search
+msgid "Period Type"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_objective__progress_pct
+msgid "Progress %"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields.selection,name:albaha_kpi.selection__albaha_sector_kpi__domain__qol
+#: model_terms:ir.ui.view,arch_db:albaha_kpi.view_albaha_sector_kpi_search
+msgid "Quality of Life"
+msgstr "جودة الحياة"
+
+#. module: albaha_kpi
+#: model:ir.model.fields.selection,name:albaha_kpi.selection__albaha_kpi_value__period_type__quarter
+msgid "Quarter"
+msgstr "ربع"
+
+#. module: albaha_kpi
+#: model:ir.model.fields.selection,name:albaha_kpi.selection__albaha_kpi__frequency__quarterly
+msgid "Quarterly"
+msgstr "ربع سنوي"
+
+#. module: albaha_kpi
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_kpi__rag
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_kpi_value__rag_status
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_objective__rag
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_sector_kpi__rag_status
+msgid "RAG"
+msgstr ""
+
+#. module: albaha_kpi
+#: model_terms:ir.ui.view,arch_db:albaha_kpi.view_albaha_kpi_value_search
+msgid "RAG Status"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields.selection,name:albaha_kpi.selection__albaha_kpi__rag__red
+#: model:ir.model.fields.selection,name:albaha_kpi.selection__albaha_kpi_value__rag_status__red
+#: model:ir.model.fields.selection,name:albaha_kpi.selection__albaha_objective__rag__red
+#: model:ir.model.fields.selection,name:albaha_kpi.selection__albaha_sector_kpi__rag_status__red
+msgid "Red"
+msgstr "أحمر"
+
+#. module: albaha_kpi
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_kpi_value__name
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_sector_kpi__name
+msgid "Reference"
+msgstr ""
+
+#. module: albaha_kpi
+#: model_terms:ir.ui.view,arch_db:albaha_kpi.view_albaha_regional_indicator_search
+msgid "Regional Indicator Search"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.actions.act_window,name:albaha_kpi.action_albaha_regional_indicator
+#: model:ir.ui.menu,name:albaha_kpi.menu_albaha_regional_indicators
+#: model_terms:ir.ui.view,arch_db:albaha_kpi.view_albaha_regional_indicator_tree
+msgid "Regional Indicators"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_kpi_value__reported_by
+msgid "Reported By"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_kpi_value__reported_date
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_sector_kpi__reported_date
+msgid "Reported Date"
+msgstr ""
+
+#. module: albaha_kpi
+#: model_terms:ir.ui.view,arch_db:albaha_kpi.view_albaha_kpi_value_form
+msgid "Reporting Details"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_sector_kpi__sector_id
+#: model_terms:ir.ui.view,arch_db:albaha_kpi.view_albaha_sector_kpi_search
+msgid "Sector"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.actions.act_window,name:albaha_kpi.action_albaha_sector_kpi
+#: model:ir.ui.menu,name:albaha_kpi.menu_albaha_sector_kpi
+#: model_terms:ir.ui.view,arch_db:albaha_kpi.view_albaha_sector_kpi_list
+msgid "Sector KPIs"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_regional_indicator__source
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_sector_kpi__source
+msgid "Source"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_regional_indicator__target
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_sector_kpi__target
+msgid "Target"
+msgstr ""
+
+#. module: albaha_kpi
+#: model_terms:ir.ui.view,arch_db:albaha_kpi.view_albaha_kpi_form
+msgid "Target & Baseline"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_kpi__target_value
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_kpi_value__target_value
+msgid "Target Value"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_kpi__target_year
+msgid "Target Year"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields.selection,name:albaha_kpi.selection__albaha_sector_kpi__domain__tourism
+#: model_terms:ir.ui.view,arch_db:albaha_kpi.view_albaha_sector_kpi_search
+msgid "Tourism"
+msgstr "السياحة"
+
+#. module: albaha_kpi
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_regional_indicator__trend
+#: model_terms:ir.ui.view,arch_db:albaha_kpi.view_albaha_regional_indicator_search
+msgid "Trend"
+msgstr ""
+
+#. module: albaha_kpi
+#: model_terms:ir.ui.view,arch_db:albaha_kpi.view_albaha_kpi_search
+msgid "Type"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_kpi__unit
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_regional_indicator__unit
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_sector_kpi__unit
+msgid "Unit"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields.selection,name:albaha_kpi.selection__albaha_regional_indicator__trend__up
+msgid "Up"
+msgstr "صاعد"
+
+#. module: albaha_kpi
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_regional_indicator__value
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_sector_kpi__value
+msgid "Value"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_kpi__value_ids
+msgid "Values"
+msgstr ""
+
+#. module: albaha_kpi
+#: model_terms:ir.ui.view,arch_db:albaha_kpi.view_albaha_regional_indicator_form
+msgid "Values & Targets"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields,field_description:albaha_kpi.field_albaha_kpi_value__variance_pct
+msgid "Variance %"
+msgstr ""
+
+#. module: albaha_kpi
+#: model:ir.model.fields.selection,name:albaha_kpi.selection__albaha_kpi_value__period_type__year
+msgid "Year"
+msgstr "سنة"

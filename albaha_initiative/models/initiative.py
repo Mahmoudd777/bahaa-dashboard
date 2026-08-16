@@ -24,7 +24,18 @@ class AlbahaInitiative(models.Model):
     description = fields.Text(string="Description")
     sector = fields.Char(string="Sector")
     start_date = fields.Date(string="Start Date")
-    end_date = fields.Date(string="End Date")
+    # The committed completion date — the baseline the initiative is judged
+    # against. Shown on the dashboard as "تاريخ الاكتمال الأساسي".
+    end_date = fields.Date(string="Baseline End Date")
+    # Where completion is actually heading, given current progress. Kept
+    # separate from end_date on purpose: overwriting the baseline when a date
+    # slips would erase the very slippage the dashboard exists to show.
+    # Shown as "تاريخ الاكتمال المتوقع".
+    forecast_end_date = fields.Date(
+        string="Expected End Date",
+        help="Currently expected completion date. Differs from the baseline "
+             "end date when the initiative is running ahead or behind.",
+    )
     budget_total_sar_m = fields.Float(string="Total Budget (SAR m)")
     budget_capital_sar_m = fields.Float(string="Capital Budget (SAR m)")
     budget_operational_sar_m = fields.Float(string="Operational Budget (SAR m)")

@@ -77,15 +77,26 @@ def _series_pick(records, period_field, flt):
 
 
 def kpi_at(kpi, flt):
-    """(value, target, achievement_pct, rag) of a KPI for the active filter."""
+    """(value, target, achievement_pct, rag) of a KPI for the active filter.
+
+    Achievement always comes from `kpi.achievement_of()` so the direction
+    ('lower is better') is honoured, and the RAG is banded from that same
+    number rather than the hand-entered rag_status — a stored colour that
+    contradicts the percentage beside it is what this replaces.
+    """
     if flt["mode"] == "all":
         return (kpi.latest_value, kpi.target_value, kpi.achievement_pct, kpi.rag)
     v = _series_pick(kpi.value_ids, "period", flt)
     if not v:
         return (0.0, kpi.target_value or 0.0, 0.0, "grey")
-    tgt = kpi.target_value or v.target_value or 0.0
-    ach = round(min((v.actual_value or 0.0) / tgt * 100, 999), 1) if tgt else 0.0
-    return (v.actual_value or 0.0, tgt, ach, v.rag_status or "grey")
+    # The PERIOD's own target wins over the KPI's overall one. `target_value`
+    # on the KPI is the end-of-strategy figure (2030), so preferring it scored
+    # a Q2-2026 actual against a 2030 goal and made every in-flight indicator
+    # look like it was failing. Compare like with like; fall back to the
+    # overall target only when a period carries none.
+    tgt = v.target_value or kpi.target_value or 0.0
+    ach = kpi.achievement_of(v.actual_value, tgt)
+    return (v.actual_value or 0.0, tgt, ach, rag_level(ach))
 
 
 def initiative_at(init, flt):
@@ -149,16 +160,57 @@ def pillars_bar(comp, cfg, env):
     return cfg
 
 
+def _program_spend(env, program):
+    """(spent, total) for a programme, summed from its initiatives.
+
+    albaha.program carries only a total budget, so consumption has to come
+    from the initiatives beneath it. Falls back to the programme's own total
+    when the initiatives carry no budget of their own.
+    """
+    inits = _recs(env, "albaha.initiative", domain=[("program_id", "=", program.id)])
+    spent = sum(inits.mapped("budget_consumed_sar_m")) if inits else 0.0
+    total = sum(inits.mapped("budget_total_sar_m")) if inits else 0.0
+    return spent, (total or program.total_budget_sar_m or 0.0)
+
+
 def programs_planned(comp, cfg, env):
     flt = _flt(env)
     items = []
     for p in _recs(env, "albaha.program", order="id"):
         pct, rag = program_at(env, p, flt)
+        # Was printing total_budget twice — every programme read "246.3/246.3",
+        # i.e. fully spent, for all five. Spend now comes from the initiatives.
+        spent, total = _program_spend(env, p)
         items.append({"label": p.name, "value": int(round(pct)),
-                      "budget": "%s/%s" % (fmt_num(p.total_budget_sar_m), fmt_num(p.total_budget_sar_m)),
+                      "budget": "%s/%s" % (fmt_num(spent), fmt_num(total)),
                       "color": rag_color(rag),
                       "record": _record("albaha.program", p)})
     cfg["items"] = items
+    return cfg
+
+
+def budget_variance(comp, cfg, env):
+    """Budget consumed per programme.
+
+    Previously this component shared `programs_planned`, so "انحراف الميزانية"
+    and "تقدم البرامج الاستراتيجية" rendered byte-identical bars under two
+    different names — one of the duplicates the client flagged. This measures
+    money, not delivery: the bar is the share of budget consumed, and it turns
+    red past 100% because overspend is the point of the chart.
+    """
+    items = []
+    for p in _recs(env, "albaha.program", order="id"):
+        spent, total = _program_spend(env, p)
+        used = int(round(spent / total * 100)) if total else 0
+        items.append({
+            "label": p.name,
+            "value": min(used, 100),
+            "budget": "%s/%s" % (fmt_num(spent), fmt_num(total)),
+            "color": rag_color("red" if used > 100 else "green" if used <= 90 else "amber"),
+            "record": _record("albaha.program", p),
+        })
+    cfg["items"] = items
+    cfg.setdefault("max", 100)
     return cfg
 
 
@@ -191,14 +243,32 @@ def kpi_grid(comp, cfg, env):
 
 
 def kpi_table(comp, cfg, env):
+    """Columns: الجودة | اسم المؤشر | الحالي | المستهدف | التقدم | التغير | المصدر.
+
+    The التغير column answers the same question the strategic objectives
+    already answered — is this moving the right way — by comparing the last
+    two reported periods. A percentage with no direction beside it says
+    nothing about whether things are improving.
+    """
     flt = _flt(env)
+    # The provider owns the column headers. Keeping them in the component's
+    # stored config let the two drift apart — headers said one thing while the
+    # cells below carried another, which is exactly how the "الجهة" column
+    # ended up labelling the wrong data. Defined here, they cannot disagree.
+    cfg["columns"] = ["الجودة", "اسم المؤشر", "الحالي", _target_header(flt),
+                      "التقدم", "التغير", "المصدر"]
     rows = []
     for k in _recs(env, "albaha.kpi", order="id"):
         val, tgt, ach, lvl = kpi_at(k, flt)
+        tdir, tdelta = trend_delta_from_series(k.value_ids, "actual_value")
+        # 'up' means the number rose. For a lower-is-better KPI a rise is bad,
+        # so the arrow follows the value while the colour follows the meaning.
+        good = (tdir == "up") if k.direction != "down" else (tdir == "down")
         rows.append({"cells": [
             {"type": "badge", "label": QUALITY_AR.get(lvl, ""), "level": QUALITY_LEVEL.get(lvl, "none")},
             k.name, fmt_num(val), fmt_num(tgt),
             {"type": "progress", "value": int(round(ach)), "color": rag_color(lvl)},
+            {"type": "trend", "label": tdelta, "dir": tdir, "good": good},
             {"type": "tag", "label": k.code or ""},
         ], "status": "ok", "record": {"model": "albaha.kpi", "id": k.id}})
     cfg["rows"] = rows
@@ -233,17 +303,65 @@ def regional_semi(comp, cfg, env):
 
 
 # ---- tables / cards ----------------------------------------------------------
+def _fmt_date(d):
+    return d.strftime("%Y-%m-%d") if d else "—"
+
+
+def _period_label(flt):
+    """Human name for the period currently being compared against, e.g.
+    '2026-Q2'. Empty when no period is selected."""
+    mode = flt["mode"]
+    if mode == "quarter":
+        return flt["quarter"]
+    if mode == "uptodate":
+        return DF.quarter_of_date(flt["date"])
+    if mode == "period":
+        a, b = DF.quarter_of_date(flt["from"]), DF.quarter_of_date(flt["to"])
+        return a if a == b else "%s ← %s" % (b, a)
+    return ""
+
+
+def _target_header(flt):
+    """Label for the target column. Never a hard-coded year: the target shown
+    belongs to whichever period the filter selected, so the header has to say
+    which one — a fixed '2026' silently misreports every other period."""
+    label = _period_label(flt)
+    return "المستهدف (%s)" % label if label else "المستهدف"
+
+
 def initiatives_table(comp, cfg, env):
+    """Columns: المبادرة | البرنامج | التقدم | الميزانية | الاكتمال الأساسي |
+    الاكتمال المتوقع.
+
+    The programme already has its own column, so the initiative name is shown
+    without the " — <programme>" suffix it carries in the data. The expected
+    completion date is tagged red when it has slipped past the baseline: a
+    date that quietly sits later than its commitment is the thing worth
+    seeing, and plain text buries it.
+    """
     flt = _flt(env)
+    # Headers defined beside the cells that fill them — see kpi_table.
+    cfg["columns"] = ["المبادرة", "البرنامج", "التقدم", "الميزانية",
+                      "تاريخ الاكتمال الأساسي", "تاريخ الاكتمال المتوقع"]
+    # `attention_only` narrows the table to initiatives that are behind.
+    # Without it the summary table and the full one listed all 19 rows each,
+    # stacked on the same page — two identical tables under different names.
+    # The summary now earns its place by answering "what needs attention".
+    attention_only = bool(cfg.get("attention_only"))
     rows = []
     for i in _recs(env, "albaha.initiative", order="id"):
         pct, lvl = initiative_at(i, flt)
+        if attention_only and lvl == "green":
+            continue
+        slipped = bool(i.forecast_end_date and i.end_date and i.forecast_end_date > i.end_date)
         rows.append({"cells": [
             i.name,
             {"type": "tag", "label": i.program_id.name or ""},
             {"type": "progress", "value": int(round(pct)), "color": rag_color(lvl)},
             "%s/%s" % (fmt_num(i.budget_consumed_sar_m), fmt_num(i.budget_total_sar_m)),
-            i.owner_id.name or "",
+            _fmt_date(i.end_date),
+            {"type": "tag", "label": _fmt_date(i.forecast_end_date),
+             "color": rag_color("red") if slipped else rag_color("green")},
         ], "status": "ok", "record": _record("albaha.initiative", i)})
     cfg["rows"] = rows
     return cfg
@@ -426,8 +544,10 @@ def completion_by_year(comp, cfg, env):
     by_year = defaultdict(list)
     for v in _recs(env, "albaha.kpi.value"):
         tgt = v.target_value or (v.kpi_id.target_value if v.kpi_id else 0.0)
-        if tgt:
-            by_year[(v.period or "")[:4]].append((v.actual_value or 0.0) / tgt * 100.0)
+        if tgt and v.kpi_id:
+            # Via the KPI so a lower-is-better indicator does not drag the
+            # yearly average the wrong way (see albaha.kpi.achievement_of).
+            by_year[(v.period or "")[:4]].append(v.kpi_id.achievement_of(v.actual_value, tgt))
     items = []
     for year in sorted(by_year):
         if not DF.year_in_filter(flt, year):
@@ -444,6 +564,14 @@ def completion_by_year(comp, cfg, env):
 
 # ---- single values -----------------------------------------------------------
 def budget_split(comp, cfg, env):
+    """The card stays a single spent/remaining bar; expanding it (⤢) breaks
+    that total down per programme.
+
+    The bar answers "how much of the budget is gone", which is only useful
+    once you can also see *where* it went. The breakdown rides in `rows` /
+    `columns`, which the card ignores and the expand wizard renders — so no
+    second on-page section is needed to carry it.
+    """
     flt = _flt(env)
     recs = _frecs(env, "albaha.budget", "period_year_month", "m")
     approved = sum(recs.mapped("approved_amount")) if recs else 0.0
@@ -453,6 +581,30 @@ def budget_split(comp, cfg, env):
     cfg["spent_label"] = "%d%% (%s)" % (pct, fmt_num(spent))
     cfg["remaining_label"] = "%d%% (%s)" % (100 - pct, fmt_num(approved - spent))
     cfg["aggregate"] = _aggregate("budget_records", "سجلات الموازنة")
+
+    # Per-programme spend, for the expand wizard.
+    per_prog = defaultdict(lambda: {"approved": 0.0, "spent": 0.0})
+    for b in recs:
+        prog = b.project_id.program_id
+        key = prog.name if prog else "غير مرتبط ببرنامج"
+        per_prog[key]["approved"] += b.approved_amount or 0.0
+        per_prog[key]["spent"] += b.actual_spent or 0.0
+
+    cfg["columns"] = ["البرنامج", "المعتمد", "المصروف", "المتبقي", "نسبة الصرف"]
+    rows = []
+    for name, v in sorted(per_prog.items(), key=lambda kv: -kv[1]["approved"]):
+        used = int(round(v["spent"] / v["approved"] * 100)) if v["approved"] else 0
+        rows.append({"cells": [
+            name,
+            fmt_num(v["approved"]),
+            fmt_num(v["spent"]),
+            fmt_num(v["approved"] - v["spent"]),
+            # Over-spend is the thing worth catching, so colour by it rather
+            # than showing a bare percentage.
+            {"type": "progress", "value": min(used, 100),
+             "color": rag_color("red" if used > 100 else "green" if used <= 90 else "amber")},
+        ], "status": "ok"})
+    cfg["rows"] = rows
     return cfg
 
 
@@ -557,6 +709,7 @@ PROVIDERS = {
     "objectives_gauges": objectives_gauges,
     "pillars_bar": pillars_bar,
     "programs_planned": programs_planned,
+    "budget_variance": budget_variance,
     "goals_list": goals_list,
     "kpi_forecast_bar": kpi_forecast_bar,
     "kpi_grid": kpi_grid,

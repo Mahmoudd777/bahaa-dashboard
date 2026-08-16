@@ -1,0 +1,562 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* albaha_pmo_risk
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0-20260630\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-06 00:45+0000\n"
+"PO-Revision-Date: 2026-08-06 00:45+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: albaha_pmo_risk
+#: model:ir.model,name:albaha_pmo_risk.model_albaha_change_request
+msgid "A change request on a project"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model,name:albaha_pmo_risk.model_albaha_project_dependency
+msgid "A dependency between two projects"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model,name:albaha_pmo_risk.model_albaha_risk
+msgid "A project-level risk (5x5 probability x impact)"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields.selection,name:albaha_pmo_risk.selection__albaha_risk__response_strategy__accept
+msgid "Accept"
+msgstr "قبول"
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields.selection,name:albaha_pmo_risk.selection__albaha_project_dependency__status__active
+msgid "Active"
+msgstr "نشط"
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_issue__age_days
+msgid "Age (days)"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.ui.menu,name:albaha_pmo_risk.menu_albaha_pmo_risk_root
+msgid "Al-Baha PMO - Risks & Issues"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model,name:albaha_pmo_risk.model_albaha_issue
+msgid "An issue raised on a project"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_change_request__approval_status
+msgid "Approval"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_risk.view_albaha_change_request_search
+msgid "Approval Status"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields.selection,name:albaha_pmo_risk.selection__albaha_change_request__approval_status__approved
+msgid "Approved"
+msgstr "معتمد"
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_change_request__approved_by_committee
+msgid "Approved By Committee"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields.selection,name:albaha_pmo_risk.selection__albaha_risk__response_strategy__avoid
+msgid "Avoid"
+msgstr "تجنّب"
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_change_request__code
+msgid "CR Code"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_risk__category
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_risk.view_albaha_risk_search
+msgid "Category"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields.selection,name:albaha_pmo_risk.selection__albaha_project_dependency__status__closed
+#: model:ir.model.fields.selection,name:albaha_pmo_risk.selection__albaha_risk__status__closed
+msgid "Closed"
+msgstr "مغلق"
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields.selection,name:albaha_pmo_risk.selection__albaha_change_request__cr_type__cost
+msgid "Cost"
+msgstr "التكلفة"
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_change_request__cost_impact_sar_m
+msgid "Cost Impact (SAR m)"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_risk.view_albaha_change_request_search
+msgid "Cr Type"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_change_request__create_uid
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_issue__create_uid
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_project_dependency__create_uid
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_risk__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_change_request__create_date
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_issue__create_date
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_project_dependency__create_date
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_risk__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields.selection,name:albaha_pmo_risk.selection__albaha_risk__severity__critical
+msgid "Critical"
+msgstr "حرج"
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_project_dependency__criticality
+msgid "Criticality"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_change_request__decision_date
+msgid "Decision Date"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_risk.view_albaha_project_dependency_search
+msgid "Dep Type"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.actions.act_window,name:albaha_pmo_risk.action_albaha_project_dependency
+#: model:ir.ui.menu,name:albaha_pmo_risk.menu_albaha_project_dependency
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_risk.view_albaha_project_dependency_list
+msgid "Dependencys"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_change_request__display_name
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_issue__display_name
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_project_dependency__display_name
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_risk__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields.selection,name:albaha_pmo_risk.selection__albaha_change_request__approval_status__draft
+msgid "Draft"
+msgstr "مسودة"
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_issue__escalation_level
+msgid "Escalation"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields.selection,name:albaha_pmo_risk.selection__albaha_risk__category__external
+msgid "External"
+msgstr "خارجي"
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields.selection,name:albaha_pmo_risk.selection__albaha_risk__category__financial
+msgid "Financial"
+msgstr "مالي"
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields.selection,name:albaha_pmo_risk.selection__albaha_project_dependency__dep_type__ff
+msgid "Finish-to-Finish"
+msgstr "نهاية إلى نهاية"
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields.selection,name:albaha_pmo_risk.selection__albaha_project_dependency__dep_type__fs
+msgid "Finish-to-Start"
+msgstr "نهاية إلى بداية"
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields.selection,name:albaha_pmo_risk.selection__albaha_project_dependency__criticality__high
+#: model:ir.model.fields.selection,name:albaha_pmo_risk.selection__albaha_risk__severity__high
+msgid "High"
+msgstr "مرتفع"
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_change_request__id
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_issue__id
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_project_dependency__id
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_risk__id
+msgid "ID"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_risk__impact
+msgid "Impact (1-5)"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_project_dependency__impact_if_breached
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_risk.view_albaha_project_dependency_form
+msgid "Impact If Breached"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_issue__impact_on
+msgid "Impact On"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields.selection,name:albaha_pmo_risk.selection__albaha_issue__status__in_progress
+msgid "In Progress"
+msgstr "قيد التنفيذ"
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_issue__code
+msgid "Issue Code"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_issue__name
+msgid "Issue Title"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.actions.act_window,name:albaha_pmo_risk.action_albaha_issue
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_risk__issue_ids
+#: model:ir.ui.menu,name:albaha_pmo_risk.menu_albaha_issue
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_risk.view_albaha_issue_list
+msgid "Issues"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_change_request__justification
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_risk.view_albaha_change_request_form
+msgid "Justification"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_project_dependency__lag_days
+msgid "Lag (days)"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_change_request__write_uid
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_issue__write_uid
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_project_dependency__write_uid
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_risk__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_change_request__write_date
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_issue__write_date
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_project_dependency__write_date
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_risk__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields.selection,name:albaha_pmo_risk.selection__albaha_project_dependency__criticality__low
+#: model:ir.model.fields.selection,name:albaha_pmo_risk.selection__albaha_risk__severity__low
+msgid "Low"
+msgstr "منخفض"
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields.selection,name:albaha_pmo_risk.selection__albaha_project_dependency__criticality__medium
+#: model:ir.model.fields.selection,name:albaha_pmo_risk.selection__albaha_risk__severity__medium
+msgid "Medium"
+msgstr "متوسط"
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields.selection,name:albaha_pmo_risk.selection__albaha_risk__response_strategy__mitigate
+msgid "Mitigate"
+msgstr "تخفيف"
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields.selection,name:albaha_pmo_risk.selection__albaha_risk__status__mitigating
+msgid "Mitigating"
+msgstr "قيد التخفيف"
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_risk__mitigation_plan
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_risk.view_albaha_risk_form
+msgid "Mitigation Plan"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields.selection,name:albaha_pmo_risk.selection__albaha_issue__escalation_level__none
+msgid "None"
+msgstr "لا يوجد"
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields.selection,name:albaha_pmo_risk.selection__albaha_project_dependency__status__onhold
+msgid "On Hold"
+msgstr "متوقف"
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields.selection,name:albaha_pmo_risk.selection__albaha_issue__status__open
+#: model:ir.model.fields.selection,name:albaha_pmo_risk.selection__albaha_risk__status__open
+msgid "Open"
+msgstr "مفتوح"
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields.selection,name:albaha_pmo_risk.selection__albaha_risk__category__operational
+msgid "Operational"
+msgstr "تشغيلي"
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_issue__owner_id
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_risk__owner_id
+msgid "Owner"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields.selection,name:albaha_pmo_risk.selection__albaha_issue__priority__p1
+msgid "P1 - Critical"
+msgstr "أولوية 1 - حرج"
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields.selection,name:albaha_pmo_risk.selection__albaha_issue__priority__p2
+msgid "P2 - High"
+msgstr "أولوية 2 - مرتفع"
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields.selection,name:albaha_pmo_risk.selection__albaha_issue__priority__p3
+msgid "P3 - Medium"
+msgstr "أولوية 3 - متوسط"
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields.selection,name:albaha_pmo_risk.selection__albaha_issue__priority__p4
+msgid "P4 - Low"
+msgstr "أولوية 4 - منخفض"
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_issue__parent_risk_id
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_risk.view_albaha_issue_search
+msgid "Parent Risk"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_project_dependency__predecessor_project_id
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_risk.view_albaha_project_dependency_search
+msgid "Predecessor Project"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_issue__priority
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_risk.view_albaha_issue_search
+msgid "Priority"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_risk__probability
+msgid "Probability (1-5)"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_change_request__project_id
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_issue__project_id
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_risk__project_id
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_risk.view_albaha_change_request_search
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_risk.view_albaha_issue_search
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_risk.view_albaha_risk_search
+msgid "Project"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields.selection,name:albaha_pmo_risk.selection__albaha_issue__escalation_level__pm
+msgid "Project Manager"
+msgstr "مدير المشروع"
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields.selection,name:albaha_pmo_risk.selection__albaha_change_request__cr_type__quality
+msgid "Quality"
+msgstr "الجودة"
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_issue__raised_date
+msgid "Raised Date"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_project_dependency__name
+msgid "Reference"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields.selection,name:albaha_pmo_risk.selection__albaha_risk__category__regulatory
+msgid "Regulatory"
+msgstr "تنظيمي"
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields.selection,name:albaha_pmo_risk.selection__albaha_change_request__approval_status__rejected
+msgid "Rejected"
+msgstr "مرفوض"
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields.selection,name:albaha_pmo_risk.selection__albaha_risk__category__reputational
+msgid "Reputational"
+msgstr "سمعة"
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_change_request__requested_by
+msgid "Requested By"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.actions.act_window,name:albaha_pmo_risk.action_albaha_change_request
+#: model:ir.ui.menu,name:albaha_pmo_risk.menu_albaha_change_request
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_risk.view_albaha_change_request_list
+msgid "Requests"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_issue__resolution_date
+msgid "Resolution Date"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_issue__resolution_plan
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_risk.view_albaha_issue_form
+msgid "Resolution Plan"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields.selection,name:albaha_pmo_risk.selection__albaha_issue__status__resolved
+msgid "Resolved"
+msgstr "تمت المعالجة"
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_risk__response_strategy
+msgid "Response"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_risk__code
+msgid "Risk Code"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_risk__name
+msgid "Risk Title"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.actions.act_window,name:albaha_pmo_risk.action_albaha_risk
+#: model:ir.ui.menu,name:albaha_pmo_risk.menu_albaha_risk
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_risk.view_albaha_risk_list
+msgid "Risks"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields.selection,name:albaha_pmo_risk.selection__albaha_change_request__cr_type__schedule
+msgid "Schedule"
+msgstr "الجدول الزمني"
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_change_request__schedule_impact_days
+msgid "Schedule Impact (days)"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields.selection,name:albaha_pmo_risk.selection__albaha_change_request__cr_type__scope
+msgid "Scope"
+msgstr "النطاق"
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_risk__risk_score
+msgid "Score"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_risk__severity
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_risk.view_albaha_risk_search
+msgid "Severity"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields.selection,name:albaha_pmo_risk.selection__albaha_issue__escalation_level__sponsor
+msgid "Sponsor"
+msgstr "الراعي"
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields.selection,name:albaha_pmo_risk.selection__albaha_project_dependency__dep_type__sf
+msgid "Start-to-Finish"
+msgstr "بداية إلى نهاية"
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields.selection,name:albaha_pmo_risk.selection__albaha_project_dependency__dep_type__ss
+msgid "Start-to-Start"
+msgstr "بداية إلى بداية"
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_issue__status
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_project_dependency__status
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_risk__status
+msgid "Status"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields.selection,name:albaha_pmo_risk.selection__albaha_issue__escalation_level__steerco
+msgid "SteerCo"
+msgstr "اللجنة التوجيهية"
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields.selection,name:albaha_pmo_risk.selection__albaha_change_request__approval_status__submitted
+msgid "Submitted"
+msgstr "مقدَّم"
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_project_dependency__successor_project_id
+#: model_terms:ir.ui.view,arch_db:albaha_pmo_risk.view_albaha_project_dependency_search
+msgid "Successor Project"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_risk__target_close_date
+msgid "Target Close Date"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields.selection,name:albaha_pmo_risk.selection__albaha_risk__category__technical
+msgid "Technical"
+msgstr "فني"
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_change_request__name
+msgid "Title"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields.selection,name:albaha_pmo_risk.selection__albaha_risk__response_strategy__transfer
+msgid "Transfer"
+msgstr "نقل"
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_change_request__cr_type
+#: model:ir.model.fields,field_description:albaha_pmo_risk.field_albaha_project_dependency__dep_type
+msgid "Type"
+msgstr ""
+
+#. module: albaha_pmo_risk
+#: model:ir.model.fields,help:albaha_pmo_risk.field_albaha_risk__risk_score
+msgid "probability x impact"
+msgstr ""

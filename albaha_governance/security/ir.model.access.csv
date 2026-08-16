@@ -1,6 +1,11 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_albaha_committee,albaha.committee,model_albaha_committee,base.group_user,1,1,1,1
-access_albaha_decision,albaha.decision,model_albaha_decision,base.group_user,1,1,1,1
-access_albaha_review,albaha.review,model_albaha_review,base.group_user,1,1,1,1
-access_albaha_strategic_risk,albaha.strategic.risk,model_albaha_strategic_risk,base.group_user,1,1,1,1
-access_albaha_transformation,albaha.transformation,model_albaha_transformation,base.group_user,1,1,1,1
+access_albaha_committee,albaha.committee read,model_albaha_committee,base.group_user,1,0,0,0
+access_albaha_decision,albaha.decision read,model_albaha_decision,base.group_user,1,0,0,0
+access_albaha_review,albaha.review read,model_albaha_review,base.group_user,1,0,0,0
+access_albaha_strategic_risk,albaha.strategic.risk read,model_albaha_strategic_risk,base.group_user,1,0,0,0
+access_albaha_transformation,albaha.transformation read,model_albaha_transformation,base.group_user,1,0,0,0
+access_albaha_decision_edit,albaha.decision edit,model_albaha_decision,albaha_strategy.group_albaha_edit_decision,1,1,1,1
+access_albaha_committee_edit,albaha.committee edit,model_albaha_committee,albaha_strategy.group_albaha_edit_decision,1,1,1,1
+access_albaha_strategic_risk_edit,albaha.strategic.risk edit,model_albaha_strategic_risk,albaha_strategy.group_albaha_edit_risk,1,1,1,1
+access_albaha_review_edit,albaha.review edit,model_albaha_review,albaha_strategy.group_albaha_edit_risk,1,1,1,1
+access_albaha_transformation_edit,albaha.transformation edit,model_albaha_transformation,albaha_strategy.group_albaha_edit_objective,1,1,1,1

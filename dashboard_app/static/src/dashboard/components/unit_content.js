@@ -20,12 +20,16 @@ export class UnitContent extends Component {
                     <span class="o_baha_panel__title" t-esc="props.unit.title"/>
                     <div class="o_baha_panel__headtools">
                         <div class="o_baha_legend">
-                            <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>مسار صحيح</span>
-                            <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>في خطر</span>
-                            <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر</span>
+                            <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--ok"/>علي المسار</span>
+                            <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--risk"/>متأخر</span>
+                            <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--late"/>متأخر جدا</span>
+                            <span class="o_baha_legend__item"><i class="o_baha_legend__dot o_baha_legend__dot--none"/>لم يتم القياس</span>
                         </div>
-                        <i class="fa fa-expand o_baha_panel__expand"/>
-                        <i class="fa fa-ellipsis-v o_baha_panel__menu"/>
+                        <button t-if="canExpand" class="o_baha_expand_btn"
+                                title="عرض كامل البيانات"
+                                t-on-click="expandAll">
+                            <i class="fa fa-expand"/>
+                        </button>
                     </div>
                 </div>
                 <div class="o_baha_panel__grid">
@@ -49,5 +53,25 @@ export class UnitContent extends Component {
     }
     innerStyle(entry) {
         return innerCompGridStyle(entry);
+    }
+
+    /** The expand handler lives on the widget props, so borrow it from any
+     *  inner component — UnitContent itself is not given it directly. */
+    get _expandHandler() {
+        const first = (this.props.unit.components || [])[0];
+        return first ? this.props.propsFor(first).onOpenComponent : undefined;
+    }
+
+    get canExpand() {
+        return Boolean(this._expandHandler);
+    }
+
+    /** Expand the WHOLE panel: every inner component's data in one wizard,
+     *  rather than one card at a time. */
+    expandAll() {
+        const handler = this._expandHandler;
+        if (handler) {
+            handler(this.props.unit);
+        }
     }
 }

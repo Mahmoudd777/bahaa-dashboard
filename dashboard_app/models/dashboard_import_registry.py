@@ -1,8 +1,9 @@
-"""Whitelisted import targets for the dashboard import wizard.
+"""Whitelisted import/export targets for the dashboard wizards.
 
 Each target defines human-readable columns, sample rows, match keys for
 create-or-update, and optional relation resolution rules. Only models listed
-here can be imported through the dashboard — never arbitrary Odoo models.
+here can be imported/exported through the dashboard — never arbitrary Odoo
+models.
 """
 
 # Column spec keys:
@@ -11,6 +12,10 @@ here can be imported through the dashboard — never arbitrary Odoo models.
 #   required        – must be non-empty
 #   relation        – comodel name for Many2one resolution
 #   relation_lookup – field on the related model used for lookup (code/name)
+#
+# Target spec keys used by the export wizard:
+#   date_field – field the period filter applies to (None if not time-based)
+#   date_kind  – "q" (Char 'YYYY-Qn'), "m" (Char 'YYYY-MM') or "date" (Date/Datetime)
 
 IMPORT_TARGETS = {
     "pillar": {
@@ -18,6 +23,8 @@ IMPORT_TARGETS = {
         "label": "المحاور الاستراتيجية",
         "model": "albaha.pillar",
         "match_fields": ["code"],
+        "date_field": None,
+        "date_kind": None,
         "columns": [
             {"header": "الكود", "field": "code", "required": True},
             {"header": "الاسم", "field": "name", "required": True},
@@ -36,6 +43,8 @@ IMPORT_TARGETS = {
         "label": "الأهداف الاستراتيجية",
         "model": "albaha.objective",
         "match_fields": ["code"],
+        "date_field": None,
+        "date_kind": None,
         "columns": [
             {"header": "الكود", "field": "code", "required": True},
             {"header": "الاسم", "field": "name", "required": True},
@@ -58,6 +67,8 @@ IMPORT_TARGETS = {
         "label": "البرامج الاستراتيجية",
         "model": "albaha.program",
         "match_fields": ["code"],
+        "date_field": "start_date",
+        "date_kind": "date",
         "columns": [
             {"header": "الكود", "field": "code", "required": True},
             {"header": "الاسم", "field": "name", "required": True},
@@ -78,6 +89,8 @@ IMPORT_TARGETS = {
         "label": "مؤشرات الأداء",
         "model": "albaha.kpi",
         "match_fields": ["code"],
+        "date_field": None,
+        "date_kind": None,
         "columns": [
             {"header": "الكود", "field": "code", "required": True},
             {"header": "الاسم", "field": "name", "required": True},
@@ -100,6 +113,8 @@ IMPORT_TARGETS = {
         "label": "قيم المؤشرات",
         "model": "albaha.kpi.value",
         "match_fields": ["kpi_id", "period"],
+        "date_field": "period",
+        "date_kind": "q",
         "columns": [
             {"header": "رمز المؤشر", "field": "kpi_id", "required": True,
              "relation": "albaha.kpi", "relation_lookup": "code"},
@@ -119,6 +134,8 @@ IMPORT_TARGETS = {
         "label": "المؤشرات الإقليمية",
         "model": "albaha.regional.indicator",
         "match_fields": ["code"],
+        "date_field": None,
+        "date_kind": None,
         "columns": [
             {"header": "الكود", "field": "code", "required": True},
             {"header": "الاسم", "field": "name", "required": True},
@@ -139,6 +156,8 @@ IMPORT_TARGETS = {
         "label": "المبادرات",
         "model": "albaha.initiative",
         "match_fields": ["code"],
+        "date_field": "start_date",
+        "date_kind": "date",
         "columns": [
             {"header": "الكود", "field": "code", "required": True},
             {"header": "الاسم", "field": "name", "required": True},
@@ -162,6 +181,8 @@ IMPORT_TARGETS = {
         "label": "تقدم المبادرات",
         "model": "albaha.initiative.progress",
         "match_fields": ["initiative_id", "period"],
+        "date_field": "period",
+        "date_kind": "q",
         "columns": [
             {"header": "رمز المبادرة", "field": "initiative_id", "required": True,
              "relation": "albaha.initiative", "relation_lookup": "code"},
@@ -180,6 +201,8 @@ IMPORT_TARGETS = {
         "label": "المشاريع",
         "model": "albaha.project",
         "match_fields": ["code"],
+        "date_field": "planned_start",
+        "date_kind": "date",
         "columns": [
             {"header": "الكود", "field": "code", "required": True},
             {"header": "الاسم", "field": "name", "required": True},
@@ -201,6 +224,8 @@ IMPORT_TARGETS = {
         "label": "سجلات الموازنة",
         "model": "albaha.budget",
         "match_fields": ["project_id", "period_year_month"],
+        "date_field": "period_year_month",
+        "date_kind": "m",
         "columns": [
             {"header": "رمز المشروع", "field": "project_id", "required": True,
              "relation": "albaha.project", "relation_lookup": "code"},
@@ -219,6 +244,8 @@ IMPORT_TARGETS = {
         "label": "المخاطر الاستراتيجية",
         "model": "albaha.strategic.risk",
         "match_fields": ["code"],
+        "date_field": "identified_date",
+        "date_kind": "date",
         "columns": [
             {"header": "الكود", "field": "code", "required": True},
             {"header": "الوصف", "field": "name", "required": True},
@@ -240,6 +267,8 @@ IMPORT_TARGETS = {
         "label": "القرارات",
         "model": "albaha.decision",
         "match_fields": ["code"],
+        "date_field": "decision_date",
+        "date_kind": "date",
         "columns": [
             {"header": "الكود", "field": "code", "required": True},
             {"header": "العنوان", "field": "name", "required": True},
@@ -258,6 +287,8 @@ IMPORT_TARGETS = {
         "label": "اجتماعات اللجنة التوجيهية",
         "model": "albaha.steerco",
         "match_fields": ["name", "meeting_date"],
+        "date_field": "meeting_date",
+        "date_kind": "date",
         "columns": [
             {"header": "نص القرار", "field": "name", "required": True},
             {"header": "اسم اللجنة", "field": "committee_name"},
@@ -279,7 +310,13 @@ def get_target(key):
 
 
 def list_targets(env, require_create=False):
-    """Return import targets whose model is installed and optionally creatable."""
+    """Return targets whose model is installed and optionally creatable.
+
+    No `require_read` gate: no albaha.* model grants anything to
+    base.group_portal, and this deployment reads dashboard data via .sudo()
+    after gating on dashboard_access, not per-model ACLs. See
+    dashboard_export.get_export_targets() / dashboard_import.get_import_targets().
+    """
     items = []
     for spec in IMPORT_TARGETS.values():
         model = spec["model"]
@@ -292,5 +329,6 @@ def list_targets(env, require_create=False):
             "label": spec["label"],
             "model": model,
             "columns": [c["header"] for c in spec["columns"]],
+            "filterable": bool(spec.get("date_field")),
         })
     return sorted(items, key=lambda x: x["label"])

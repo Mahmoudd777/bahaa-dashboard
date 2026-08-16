@@ -9,6 +9,9 @@ Modes: uptodate (<= the date), period (the month of the date), quarter (a whole
 Qn of a year), all (no filter).
 """
 import datetime
+import re
+
+_QUARTER_RE = re.compile(r"^\d{4}-Q[1-4]$")
 
 
 def _to_date(s):
@@ -57,16 +60,24 @@ def normalize(flt):
         quarter  -> uses 'quarter' ('YYYY-Qn')
         all      -> internal default (no UI option) when no filter is sent
     """
-    flt = flt or {}
+    # A malformed request (e.g. ?filter=[1]) can hand us a non-dict; treat
+    # that the same as "no filter sent" instead of blowing up on flt.get().
+    flt = flt if isinstance(flt, dict) else {}
     mode = flt.get("mode") or "all"
     if mode not in ("uptodate", "period", "quarter", "all"):
         mode = "all"
     d = _to_date(flt.get("date"))
     f = _to_date(flt.get("from")) if flt.get("from") else d
     t = _to_date(flt.get("to")) if flt.get("to") else d
+    quarter = flt.get("quarter")
+    # quarter_bounds()/quarter_months() assume "YYYY-Qn"; a garbage value
+    # here would otherwise blow up several calls downstream as an
+    # IndexError/ValueError instead of degrading gracefully.
+    if not isinstance(quarter, str) or not _QUARTER_RE.match(quarter):
+        quarter = quarter_of_date(d)
     return {
         "mode": mode, "date": d, "from": f, "to": t,
-        "quarter": flt.get("quarter") or quarter_of_date(d),
+        "quarter": quarter,
         "month": month_of_date(d),
     }
 
