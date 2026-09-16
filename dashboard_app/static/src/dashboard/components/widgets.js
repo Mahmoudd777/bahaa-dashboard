@@ -1422,6 +1422,14 @@ export class PortfolioHealth extends Component {
              t-att-role="cardRole"
              t-on-click="() => this.openSelf()"
              t-on-keydown="onSelfKeydown">
+            <!-- .stop: the whole strip is itself clickable (it drills into the
+                 project list), so without it one press would open both. -->
+            <button t-if="props.onOpenComponent" class="o_baha_expand_btn o_baha_phealth__expand"
+                    title="عرض كامل البيانات"
+                    t-on-click.stop="() => props.onOpenComponent(props.comp)"
+                    t-on-keydown.stop="">
+                <i class="fa fa-expand"/>
+            </button>
             <div class="o_baha_phealth__lead">
                 <div class="o_baha_phealth__ring">
                     <svg viewBox="0 0 120 120">
@@ -1472,6 +1480,14 @@ export class PortfolioHealth extends Component {
 // EvmPanel — earned value (EV), cost index (CPI) and schedule index (SPI).
 export class EvmPanel extends Component {
     static template = xml`
+        <div class="o_baha_xwrap">
+        <div class="o_baha_xhead" t-if="props.comp.title and !props.comp.data.hide_head">
+            <span class="o_baha_xhead__title" t-esc="props.comp.title"/>
+            <button t-if="props.onOpenComponent" class="o_baha_expand_btn" title="عرض كامل البيانات"
+                    t-on-click="() => props.onOpenComponent(props.comp)">
+                <i class="fa fa-expand"/>
+            </button>
+        </div>
         <div class="o_baha_evm">
             <t t-foreach="props.comp.data.items or []" t-as="item" t-key="item.key">
                 <div class="o_baha_card o_baha_evm__card"
@@ -1492,6 +1508,7 @@ export class EvmPanel extends Component {
                     <div class="o_baha_evm__note" t-att-class="'o_baha_level--' + (item.level or 'none')" t-esc="item.note"/>
                 </div>
             </t>
+        </div>
         </div>`;
     static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?", "onOpenComponent?"];
 
@@ -1504,6 +1521,13 @@ export class EvmPanel extends Component {
 export class ProjectCategoryCards extends Component {
     static template = xml`
         <div class="o_baha_pcats">
+            <div class="o_baha_xhead" t-if="props.comp.title and !props.comp.data.hide_head">
+                <span class="o_baha_xhead__title" t-esc="props.comp.title"/>
+                <button t-if="props.onOpenComponent" class="o_baha_expand_btn" title="عرض كامل البيانات"
+                        t-on-click="() => props.onOpenComponent(props.comp)">
+                    <i class="fa fa-expand"/>
+                </button>
+            </div>
             <div t-if="props.comp.data.uncategorized" class="o_baha_pcats__note">
                 <i class="fa fa-info-circle"/>
                 <t t-esc="props.comp.data.uncategorized"/> مشروع بدون تصنيف لا يظهر في البطاقات

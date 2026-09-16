@@ -829,6 +829,14 @@ def portfolio_health(comp, cfg, env):
         ],
         "aggregate": _aggregate("projects_all", "جميع المشاريع"),
     })
+    # For the ⤢ wizard: the strip only has room for headline figures, so the
+    # table spells out each one next to the detail line it summarises. The
+    # card itself never reads `rows`.
+    cfg["columns"] = ["المؤشر", "القيمة", "التفصيل"]
+    cfg["rows"] = [{"cells": ["المؤشر العام للأداء", "—" if score is None else str(score), label]}]
+    cfg["rows"] += [{"cells": [c["label"], c["value"], c["sub"]]} for c in cfg["cells"]]
+    cfg["rows"].append({"cells": ["مشاريع لم يتم قياسها", str(s["unmeasured"]),
+                                  "مستبعدة من المؤشر العام"]})
     return cfg
 
 
@@ -868,6 +876,17 @@ def evm_panel(comp, cfg, env):
          "note": ("انحراف %s ر.س" % fmt_million(abs(ev - pv))) if spi is not None else "لا توجد نسبة مخططة",
          "level": lvl(spi), "aggregate": drill},
     ]
+    # For the ⤢ wizard. Includes BAC, PV and AC, which the three cards use but
+    # never show — without them the indices cannot be checked by hand.
+    cfg["columns"] = ["المؤشر", "الرمز", "القيمة", "الملاحظة"]
+    cfg["rows"] = [{"cells": [it["label"], it["abbr"], "%s %s" % (it["value"], it["unit"]), it["note"]],
+                    "aggregate": drill} for it in cfg["items"]]
+    cfg["rows"] += [
+        {"cells": ["الميزانية المعتمدة", "BAC", "%s ر.س" % fmt_million(bac), "إجمالي ميزانية المحفظة"]},
+        {"cells": ["القيمة المخططة", "PV", "%s ر.س" % fmt_million(pv),
+                   "%d%% إنجاز مخطط" % round(s["planned"])]},
+        {"cells": ["التكلفة الفعلية", "AC", "%s ر.س" % fmt_million(ac), "المصروف الفعلي حتى الآن"]},
+    ]
     return cfg
 
 
@@ -902,6 +921,18 @@ def project_category_cards(comp, cfg, env):
     cfg["items"] = items
     # Projects nobody has classified yet would otherwise vanish from every card.
     cfg["uncategorized"] = sum(1 for f in facts if not f["category_id"])
+    # For the ⤢ wizard: every category side by side in one table, which the
+    # cards cannot do. Rows still drill into that category's projects.
+    cfg["columns"] = ["التصنيف", "المشاريع", "الإنجاز الفعلي", "الإنجاز المخطط", "الميزانية",
+                      "المصروف", "على المسار", "تحت المراقبة", "متأخر", "لم يتم قياسها"]
+    cfg["rows"] = [{
+        "cells": [it["name"], it["count"], "%d%%" % it["actual"], "%d%%" % it["planned"],
+                  it["budget"], "%s (%d%%)" % (it["spent"], it["spent_pct"]),
+                  it["on"], it["st"], it["de"], it["unmeasured"]],
+        "aggregate": it["aggregate"],
+    } for it in items]
+    if cfg["uncategorized"]:
+        cfg["rows"].append({"cells": ["بدون تصنيف", cfg["uncategorized"], "", "", "", "", "", "", "", ""]})
     return cfg
 
 

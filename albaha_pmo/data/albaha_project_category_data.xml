@@ -34,7 +34,6 @@
         <field name="color">#7A4FA3</field>
         <field name="icon">trend</field>
         <field name="sequence">30</field>
-        <field name="coming_soon" eval="True"/>
     </record>
 
 </odoo>

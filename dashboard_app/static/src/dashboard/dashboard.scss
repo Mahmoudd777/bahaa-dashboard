@@ -1436,10 +1436,30 @@ body.o_baha_dash_active {
 
 // Composite health strip: ring + description, then four figures.
 .o_baha_phealth {
+    position: relative;
     display: flex;
     align-items: center;
     gap: 24px;
     flex-wrap: wrap;
+
+    // No title row on this strip, so ⤢ sits in the same corner the header
+    // button occupies on every other card.
+    &__expand {
+        position: absolute;
+        top: 12px;
+        inset-inline-end: 12px;
+        z-index: 2;
+    }
+
+    // It is a full-width strip, not a small metric card. The shared card hover
+    // lifts by translateY, and inside a grid cell that clips its content the
+    // lift cut the top border off and clipped the shadow, which read as the
+    // card breaking. Tint the border instead and keep it where it is.
+    &.o_baha_clickable--card:hover {
+        transform: none;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+        border-color: rgba(0, 171, 157, 0.45);
+    }
 
     &__lead {
         display: flex;
@@ -1544,11 +1564,36 @@ body.o_baha_dash_active {
 }
 
 // Earned-value cards: an accent rule on top in each index's colour.
+// Title row for the widgets that render a grid of their own cards instead of
+// sitting inside one (EVM, project categories): same title + ⤢ as a card
+// header, kept compact because the EVM strip is only a few rows tall.
+.o_baha_xwrap {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.o_baha_xhead {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 24px;
+
+    &__title {
+        font-size: 15px;
+        font-weight: 800;
+        color: var(--dash-text-primary, #181d27);
+    }
+}
+
 .o_baha_evm {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 16px;
-    height: 100%;
+    flex: 1 1 auto;
+    min-height: 0;
 
     &__card {
         position: relative;
