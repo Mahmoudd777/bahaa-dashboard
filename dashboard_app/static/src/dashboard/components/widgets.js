@@ -1394,7 +1394,192 @@ export class SemiGrid extends Component {
 // ---------------------------------------------------------------------------
 // Registry: component_type -> OWL component
 // ---------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
+// Executive project summary (الملخص التنفيذي للمشاريع)
+// ---------------------------------------------------------------------------
+// Stroke icons for the project-category cards, keyed by
+// albaha.project.category.icon. They use currentColor so each card tints its
+// own mark with the category colour.
+const PROJECT_CATEGORY_ICONS = {
+    target: markup(`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>`),
+    building: markup(`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="14" rx="1.5"/><path d="M8 7V4h8v3M7 12h10M7 16h6"/></svg>`),
+    trend: markup(`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18l5-6 4 4 7-9"/><path d="M15 7h5v5"/></svg>`),
+    layers: markup(`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/></svg>`),
+};
+
+const HEALTH_RING_COLOR = { ok: "#00AB9D", warn: "#F0974F", bad: "#FF5147", none: "#D5D7DA" };
+
+function clampPct(v) {
+    return Math.max(0, Math.min(100, Number(v) || 0));
+}
+
+// PortfolioHealth — composite score ring plus four headline portfolio figures.
+export class PortfolioHealth extends Component {
+    static template = xml`
+        <div class="o_baha_card o_baha_phealth"
+             t-att-class="cardClass"
+             t-att-tabindex="tabIndex"
+             t-att-role="cardRole"
+             t-on-click="() => this.openSelf()"
+             t-on-keydown="onSelfKeydown">
+            <div class="o_baha_phealth__lead">
+                <div class="o_baha_phealth__ring">
+                    <svg viewBox="0 0 120 120">
+                        <circle cx="60" cy="60" r="50" class="o_baha_phealth__track"/>
+                        <circle cx="60" cy="60" r="50" class="o_baha_phealth__value" t-att-style="ringStyle"/>
+                    </svg>
+                    <div class="o_baha_phealth__score" t-att-style="'color:' + ringColor">
+                        <strong t-if="data.score !== null and data.score !== undefined" t-esc="data.score"/>
+                        <strong t-else="">—</strong>
+                        <small t-esc="data.score_label"/>
+                    </div>
+                </div>
+                <div class="o_baha_phealth__info">
+                    <div class="o_baha_phealth__eyebrow" t-esc="data.eyebrow"/>
+                    <div class="o_baha_phealth__title" t-esc="data.title"/>
+                    <div class="o_baha_phealth__desc" t-esc="data.desc"/>
+                    <div t-if="data.unmeasured" class="o_baha_phealth__note">
+                        <t t-esc="data.unmeasured"/> مشروع لم يتم قياس حالته بعد
+                    </div>
+                </div>
+            </div>
+            <div class="o_baha_phealth__cells">
+                <t t-foreach="data.cells or []" t-as="cell" t-key="cell_index">
+                    <div class="o_baha_phealth__cell">
+                        <div class="o_baha_phealth__k" t-esc="cell.label"/>
+                        <div class="o_baha_phealth__v" t-esc="cell.value"/>
+                        <div class="o_baha_phealth__s" t-att-class="'o_baha_dir--' + (cell.dir or 'mu')" t-esc="cell.sub"/>
+                    </div>
+                </t>
+            </div>
+        </div>`;
+    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?", "onOpenComponent?"];
+
+    get data() { return this.props.comp.data || {}; }
+    get ringColor() { return HEALTH_RING_COLOR[this.data.score_level] || HEALTH_RING_COLOR.none; }
+    get ringStyle() {
+        const circ = 2 * Math.PI * 50;
+        const offset = circ * (1 - clampPct(this.data.score) / 100);
+        return `stroke:${this.ringColor};stroke-dasharray:${circ};stroke-dashoffset:${offset};`;
+    }
+    get cardClass() { return clickableClass(this.data, "o_baha_clickable--card"); }
+    get tabIndex() { return isClickable(this.data) ? 0 : undefined; }
+    get cardRole() { return isClickable(this.data) ? "button" : undefined; }
+    openSelf() { openDataTarget(this.data, this.props.onOpenRecord, this.props.onOpenDrilldown); }
+    onSelfKeydown(ev) { onDataKeydown(ev, this.data, this.props.onOpenRecord, this.props.onOpenDrilldown); }
+}
+
+// EvmPanel — earned value (EV), cost index (CPI) and schedule index (SPI).
+export class EvmPanel extends Component {
+    static template = xml`
+        <div class="o_baha_evm">
+            <t t-foreach="props.comp.data.items or []" t-as="item" t-key="item.key">
+                <div class="o_baha_card o_baha_evm__card"
+                     t-att-class="{ 'o_baha_clickable': isClickable(item) }"
+                     t-att-style="'--evm-color:' + item.color"
+                     t-att-tabindex="isClickable(item) ? 0 : undefined"
+                     t-att-role="isClickable(item) ? 'button' : undefined"
+                     t-on-click="() => this.openItem(item)"
+                     t-on-keydown="(ev) => this.onItemKeydown(ev, item)">
+                    <div class="o_baha_evm__hd">
+                        <span class="o_baha_evm__lb" t-esc="item.label"/>
+                        <span class="o_baha_evm__abbr" t-esc="item.abbr"/>
+                    </div>
+                    <div class="o_baha_evm__nm">
+                        <t t-esc="item.value"/><small t-esc="item.unit"/>
+                    </div>
+                    <div class="o_baha_evm__desc" t-esc="item.desc"/>
+                    <div class="o_baha_evm__note" t-att-class="'o_baha_level--' + (item.level or 'none')" t-esc="item.note"/>
+                </div>
+            </t>
+        </div>`;
+    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?", "onOpenComponent?"];
+
+    isClickable(item) { return isClickable(item); }
+    openItem(item) { dispatchItemClick(item, this.props.onOpenRecord, this.props.onOpenDrilldown); }
+    onItemKeydown(ev, item) { onItemKeydown(ev, item, this.props.onOpenRecord, this.props.onOpenDrilldown); }
+}
+
+// ProjectCategoryCards — one card per albaha.project.category.
+export class ProjectCategoryCards extends Component {
+    static template = xml`
+        <div class="o_baha_pcats">
+            <div t-if="props.comp.data.uncategorized" class="o_baha_pcats__note">
+                <i class="fa fa-info-circle"/>
+                <t t-esc="props.comp.data.uncategorized"/> مشروع بدون تصنيف لا يظهر في البطاقات
+            </div>
+            <div class="o_baha_pcats__grid">
+                <t t-foreach="props.comp.data.items or []" t-as="cat" t-key="cat.id">
+                    <div class="o_baha_card o_baha_pcat"
+                         t-att-class="{ 'o_baha_clickable': isClickable(cat), 'o_baha_pcat--soon': cat.coming_soon }"
+                         t-att-style="'--pc-color:' + cat.color"
+                         t-att-tabindex="isClickable(cat) ? 0 : undefined"
+                         t-att-role="isClickable(cat) ? 'button' : undefined"
+                         t-on-click="() => this.openItem(cat)"
+                         t-on-keydown="(ev) => this.onItemKeydown(ev, cat)">
+                        <span t-if="cat.coming_soon" class="o_baha_pcat__soon">قيد التطوير</span>
+                        <div class="o_baha_pcat__head">
+                            <div class="o_baha_pcat__count">
+                                <strong t-esc="cat.count"/>
+                                <small>مشروع</small>
+                            </div>
+                            <div class="o_baha_pcat__mark" t-out="iconSvg(cat.icon)"/>
+                        </div>
+                        <div class="o_baha_pcat__name">
+                            <div class="o_baha_pcat__tagline" t-esc="cat.tagline"/>
+                            <div class="o_baha_pcat__title" t-esc="cat.name"/>
+                            <div class="o_baha_pcat__desc" t-esc="cat.description"/>
+                        </div>
+                        <div class="o_baha_pcat__progress">
+                            <div class="o_baha_pcat__prow">
+                                <span>الإنجاز الفعلي</span>
+                                <span>
+                                    <strong t-esc="cat.actual + '%'"/>
+                                    <small> من <t t-esc="cat.planned"/>% مخطط</small>
+                                </span>
+                            </div>
+                            <div class="o_baha_pcat__track">
+                                <div class="o_baha_pcat__fill" t-att-style="'width:' + clampPct(cat.actual) + '%'"/>
+                                <div class="o_baha_pcat__plan" t-att-style="'inset-inline-start:' + clampPct(cat.planned) + '%'"/>
+                            </div>
+                            <div class="o_baha_pcat__gap" t-att-class="'o_baha_dir--' + (cat.gap_dir or 'mu')" t-esc="cat.gap"/>
+                        </div>
+                        <div class="o_baha_pcat__money">
+                            <div class="o_baha_pcat__tile">
+                                <span>الميزانية</span>
+                                <strong t-esc="cat.budget"/>
+                            </div>
+                            <div class="o_baha_pcat__tile">
+                                <span>المصروف</span>
+                                <strong><t t-esc="cat.spent"/> <small>(<t t-esc="cat.spent_pct"/>%)</small></strong>
+                            </div>
+                        </div>
+                        <div class="o_baha_pcat__status">
+                            <span><i class="o_baha_pcat__dot o_baha_pcat__dot--on"/><t t-esc="cat.on"/> على المسار</span>
+                            <span><i class="o_baha_pcat__dot o_baha_pcat__dot--st"/><t t-esc="cat.st"/> تحت المراقبة</span>
+                            <span><i class="o_baha_pcat__dot o_baha_pcat__dot--de"/><t t-esc="cat.de"/> متأخر</span>
+                        </div>
+                        <div t-if="cat.count" class="o_baha_pcat__foot">
+                            <span>عرض تفاصيل <t t-esc="cat.count"/> مشروع</span>
+                            <i class="fa fa-angle-left"/>
+                        </div>
+                    </div>
+                </t>
+            </div>
+        </div>`;
+    static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?", "onOpenComponent?"];
+
+    clampPct(v) { return clampPct(v); }
+    iconSvg(key) { return PROJECT_CATEGORY_ICONS[key] || PROJECT_CATEGORY_ICONS.target; }
+    isClickable(item) { return isClickable(item); }
+    openItem(item) { dispatchItemClick(item, this.props.onOpenRecord, this.props.onOpenDrilldown); }
+    onItemKeydown(ev, item) { onItemKeydown(ev, item, this.props.onOpenRecord, this.props.onOpenDrilldown); }
+}
+
 export const WIDGETS = {
+    portfolio_health: PortfolioHealth,
+    evm_panel: EvmPanel,
+    project_category_cards: ProjectCategoryCards,
     gauge_grid: GaugeGrid,
     stat_grid: StatGrid,
     kpi_grid: KpiGrid,

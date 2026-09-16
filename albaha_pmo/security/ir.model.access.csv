@@ -3,3 +3,5 @@ access_albaha_portfolio,albaha.portfolio,model_albaha_portfolio,base.group_user,
 access_albaha_program_pmo,albaha.program.pmo,model_albaha_program_pmo,base.group_user,1,1,1,1
 access_albaha_project,albaha.project,model_albaha_project,base.group_user,1,1,1,1
 access_albaha_milestone,albaha.milestone,model_albaha_milestone,base.group_user,1,1,1,1
+access_albaha_project_category_user,albaha.project.category.user,model_albaha_project_category,base.group_user,1,0,0,0
+access_albaha_project_category_manager,albaha.project.category.manager,model_albaha_project_category,base.group_system,1,1,1,1

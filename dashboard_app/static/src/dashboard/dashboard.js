@@ -35,6 +35,7 @@ const INTERACTIVE_WIDGETS = new Set([
     "progress_card", "budget_split_bar", "bar_h", "bar_h_planned", "bar_v",
     "goals_list", "list_cards", "alerts_panel", "gauge_grid", "stat_grid",
     "kpi_grid", "semi_grid",
+    "portfolio_health", "evm_panel", "project_category_cards",
 ]);
 
 // Renders an ordered list of layout "units" (built server-side in get_layout)

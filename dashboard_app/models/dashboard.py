@@ -128,6 +128,9 @@ class DashboardDashboard(models.Model):
             "albaha.strategic.risk": self._get_strategic_risk_detail,
             "albaha.decision": self._get_decision_detail,
             "albaha.steerco": self._get_steerco_detail,
+            # Opened from the executive project summary; being in this whitelist
+            # is also what lets a project take notes via add_record_note.
+            "albaha.project": self._get_project_detail,
         }
 
     def _aggregate_registry(self):
@@ -147,6 +150,8 @@ class DashboardDashboard(models.Model):
             "completion_year": self._aggregate_completion_year,
             "budget_records": self._aggregate_budget_records,
             "strategy_objectives": self._aggregate_strategy_objectives,
+            "projects_all": self._aggregate_projects,
+            "projects_by_category": self._aggregate_projects,
         }
 
     @api.model
@@ -436,6 +441,90 @@ class DashboardDashboard(models.Model):
             fmt_num(r.actual_spent),
             fmt_num(r.remaining_amount),
         ], "سجلات الموازنة")
+
+    def _aggregate_projects(self, params):
+        """Project list behind the executive-summary cards.
+
+        category_id arrives from the browser, so it is only ever used as an
+        integer domain operand — never a field or model name.
+        """
+        from .dashboard_providers import PROJECT_STATUS_AR, fmt_million, project_facts
+
+        domain = []
+        title = "جميع المشاريع"
+        raw = (params or {}).get("category_id")
+        if raw not in (None, False, ""):
+            try:
+                cat_id = int(raw)
+            except (TypeError, ValueError):
+                raise UserError("تصنيف المشاريع غير صالح.")
+            domain = [("category_id", "=", cat_id)]
+            cat = self.env["albaha.project.category"].sudo().browse(cat_id).exists()
+            title = cat.name if cat else title
+
+        facts = {f["rec"].id: f for f in project_facts(self.env(su=True), domain)}
+        records = self._search_records("albaha.project", domain, order="progress_pct desc, id")
+        return self._line_rows(
+            records,
+            ["المشروع", "التصنيف", "الإنجاز", "المخطط", "الحالة", "المعتمد", "المصروف"],
+            lambda r: [
+                r.name,
+                r.category_id.name or "—",
+                "%d%%" % round(r.progress_pct or 0),
+                "%d%%" % round(r.planned_pct or 0),
+                PROJECT_STATUS_AR.get(facts.get(r.id, {}).get("status")),
+                fmt_million(facts.get(r.id, {}).get("budget", 0.0)),
+                fmt_million(facts.get(r.id, {}).get("spent", 0.0)),
+            ],
+            title,
+        )
+
+    def _get_project_detail(self, project):
+        from .dashboard_providers import PROJECT_STATUS, PROJECT_STATUS_AR, fmt_million, project_facts
+
+        fact = next(iter(project_facts(self.env(su=True), [("id", "=", project.id)])), {})
+        status = PROJECT_STATUS.get(project.health_status)
+        budget, spent = fact.get("budget", 0.0), fact.get("spent", 0.0)
+        return {
+            "model": project._name,
+            "res_id": project.id,
+            "title": project.name,
+            "subtitle": " · ".join(filter(None, [project.code, project.category_id.name])),
+            "badge": {
+                "label": PROJECT_STATUS_AR.get(status),
+                "level": {"on": "low", "st": "mid", "de": "high"}.get(status, "none"),
+            },
+            "summary": [
+                {"label": "الإنجاز الفعلي", "value": "%d" % round(project.progress_pct or 0), "unit": "%"},
+                {"label": "المخطط", "value": "%d" % round(project.planned_pct or 0), "unit": "%"},
+                {"label": "المعتمد", "value": fmt_million(budget), "unit": "ر.س"},
+                {"label": "المصروف", "value": fmt_million(spent),
+                 "unit": "(%d%%)" % round(spent / budget * 100) if budget else ""},
+            ],
+            "sections": [
+                {
+                    "title": "بيانات المشروع",
+                    "items": [
+                        {"label": "البرنامج", "value": project.program_id.name or "—"},
+                        {"label": "التصنيف", "value": project.category_id.name or "—"},
+                        {"label": "نوع المشروع", "value": project.project_type or "—"},
+                        {"label": "مدير المشروع", "value": project.manager_id.name or "—"},
+                        {"label": "المرحلة", "value": self._selection_label(project, "phase") or "—"},
+                        {"label": "الأولوية", "value": self._selection_label(project, "priority") or "—"},
+                    ],
+                },
+                {
+                    "title": "الجدول الزمني",
+                    "items": [
+                        {"label": "البداية المخططة", "value": str(project.planned_start or "—")},
+                        {"label": "النهاية المخططة", "value": str(project.planned_end or "—")},
+                        {"label": "البداية الفعلية", "value": str(project.actual_start or "—")},
+                        {"label": "النهاية الفعلية", "value": str(project.actual_end or "—")},
+                    ],
+                },
+            ],
+            "description": "",
+        }
 
     def _aggregate_strategy_objectives(self, params):
         from .dashboard_helpers import QUALITY_AR

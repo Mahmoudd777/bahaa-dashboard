@@ -15,6 +15,13 @@ class AlbahaProject(models.Model):
         required=True
     )
     project_type = fields.Char(string='Project Type')
+    category_id = fields.Many2one(
+        'albaha.project.category',
+        string='Category',
+        index=True,
+        ondelete='set null',
+        help='Strategic / enterprise / developmental - drives the executive-summary cards.'
+    )
     manager_id = fields.Many2one(
         'res.partner', 
         string='Manager', 

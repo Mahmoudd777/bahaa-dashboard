@@ -9,6 +9,7 @@
                 <field name="code"/>
                 <field name="program_id"/>
                 <field name="project_type"/>
+                <field name="category_id"/>
                 <field name="manager_id"/>
                 <field name="sponsor_id"/>
                 <field name="strategic_pillar_id"/>
@@ -29,6 +30,7 @@
                         <field name="code"/>
                         <field name="program_id"/>
                         <field name="project_type"/>
+                        <field name="category_id"/>
                         <field name="manager_id"/>
                         <field name="sponsor_id"/>
                         <field name="strategic_pillar_id"/>
@@ -65,8 +67,10 @@
                 <field name="name_en"/>
                 <field name="code"/>
                 <field name="program_id"/>
+                <field name="category_id"/>
                 <group>
                     <filter string="Program Id" name="gb_program_id" context="{'group_by':'program_id'}"/>
+                    <filter string="Category" name="gb_category_id" context="{'group_by':'category_id'}"/>
                     <filter string="Manager Id" name="gb_manager_id" context="{'group_by':'manager_id'}"/>
                     <filter string="Sponsor Id" name="gb_sponsor_id" context="{'group_by':'sponsor_id'}"/>
                 </group>

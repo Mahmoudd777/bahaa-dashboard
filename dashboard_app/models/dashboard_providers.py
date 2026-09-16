@@ -704,7 +704,211 @@ def banner(comp, cfg, env):
     return cfg
 
 
+# ---- executive project summary ----------------------------------------------
+# health_status -> the three states the executive summary counts. grey means
+# "not measured yet": it is shown as its own count and kept out of the health
+# score, because averaging an unmeasured project in as 0 or 100 would both lie.
+PROJECT_STATUS = {"green": "on", "amber": "st", "red": "de"}
+# Composite health weights, as defined by the PMO mockup: an on-track project
+# scores 100, one under watch 65, a delayed one 30.
+PROJECT_STATUS_WEIGHT = {"on": 100, "st": 65, "de": 30}
+PROJECT_STATUS_AR = {"on": "على المسار", "st": "تحت المراقبة", "de": "متأخر", None: "لم يتم القياس"}
+
+
+def fmt_million(val):
+    """albaha.budget amounts are stored in millions of SAR (the import template
+    labels them "مليون ريال"), so fmt_num would render 1,379.5 million as
+    "1.4K". Say it in the unit it is actually in."""
+    v = float(val or 0.0)
+    if abs(v) >= 1000:
+        return ("%.1f مليار" % (v / 1000.0)).replace(".0 ", " ")
+    return ("%.1f مليون" % v).replace(".0 ", " ")
+
+
+def project_facts(env, domain=None):
+    """One dict per project with every figure the executive summary needs.
+
+    Budget and spend are summed from albaha.budget rows — narrowed by the
+    header's date filter on period_year_month — rather than the project's own
+    baseline/actual fields, which are sparsely filled and not unit-safe.
+    """
+    projects = _recs(env, "albaha.project", domain=domain, order="id")
+    if not projects:
+        return []
+    ids = set(projects.ids)
+    money = defaultdict(lambda: [0.0, 0.0])
+    for b in _frecs(env, "albaha.budget", "period_year_month", "m",
+                    base_domain=[("project_id", "in", list(ids))]):
+        money[b.project_id.id][0] += b.approved_amount or 0.0
+        money[b.project_id.id][1] += b.actual_spent or 0.0
+    risks = defaultdict(lambda: [0, 0])
+    for r in _recs(env, "albaha.risk", [("project_id", "in", list(ids)), ("status", "!=", "closed")]):
+        risks[r.project_id.id][0] += 1
+        if r.severity in ("critical", "high"):
+            risks[r.project_id.id][1] += 1
+    has_category = "category_id" in projects._fields
+    facts = []
+    for p in projects:
+        facts.append({
+            "rec": p,
+            "category_id": p.category_id.id if has_category else False,
+            "status": PROJECT_STATUS.get(p.health_status),
+            "actual": p.progress_pct or 0.0,
+            "planned": p.planned_pct or 0.0,
+            "budget": money[p.id][0],
+            "spent": money[p.id][1],
+            "risks": risks[p.id][0],
+            "critical": risks[p.id][1],
+        })
+    return facts
+
+
+def summarize_projects(facts):
+    n = len(facts)
+    s = {
+        "count": n,
+        "actual": sum(f["actual"] for f in facts) / n if n else 0.0,
+        "planned": sum(f["planned"] for f in facts) / n if n else 0.0,
+        "budget": sum(f["budget"] for f in facts),
+        "spent": sum(f["spent"] for f in facts),
+        "risks": sum(f["risks"] for f in facts),
+        "critical": sum(f["critical"] for f in facts),
+        "on": 0, "st": 0, "de": 0, "unmeasured": 0,
+    }
+    for f in facts:
+        if f["status"]:
+            s[f["status"]] += 1
+        else:
+            s["unmeasured"] += 1
+    measured = s["on"] + s["st"] + s["de"]
+    s["score"] = (int(round(sum(PROJECT_STATUS_WEIGHT[k] * s[k] for k in ("on", "st", "de")) / measured))
+                  if measured else None)
+    s["spent_pct"] = s["spent"] / s["budget"] * 100.0 if s["budget"] else 0.0
+    return s
+
+
+def _signed(val, unit="%"):
+    arrow = "▲" if val > 0.5 else "▼" if val < -0.5 else "■"
+    return "%s %.1f%s" % (arrow, abs(val), unit)
+
+
+def portfolio_health(comp, cfg, env):
+    s = summarize_projects(project_facts(env))
+    score = s["score"]
+    if score is None:
+        level, label = "none", "لم يتم القياس"
+    elif score >= 80:
+        level, label = "ok", "سليم"
+    elif score >= 60:
+        level, label = "warn", "يحتاج مراقبة"
+    else:
+        level, label = "bad", "حرج"
+    progress_gap = s["actual"] - s["planned"]
+    spend_gap = s["spent_pct"] - s["actual"]
+    cfg.update({
+        "score": score,
+        "score_level": level,
+        "score_label": label,
+        "eyebrow": cfg.get("eyebrow") or "صحة المحفظة",
+        "title": cfg.get("title") or "المؤشر العام للأداء",
+        "desc": cfg.get("desc") or "مؤشر مركب مبني على حالة المشاريع ونسبة الإنجاز والصرف والمخاطر النشطة.",
+        "unmeasured": s["unmeasured"],
+        "cells": [
+            {"label": "إجمالي المشاريع", "value": str(s["count"]),
+             "sub": "%d على المسار" % s["on"], "dir": "mu"},
+            {"label": "متوسط الإنجاز", "value": "%d%%" % round(s["actual"]),
+             "sub": "%s عن الخطة" % _signed(progress_gap),
+             "dir": "up" if progress_gap >= 0 else "dn"},
+            {"label": "معدل الصرف", "value": "%d%%" % round(s["spent_pct"]),
+             "sub": "%s انحراف" % _signed(spend_gap),
+             # Spending ahead of delivery is the warning sign, not behind it.
+             "dir": "up" if spend_gap < 5 else "dn"},
+            {"label": "المخاطر النشطة", "value": str(s["risks"]),
+             "sub": "%d حرجة" % s["critical"],
+             "dir": "dn" if s["critical"] > 2 else "mu"},
+        ],
+        "aggregate": _aggregate("projects_all", "جميع المشاريع"),
+    })
+    return cfg
+
+
+def evm_panel(comp, cfg, env):
+    """Earned-value figures for the whole portfolio.
+
+    BAC is the approved budget, PV and EV its planned and actual share, AC the
+    spend. An index is left blank rather than shown as 0 when its denominator is
+    zero — 0.00 would read as "catastrophically over budget", not "no data".
+    """
+    s = summarize_projects(project_facts(env))
+    bac, ac = s["budget"], s["spent"]
+    pv, ev = bac * s["planned"] / 100.0, bac * s["actual"] / 100.0
+    cpi = ev / ac if ac else None
+    spi = ev / pv if pv else None
+
+    def lvl(idx):
+        if idx is None:
+            return "none"
+        return "ok" if idx >= 1 else "warn" if idx >= 0.95 else "bad"
+
+    drill = _aggregate("projects_all", "جميع المشاريع")
+    cfg["items"] = [
+        {"key": "ev", "abbr": "EV", "label": "القيمة المكتسبة", "color": "#00AB9D",
+         "value": fmt_million(ev), "unit": "ر.س",
+         "desc": "قيمة العمل المنجز فعلياً حتى الآن مقابل الميزانية الكلية %s." % fmt_million(bac),
+         "note": "%s من القيمة الإجمالية" % _signed(ev / bac * 100.0 if bac else 0.0),
+         "level": "ok" if bac else "none", "aggregate": drill},
+        {"key": "cpi", "abbr": "CPI", "label": "انحراف التكلفة", "color": "#F0974F",
+         "value": "%.2f" % cpi if cpi is not None else "—", "unit": "مؤشر",
+         "desc": "مؤشر أداء التكلفة. القيمة 1 أو أعلى تعني الصرف ضمن الميزانية.",
+         "note": ("انحراف %s ر.س" % fmt_million(abs(ev - ac))) if cpi is not None else "لا يوجد صرف مسجل",
+         "level": lvl(cpi), "aggregate": drill},
+        {"key": "spi", "abbr": "SPI", "label": "انحراف الجدول", "color": "#5C4B43",
+         "value": "%.2f" % spi if spi is not None else "—", "unit": "مؤشر",
+         "desc": "مؤشر أداء الجدول الزمني. القيمة 1 أو أعلى تعني الإنجاز حسب الخطة.",
+         "note": ("انحراف %s ر.س" % fmt_million(abs(ev - pv))) if spi is not None else "لا توجد نسبة مخططة",
+         "level": lvl(spi), "aggregate": drill},
+    ]
+    return cfg
+
+
+def project_category_cards(comp, cfg, env):
+    facts = project_facts(env)
+    cats = _recs(env, "albaha.project.category", order="sequence, id")
+    items = []
+    for cat in cats:
+        s = summarize_projects([f for f in facts if f["category_id"] == cat.id])
+        gap = s["actual"] - s["planned"]
+        items.append({
+            "id": cat.id,
+            "name": cat.name,
+            "tagline": cat.tagline or "",
+            "description": cat.description or "",
+            "color": cat.color or "#00AB9D",
+            "icon": cat.icon or "target",
+            "coming_soon": bool(cat.coming_soon),
+            "count": s["count"],
+            "actual": int(round(s["actual"])),
+            "planned": int(round(s["planned"])),
+            "gap": "%s %s" % (_signed(gap), "عن الخطة" if gap >= -0.5 else "متأخر عن الخطة"),
+            "gap_dir": "up" if gap > 0.5 else "dn" if gap < -0.5 else "mu",
+            "budget": fmt_million(s["budget"]),
+            "spent": fmt_million(s["spent"]),
+            "spent_pct": int(round(s["spent_pct"])),
+            "on": s["on"], "st": s["st"], "de": s["de"],
+            "unmeasured": s["unmeasured"],
+            "aggregate": (_aggregate("projects_by_category", cat.name, category_id=cat.id)
+                          if s["count"] else None),
+        })
+    cfg["items"] = items
+    # Projects nobody has classified yet would otherwise vanish from every card.
+    cfg["uncategorized"] = sum(1 for f in facts if not f["category_id"])
+    return cfg
+
+
 PROVIDERS = {
+    "portfolio_health": portfolio_health,
+    "evm_panel": evm_panel,
+    "project_category_cards": project_category_cards,
     "banner": banner,
     "objectives_gauges": objectives_gauges,
     "pillars_bar": pillars_bar,

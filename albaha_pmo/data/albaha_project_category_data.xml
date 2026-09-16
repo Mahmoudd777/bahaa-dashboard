@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    noupdate="1": titles, descriptions and colours are meant to be edited from
+    the backend. Without it every module upgrade would silently revert them —
+    the same trap that once destroyed saved dashboard layouts.
+-->
+<odoo noupdate="1">
+
+    <record id="project_category_strategic" model="albaha.project.category">
+        <field name="name">المشاريع الاستراتيجية</field>
+        <field name="code">strategic</field>
+        <field name="tagline">البرامج والمبادرات الاستراتيجية</field>
+        <field name="description">البرامج والمبادرات الاستراتيجية العليا لتطوير منطقة الباحة ضمن استراتيجية 2030.</field>
+        <field name="color">#00AB9D</field>
+        <field name="icon">target</field>
+        <field name="sequence">10</field>
+    </record>
+
+    <record id="project_category_enterprise" model="albaha.project.category">
+        <field name="name">المشاريع المؤسسية</field>
+        <field name="code">enterprise</field>
+        <field name="tagline">مشاريع البنية والحوكمة والخدمات</field>
+        <field name="description">مشاريع تعزز البنية المؤسسية والحوكمة والأنظمة الداخلية والخدمات المشتركة للمكتب الاستراتيجي.</field>
+        <field name="color">#F0974F</field>
+        <field name="icon">building</field>
+        <field name="sequence">20</field>
+    </record>
+
+    <record id="project_category_developmental" model="albaha.project.category">
+        <field name="name">المشاريع التنموية</field>
+        <field name="code">developmental</field>
+        <field name="tagline">مشاريع الأثر الاقتصادي والتنمية</field>
+        <field name="description">مشاريع التنمية الاقتصادية والاستثمارية والبرامج ذات الأثر المباشر على المجتمع والمستفيدين.</field>
+        <field name="color">#7A4FA3</field>
+        <field name="icon">trend</field>
+        <field name="sequence">30</field>
+        <field name="coming_soon" eval="True"/>
+    </record>
+
+</odoo>

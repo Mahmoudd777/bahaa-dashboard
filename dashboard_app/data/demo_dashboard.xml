@@ -210,4 +210,62 @@
     <record id="vp_meetings" model="dashboard.component"><field name="name">التحديث التالي و الاجتماعات</field><field name="section_id" ref="sec_vp_risks"/><field name="component_type">list_cards</field><field name="sequence">16</field><field name="col_span">4</field><field name="row_span">44</field><field name="config">{"title": "التحديث التالي و الاجتماعات", "items": [{"severity": "", "level": "low", "tag": "اجتماع المراجعة الشهري", "date": "5 أكتوبر 2023، 12:30 مساءً", "text": "اجتماع المراجعة الشهري مع الرئيس التنفيذي", "decision": ""}, {"severity": "", "level": "mid", "tag": "تقرير الربع الثاني", "date": "15 أكتوبر 2023", "text": "اجتماع المراجعة الشهري مع الرئيس التنفيذي", "decision": ""}, {"severity": "", "level": "high", "tag": "تحديث بيانات K-06", "date": "15 أكتوبر 2023", "text": "مطلوب من وزارة البيئة فوري", "decision": ""}]}</field></record>
     <record id="vp_kpitable" model="dashboard.component"><field name="name">بطاقات مؤشرات الاداء الكاملة</field><field name="section_id" ref="sec_vp_risks"/><field name="component_type">data_table</field><field name="sequence">20</field><field name="col_span">8</field><field name="row_span">55</field><field name="config">{"columns": ["الجودة", "اسم المؤشر", "الحالي", "2026", "التقدم", "المصدر"], "rows": [{"cells": [{"type": "badge", "label": "منخفضة", "level": "high"}, "عدد الزوار السنويين", "1.7 M", "3.4 M", {"type": "progress", "value": 40, "color": "#FF5147"}, {"type": "tag", "label": "وز- السياحة"}], "status": "ok"}, {"cells": [{"type": "badge", "label": "متوسطة", "level": "mid"}, "متوسط انفاق الزائر", "1,600", "4,200", {"type": "progress", "value": 30, "color": "#F0974F"}, {"type": "tag", "label": "وز- السياحة"}], "status": "ok"}, {"cells": [{"type": "badge", "label": "عالية", "level": "low"}, "المواقع التراثية المؤهلة", "40%", "60%", {"type": "progress", "value": 70, "color": "#00AB9D"}, {"type": "tag", "label": "وز- السياحة"}], "status": "ok"}, {"cells": [{"type": "badge", "label": "منخفضة", "level": "high"}, "إيرادات الزراعة", "2.4B", "3B", {"type": "progress", "value": 40, "color": "#FF5147"}, {"type": "tag", "label": "وز- الزراعة"}], "status": "ok"}, {"cells": [{"type": "badge", "label": "لايوجد", "level": "none"}, "نسبة المحتوى المحلي", "لم يفعل بعد", "لم يفعل بعد", {"type": "progress", "value": 0, "color": "#9aa0a6"}, {"type": "tag", "label": "NUPC"}], "status": "ok"}]}</field></record>
     <record id="vp_alerts" model="dashboard.component"><field name="name">تحذيرات تشغيلية فورية</field><field name="section_id" ref="sec_vp_risks"/><field name="component_type">alerts_panel</field><field name="sequence">21</field><field name="col_span">4</field><field name="row_span">33</field><field name="config">{"title": "تحذيرات تشغيلية فورية", "groups": [{"title": "مؤشرات بدون مالك", "color": "#FF5147", "icon": "fa-user", "items": [{"label": "مؤشر المحتوى المحلي", "value": "لامسؤول", "color": "#F0974F"}, {"label": "جودة الحياة", "value": "لامسؤول", "color": "#00AB9D"}, {"label": "مبادرة دعم المرأة", "value": "غير محدد", "color": "#00AB9D"}, {"label": "معدل البطالة بين السعوديين", "value": "لامسؤول", "color": "#FF5147"}]}, {"title": "مبادرات بتأخر متوقع", "color": "#F0974F", "icon": "fa-clock-o", "items": [{"label": "المخططات السياحية", "value": "6 اسابيع", "color": "#00AB9D"}, {"label": "المخطط الزراعي", "value": "Q3 2025", "color": "#FF5147"}, {"label": "تحليل القطاعات", "value": "انتظار ميزانية", "color": "#FF5147"}, {"label": "المخططات التفصيلية للنطاقات", "value": "شهر", "color": "#F0974F"}]}, {"title": "توقع تحقيق", "color": "#00AB9D", "icon": "fa-line-chart", "items": [{"label": "الزوار", "value": "92% من الهدف", "color": "#00AB9D"}, {"label": "الاقامة", "value": "75% من الهدف", "color": "#FF5147"}, {"label": "التصنيع", "value": "22% من الهدف", "color": "#FF5147"}, {"label": "تعزيز مكانة الباحة السياحية", "value": "88% من الهدف", "color": "#00AB9D"}, {"label": "تمكين سكان الباحة", "value": "22% من الهدف", "color": "#FF5147"}]}]}</field></record>
+
+    <!-- Executive project summary tab. Every value is computed by a provider
+         from albaha.project / albaha.budget / albaha.risk; config only holds
+         presentation text. -->
+    <record id="sec_ceo_projects" model="dashboard.section">
+        <field name="name">الملخص التنفيذي للمشاريع</field>
+        <field name="dashboard_id" ref="dashboard_ceo"/><field name="sequence">4</field>
+    </record>
+    <record id="ceo_proj_health" model="dashboard.component">
+        <field name="name">المؤشر العام للأداء</field><field name="section_id" ref="sec_ceo_projects"/>
+        <field name="component_type">portfolio_health</field><field name="sequence">10</field>
+        <field name="col_span">12</field><field name="row_span">20</field><field name="column">full</field>
+        <field name="data_source">model</field><field name="source">portfolio_health</field>
+        <field name="config">{"eyebrow": "صحة المحفظة", "title": "المؤشر العام للأداء", "desc": "مؤشر مركب مبني على حالة المشاريع ونسبة الإنجاز والصرف والمخاطر النشطة."}</field>
+    </record>
+    <record id="ceo_proj_evm" model="dashboard.component">
+        <field name="name">مؤشرات القيمة المكتسبة</field><field name="section_id" ref="sec_ceo_projects"/>
+        <field name="component_type">evm_panel</field><field name="sequence">20</field>
+        <field name="col_span">12</field><field name="row_span">22</field><field name="column">full</field>
+        <field name="data_source">model</field><field name="source">evm_panel</field>
+        <field name="config">{}</field>
+    </record>
+    <record id="ceo_proj_categories" model="dashboard.component">
+        <field name="name">تصنيفات المشاريع</field><field name="section_id" ref="sec_ceo_projects"/>
+        <field name="component_type">project_category_cards</field><field name="sequence">30</field>
+        <field name="col_span">12</field><field name="row_span">60</field><field name="column">full</field>
+        <field name="data_source">model</field><field name="source">project_category_cards</field>
+        <field name="config">{}</field>
+    </record>
+
+    <!-- Executive project summary tab. Every value is computed by a provider
+         from albaha.project / albaha.budget / albaha.risk; config only holds
+         presentation text. -->
+    <record id="sec_vp_projects" model="dashboard.section">
+        <field name="name">الملخص التنفيذي للمشاريع</field>
+        <field name="dashboard_id" ref="dashboard_vp"/><field name="sequence">4</field>
+    </record>
+    <record id="vp_proj_health" model="dashboard.component">
+        <field name="name">المؤشر العام للأداء</field><field name="section_id" ref="sec_vp_projects"/>
+        <field name="component_type">portfolio_health</field><field name="sequence">10</field>
+        <field name="col_span">12</field><field name="row_span">20</field><field name="column">full</field>
+        <field name="data_source">model</field><field name="source">portfolio_health</field>
+        <field name="config">{"eyebrow": "صحة المحفظة", "title": "المؤشر العام للأداء", "desc": "مؤشر مركب مبني على حالة المشاريع ونسبة الإنجاز والصرف والمخاطر النشطة."}</field>
+    </record>
+    <record id="vp_proj_evm" model="dashboard.component">
+        <field name="name">مؤشرات القيمة المكتسبة</field><field name="section_id" ref="sec_vp_projects"/>
+        <field name="component_type">evm_panel</field><field name="sequence">20</field>
+        <field name="col_span">12</field><field name="row_span">22</field><field name="column">full</field>
+        <field name="data_source">model</field><field name="source">evm_panel</field>
+        <field name="config">{}</field>
+    </record>
+    <record id="vp_proj_categories" model="dashboard.component">
+        <field name="name">تصنيفات المشاريع</field><field name="section_id" ref="sec_vp_projects"/>
+        <field name="component_type">project_category_cards</field><field name="sequence">30</field>
+        <field name="col_span">12</field><field name="row_span">60</field><field name="column">full</field>
+        <field name="data_source">model</field><field name="source">project_category_cards</field>
+        <field name="config">{}</field>
+    </record>
 </odoo>

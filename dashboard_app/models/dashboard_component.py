@@ -25,6 +25,9 @@ COMPONENT_TYPES = [
     ("goals_list", "Goals List"),
     ("list_cards", "List Cards (risk/actions)"),
     ("alerts_panel", "Alerts Panel"),
+    ("portfolio_health", "Portfolio Health (score ring + figures)"),
+    ("evm_panel", "Earned Value Panel (EV / CPI / SPI)"),
+    ("project_category_cards", "Project Category Cards"),
 ]
 
 

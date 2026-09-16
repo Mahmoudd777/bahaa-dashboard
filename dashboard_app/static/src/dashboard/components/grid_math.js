@@ -694,6 +694,9 @@ const EDIT_MIN_ROWS_BY_TYPE = {
     gauge_semi: 22,
     kpi_gauge_card: 22,
     progress_card: 22,
+    portfolio_health: 22,
+    evm_panel: 22,
+    project_category_cards: 66,
 };
 
 function suggestedRowSpan(unit) {

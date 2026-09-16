@@ -1420,6 +1420,373 @@ body.o_baha_dash_active {
 // ============================================================
 // Deliberately NOT modal — no backdrop — so the dashboard stays readable
 // behind them and two records can be compared side by side.
+// ---------------------------------------------------------------------------
+// Executive project summary (الملخص التنفيذي للمشاريع)
+// Adapted from the PMO mockup into the dashboard's own light theme and tokens;
+// the mockup's dark glass look is intentionally not carried over.
+// ---------------------------------------------------------------------------
+.o_baha_dir--up { color: var(--dash-success, #00ab9d); }
+.o_baha_dir--dn { color: var(--dash-danger, #ff5147); }
+.o_baha_dir--mu { color: var(--dash-text-tertiary, #535862); }
+
+.o_baha_level--ok { color: var(--dash-success, #00ab9d); }
+.o_baha_level--warn { color: var(--dash-warning, #f0974f); }
+.o_baha_level--bad { color: var(--dash-danger, #ff5147); }
+.o_baha_level--none { color: var(--dash-text-tertiary, #535862); }
+
+// Composite health strip: ring + description, then four figures.
+.o_baha_phealth {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+
+    &__lead {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex: 1 1 320px;
+    }
+
+    &__ring {
+        position: relative;
+        width: 104px;
+        height: 104px;
+        flex: 0 0 auto;
+
+        svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+    }
+
+    &__track {
+        fill: none;
+        stroke: var(--dash-bg-tertiary, #f5f5f5);
+        stroke-width: 9;
+    }
+
+    &__value {
+        fill: none;
+        stroke-width: 9;
+        stroke-linecap: round;
+        transition: stroke-dashoffset 0.6s ease;
+    }
+
+    &__score {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        line-height: 1.1;
+
+        strong { font-size: 28px; font-weight: 800; }
+        small { font-size: 11px; font-weight: 600; }
+    }
+
+    &__eyebrow {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--dash-accent, #00ab9d);
+    }
+
+    &__title {
+        font-size: 18px;
+        font-weight: 800;
+        color: var(--dash-text-primary, #181d27);
+        margin: 2px 0 4px;
+    }
+
+    &__desc {
+        font-size: 12px;
+        line-height: 1.6;
+        color: var(--dash-text-secondary, #414651);
+    }
+
+    &__note {
+        margin-top: 6px;
+        font-size: 11px;
+        color: var(--dash-warning, #f0974f);
+    }
+
+    &__cells {
+        flex: 2 1 420px;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    &__cell {
+        padding: 4px 16px;
+        border-inline-start: 1px solid var(--dash-border, #d5d7da);
+
+        &:first-child { border-inline-start: 0; }
+    }
+
+    &__k {
+        font-size: 11px;
+        color: var(--dash-text-tertiary, #535862);
+    }
+
+    &__v {
+        font-size: 24px;
+        font-weight: 800;
+        color: var(--dash-text-primary, #181d27);
+        margin: 2px 0;
+    }
+
+    &__s {
+        font-size: 11px;
+        font-weight: 600;
+    }
+}
+
+// Earned-value cards: an accent rule on top in each index's colour.
+.o_baha_evm {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    height: 100%;
+
+    &__card {
+        position: relative;
+        border-top: 3px solid var(--evm-color, #00ab9d);
+    }
+
+    &__hd {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+    }
+
+    &__lb {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--dash-text-secondary, #414651);
+    }
+
+    &__abbr {
+        font-size: 10px;
+        font-weight: 800;
+        padding: 2px 8px;
+        border-radius: 999px;
+        color: var(--evm-color, #00ab9d);
+        background: var(--dash-bg-tertiary, #f5f5f5);
+    }
+
+    &__nm {
+        font-size: 26px;
+        font-weight: 800;
+        color: var(--dash-text-primary, #181d27);
+        margin: 8px 0 4px;
+
+        small {
+            font-size: 11px;
+            font-weight: 600;
+            margin-inline-start: 4px;
+            color: var(--dash-text-tertiary, #535862);
+        }
+    }
+
+    &__desc {
+        font-size: 11px;
+        line-height: 1.6;
+        color: var(--dash-text-secondary, #414651);
+    }
+
+    &__note {
+        margin-top: 8px;
+        font-size: 11px;
+        font-weight: 700;
+    }
+}
+
+// One card per project category.
+.o_baha_pcats {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    &__note {
+        font-size: 12px;
+        color: var(--dash-warning, #f0974f);
+
+        i { margin-inline-end: 6px; }
+    }
+
+    &__grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 16px;
+    }
+}
+
+.o_baha_pcat {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    border-top: 3px solid var(--pc-color, #00ab9d);
+
+    &--soon {
+        opacity: 0.6;
+        filter: grayscale(0.5);
+    }
+
+    &__soon {
+        position: absolute;
+        top: 12px;
+        inset-inline-start: 12px;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 999px;
+        color: var(--dash-text-secondary, #414651);
+        background: var(--dash-bg-tertiary, #f5f5f5);
+    }
+
+    &__head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+    }
+
+    &__count {
+        display: flex;
+        flex-direction: column;
+        line-height: 1;
+
+        strong { font-size: 34px; font-weight: 800; color: var(--dash-text-primary, #181d27); }
+        small { font-size: 11px; margin-top: 4px; color: var(--dash-text-tertiary, #535862); }
+    }
+
+    &__mark {
+        width: 40px;
+        height: 40px;
+        padding: 9px;
+        border-radius: 8px;
+        box-sizing: border-box;
+        color: var(--pc-color, #00ab9d);
+        background: var(--dash-bg-tertiary, #f5f5f5);
+
+        svg { width: 100%; height: 100%; display: block; }
+    }
+
+    &__tagline {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--pc-color, #00ab9d);
+    }
+
+    &__title {
+        font-size: 17px;
+        font-weight: 800;
+        color: var(--dash-text-primary, #181d27);
+        margin: 2px 0 4px;
+    }
+
+    &__desc {
+        font-size: 11px;
+        line-height: 1.6;
+        color: var(--dash-text-secondary, #414651);
+    }
+
+    &__prow {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        font-size: 11px;
+        color: var(--dash-text-tertiary, #535862);
+
+        strong { font-size: 15px; color: var(--dash-text-primary, #181d27); }
+    }
+
+    &__track {
+        position: relative;
+        height: 8px;
+        margin: 6px 0;
+        border-radius: 999px;
+        background: var(--dash-bg-tertiary, #f5f5f5);
+    }
+
+    &__fill {
+        height: 100%;
+        border-radius: 999px;
+        background: var(--pc-color, #00ab9d);
+        transition: width 0.6s ease;
+    }
+
+    // Planned position marker; logical inset so it sits correctly in RTL.
+    &__plan {
+        position: absolute;
+        top: -3px;
+        width: 2px;
+        height: 14px;
+        border-radius: 1px;
+        background: var(--dash-text-primary, #181d27);
+    }
+
+    &__gap {
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    &__money {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    &__tile {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        padding: 8px 10px;
+        border: 1px solid var(--dash-border, #d5d7da);
+        border-radius: 6px;
+
+        span { font-size: 11px; color: var(--dash-text-tertiary, #535862); }
+        strong { font-size: 14px; color: var(--dash-text-primary, #181d27); }
+        small { font-size: 10px; font-weight: 600; color: var(--dash-text-tertiary, #535862); }
+    }
+
+    &__status {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        font-size: 11px;
+        color: var(--dash-text-secondary, #414651);
+
+        span { display: inline-flex; align-items: center; gap: 5px; }
+    }
+
+    &__dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+
+        &--on { background: var(--dash-success, #00ab9d); }
+        &--st { background: var(--dash-warning, #f0974f); }
+        &--de { background: var(--dash-danger, #ff5147); }
+    }
+
+    &__foot {
+        margin-top: auto;
+        padding-top: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-top: 1px solid var(--dash-border, #d5d7da);
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--pc-color, #00ab9d);
+    }
+}
+
 // Record notes inside a detail panel. Append-only, so the list is display only
 // and the editor is the single point of entry.
 .o_baha_notes {
