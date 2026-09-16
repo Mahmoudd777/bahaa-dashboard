@@ -1800,16 +1800,37 @@ body.o_baha_dash_active {
         &--de { background: var(--dash-danger, #ff5147); }
     }
 
+    // Now a real button (the card itself no longer takes clicks), so reset
+    // the browser's button chrome and make it look like the link it was.
     &__foot {
         margin-top: auto;
-        padding-top: 10px;
+        padding: 10px 0 0;
+        width: 100%;
         display: flex;
         align-items: center;
         justify-content: space-between;
+        border: 0;
         border-top: 1px solid var(--dash-border, #d5d7da);
+        background: none;
+        font: inherit;
         font-size: 12px;
         font-weight: 700;
         color: var(--pc-color, #00ab9d);
+        cursor: pointer;
+
+        &:hover span { text-decoration: underline; }
+        i { transition: transform 0.15s ease; }
+        &:hover i { transform: translateX(-3px); }
+        &:focus { outline: none; }
+        &:focus-visible { outline: 2px solid var(--dash-focus-ring, #00ab9d); outline-offset: 3px; }
+    }
+
+    // Budget / spend tiles open their own breakdown.
+    &__tile.o_baha_clickable {
+        &:hover {
+            border-color: var(--pc-color, #00ab9d);
+            background: rgba(0, 171, 157, 0.05);
+        }
     }
 }
 

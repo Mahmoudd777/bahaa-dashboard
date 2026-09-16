@@ -1522,13 +1522,13 @@ export class ProjectCategoryCards extends Component {
             </div>
             <div class="o_baha_pcats__grid">
                 <t t-foreach="props.comp.data.items or []" t-as="cat" t-key="cat.id">
+                    <!-- The card itself is not a click target: a whole-card
+                         click made every figure on it lead to the same place.
+                         The footer link, ⤢, and the budget / spend tiles each
+                         open their own view instead. -->
                     <div class="o_baha_card o_baha_pcat"
-                         t-att-class="{ 'o_baha_clickable': isClickable(cat), 'o_baha_pcat--soon': cat.coming_soon }"
-                         t-att-style="'--pc-color:' + cat.color"
-                         t-att-tabindex="isClickable(cat) ? 0 : undefined"
-                         t-att-role="isClickable(cat) ? 'button' : undefined"
-                         t-on-click="() => this.openItem(cat)"
-                         t-on-keydown="(ev) => this.onItemKeydown(ev, cat)">
+                         t-att-class="{ 'o_baha_pcat--soon': cat.coming_soon }"
+                         t-att-style="'--pc-color:' + cat.color">
                         <span t-if="cat.coming_soon" class="o_baha_pcat__soon">قيد التطوير</span>
                         <div class="o_baha_pcat__head">
                             <div class="o_baha_pcat__count">
@@ -1538,8 +1538,7 @@ export class ProjectCategoryCards extends Component {
                             <div class="o_baha_pcat__tools">
                                 <button t-if="props.onOpenComponent and cat.detail" class="o_baha_expand_btn"
                                         title="عرض كامل البيانات"
-                                        t-on-click.stop="() => this.expandItem(cat, cat.name)"
-                                        t-on-keydown.stop="">
+                                        t-on-click="() => this.expandItem(cat.detail, cat.name)">
                                     <i class="fa fa-expand"/>
                                 </button>
                                 <div class="o_baha_pcat__mark" t-out="iconSvg(cat.icon)"/>
@@ -1565,11 +1564,21 @@ export class ProjectCategoryCards extends Component {
                             <div class="o_baha_pcat__gap" t-att-class="'o_baha_dir--' + (cat.gap_dir or 'mu')" t-esc="cat.gap"/>
                         </div>
                         <div class="o_baha_pcat__money">
-                            <div class="o_baha_pcat__tile">
+                            <div class="o_baha_pcat__tile"
+                                 t-att-class="{ 'o_baha_clickable': canOpen(cat.budget_detail, cat) }"
+                                 t-att-tabindex="canOpen(cat.budget_detail, cat) ? 0 : undefined"
+                                 t-att-role="canOpen(cat.budget_detail, cat) ? 'button' : undefined"
+                                 t-on-click="() => this.canOpen(cat.budget_detail, cat) and this.expandItem(cat.budget_detail, 'الميزانية — ' + cat.name)"
+                                 t-on-keydown="(ev) => this.canOpen(cat.budget_detail, cat) and this.onActivateKey(ev, cat.budget_detail, 'الميزانية — ' + cat.name)">
                                 <span>الميزانية</span>
                                 <strong t-esc="cat.budget"/>
                             </div>
-                            <div class="o_baha_pcat__tile">
+                            <div class="o_baha_pcat__tile"
+                                 t-att-class="{ 'o_baha_clickable': canOpen(cat.spent_detail, cat) }"
+                                 t-att-tabindex="canOpen(cat.spent_detail, cat) ? 0 : undefined"
+                                 t-att-role="canOpen(cat.spent_detail, cat) ? 'button' : undefined"
+                                 t-on-click="() => this.canOpen(cat.spent_detail, cat) and this.expandItem(cat.spent_detail, 'المصروف — ' + cat.name)"
+                                 t-on-keydown="(ev) => this.canOpen(cat.spent_detail, cat) and this.onActivateKey(ev, cat.spent_detail, 'المصروف — ' + cat.name)">
                                 <span>المصروف</span>
                                 <strong><t t-esc="cat.spent"/> <small>(<t t-esc="cat.spent_pct"/>%)</small></strong>
                             </div>
@@ -1579,10 +1588,12 @@ export class ProjectCategoryCards extends Component {
                             <span><i class="o_baha_pcat__dot o_baha_pcat__dot--st"/><t t-esc="cat.st"/> تحت المراقبة</span>
                             <span><i class="o_baha_pcat__dot o_baha_pcat__dot--de"/><t t-esc="cat.de"/> متأخر</span>
                         </div>
-                        <div t-if="cat.count" class="o_baha_pcat__foot">
+                        <button t-if="cat.count and props.onOpenComponent and cat.detail"
+                                type="button" class="o_baha_pcat__foot"
+                                t-on-click="() => this.expandItem(cat.detail, cat.name)">
                             <span>عرض تفاصيل <t t-esc="cat.count"/> مشروع</span>
                             <i class="fa fa-angle-left"/>
-                        </div>
+                        </button>
                     </div>
                 </t>
             </div>
@@ -1594,8 +1605,19 @@ export class ProjectCategoryCards extends Component {
     isClickable(item) { return isClickable(item); }
     openItem(item) { dispatchItemClick(item, this.props.onOpenRecord, this.props.onOpenDrilldown); }
     onItemKeydown(ev, item) { onItemKeydown(ev, item, this.props.onOpenRecord, this.props.onOpenDrilldown); }
-    /** ⤢ on one card: opens that category's project table. */
-    expandItem(item, title) { this.props.onOpenComponent({ title, data: item.detail }); }
+    /** Open one table in the wizard: the project list (⤢ and the footer
+     *  link), or the budget / spend breakdown behind a tile. */
+    expandItem(detail, title) { this.props.onOpenComponent({ title, data: detail }); }
+    /** A tile only acts as a button when there is something to show. */
+    canOpen(detail, cat) {
+        return Boolean(this.props.onOpenComponent && detail && cat.count);
+    }
+    onActivateKey(ev, detail, title) {
+        if (ev.key === "Enter" || ev.key === " ") {
+            ev.preventDefault();
+            this.expandItem(detail, title);
+        }
+    }
 }
 
 export const WIDGETS = {

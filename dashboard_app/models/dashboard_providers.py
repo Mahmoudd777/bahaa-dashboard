@@ -891,6 +891,32 @@ def evm_panel(comp, cfg, env):
     return cfg
 
 
+def _pct(part, whole):
+    return "%d%%" % round(part / whole * 100.0) if whole else "—"
+
+
+def _category_budget_detail(facts, s):
+    """Budget tile on a category card: where the category's budget sits,
+    largest first, with each project's share of the total."""
+    ordered = sorted(facts, key=lambda f: -f["budget"])
+    rows = [{"cells": [f["rec"].name, fmt_million(f["budget"]), _pct(f["budget"], s["budget"])],
+             "record": _record("albaha.project", f["rec"])} for f in ordered]
+    rows.append({"cells": ["الإجمالي", fmt_million(s["budget"]), "100%" if s["budget"] else "—"]})
+    return {"columns": ["المشروع", "الميزانية المعتمدة", "الحصة من ميزانية التصنيف"], "rows": rows}
+
+
+def _category_spent_detail(facts, s):
+    """Spend tile on a category card: each project's spend against its own
+    budget, highest spend ratio first — overspend is what this view is for."""
+    ordered = sorted(facts, key=lambda f: -(f["spent"] / f["budget"] if f["budget"] else 0.0))
+    rows = [{"cells": [f["rec"].name, fmt_million(f["budget"]), fmt_million(f["spent"]),
+                       _pct(f["spent"], f["budget"]), fmt_million(f["budget"] - f["spent"])],
+             "record": _record("albaha.project", f["rec"])} for f in ordered]
+    rows.append({"cells": ["الإجمالي", fmt_million(s["budget"]), fmt_million(s["spent"]),
+                           _pct(s["spent"], s["budget"]), fmt_million(s["budget"] - s["spent"])]})
+    return {"columns": ["المشروع", "الميزانية", "المصروف", "نسبة الصرف", "المتبقي"], "rows": rows}
+
+
 def project_category_cards(comp, cfg, env):
     facts = project_facts(env)
     cats = _recs(env, "albaha.project.category", order="sequence, id")
@@ -932,6 +958,8 @@ def project_category_cards(comp, cfg, env):
                     "record": _record("albaha.project", f["rec"]),
                 } for f in cat_facts],
             },
+            "budget_detail": _category_budget_detail(cat_facts, s),
+            "spent_detail": _category_spent_detail(cat_facts, s),
         })
     cfg["items"] = items
     # Projects nobody has classified yet would otherwise vanish from every card.
