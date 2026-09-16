@@ -1422,14 +1422,6 @@ export class PortfolioHealth extends Component {
              t-att-role="cardRole"
              t-on-click="() => this.openSelf()"
              t-on-keydown="onSelfKeydown">
-            <!-- .stop: the whole strip is itself clickable (it drills into the
-                 project list), so without it one press would open both. -->
-            <button t-if="props.onOpenComponent" class="o_baha_expand_btn o_baha_phealth__expand"
-                    title="عرض كامل البيانات"
-                    t-on-click.stop="() => props.onOpenComponent(props.comp)"
-                    t-on-keydown.stop="">
-                <i class="fa fa-expand"/>
-            </button>
             <div class="o_baha_phealth__lead">
                 <div class="o_baha_phealth__ring">
                     <svg viewBox="0 0 120 120">
@@ -1480,14 +1472,6 @@ export class PortfolioHealth extends Component {
 // EvmPanel — earned value (EV), cost index (CPI) and schedule index (SPI).
 export class EvmPanel extends Component {
     static template = xml`
-        <div class="o_baha_xwrap">
-        <div class="o_baha_xhead" t-if="props.comp.title and !props.comp.data.hide_head">
-            <span class="o_baha_xhead__title" t-esc="props.comp.title"/>
-            <button t-if="props.onOpenComponent" class="o_baha_expand_btn" title="عرض كامل البيانات"
-                    t-on-click="() => props.onOpenComponent(props.comp)">
-                <i class="fa fa-expand"/>
-            </button>
-        </div>
         <div class="o_baha_evm">
             <t t-foreach="props.comp.data.items or []" t-as="item" t-key="item.key">
                 <div class="o_baha_card o_baha_evm__card"
@@ -1499,7 +1483,17 @@ export class EvmPanel extends Component {
                      t-on-keydown="(ev) => this.onItemKeydown(ev, item)">
                     <div class="o_baha_evm__hd">
                         <span class="o_baha_evm__lb" t-esc="item.label"/>
-                        <span class="o_baha_evm__abbr" t-esc="item.abbr"/>
+                        <span class="o_baha_evm__tools">
+                            <span class="o_baha_evm__abbr" t-esc="item.abbr"/>
+                            <!-- .stop: the card itself is clickable, and one
+                                 press must not open both the card and this. -->
+                            <button t-if="props.onOpenComponent and item.detail" class="o_baha_expand_btn"
+                                    title="عرض كامل البيانات"
+                                    t-on-click.stop="() => this.expandItem(item, item.label)"
+                                    t-on-keydown.stop="">
+                                <i class="fa fa-expand"/>
+                            </button>
+                        </span>
                     </div>
                     <div class="o_baha_evm__nm">
                         <t t-esc="item.value"/><small t-esc="item.unit"/>
@@ -1508,26 +1502,20 @@ export class EvmPanel extends Component {
                     <div class="o_baha_evm__note" t-att-class="'o_baha_level--' + (item.level or 'none')" t-esc="item.note"/>
                 </div>
             </t>
-        </div>
         </div>`;
     static props = ["comp", "colors", "onOpenRecord?", "onOpenDrilldown?", "onOpenComponent?"];
 
     isClickable(item) { return isClickable(item); }
     openItem(item) { dispatchItemClick(item, this.props.onOpenRecord, this.props.onOpenDrilldown); }
     onItemKeydown(ev, item) { onItemKeydown(ev, item, this.props.onOpenRecord, this.props.onOpenDrilldown); }
+    /** ⤢ on one card: opens that card's own table, not the whole panel. */
+    expandItem(item, title) { this.props.onOpenComponent({ title, data: item.detail }); }
 }
 
 // ProjectCategoryCards — one card per albaha.project.category.
 export class ProjectCategoryCards extends Component {
     static template = xml`
         <div class="o_baha_pcats">
-            <div class="o_baha_xhead" t-if="props.comp.title and !props.comp.data.hide_head">
-                <span class="o_baha_xhead__title" t-esc="props.comp.title"/>
-                <button t-if="props.onOpenComponent" class="o_baha_expand_btn" title="عرض كامل البيانات"
-                        t-on-click="() => props.onOpenComponent(props.comp)">
-                    <i class="fa fa-expand"/>
-                </button>
-            </div>
             <div t-if="props.comp.data.uncategorized" class="o_baha_pcats__note">
                 <i class="fa fa-info-circle"/>
                 <t t-esc="props.comp.data.uncategorized"/> مشروع بدون تصنيف لا يظهر في البطاقات
@@ -1547,7 +1535,15 @@ export class ProjectCategoryCards extends Component {
                                 <strong t-esc="cat.count"/>
                                 <small>مشروع</small>
                             </div>
-                            <div class="o_baha_pcat__mark" t-out="iconSvg(cat.icon)"/>
+                            <div class="o_baha_pcat__tools">
+                                <button t-if="props.onOpenComponent and cat.detail" class="o_baha_expand_btn"
+                                        title="عرض كامل البيانات"
+                                        t-on-click.stop="() => this.expandItem(cat, cat.name)"
+                                        t-on-keydown.stop="">
+                                    <i class="fa fa-expand"/>
+                                </button>
+                                <div class="o_baha_pcat__mark" t-out="iconSvg(cat.icon)"/>
+                            </div>
                         </div>
                         <div class="o_baha_pcat__name">
                             <div class="o_baha_pcat__tagline" t-esc="cat.tagline"/>
@@ -1598,6 +1594,8 @@ export class ProjectCategoryCards extends Component {
     isClickable(item) { return isClickable(item); }
     openItem(item) { dispatchItemClick(item, this.props.onOpenRecord, this.props.onOpenDrilldown); }
     onItemKeydown(ev, item) { onItemKeydown(ev, item, this.props.onOpenRecord, this.props.onOpenDrilldown); }
+    /** ⤢ on one card: opens that category's project table. */
+    expandItem(item, title) { this.props.onOpenComponent({ title, data: item.detail }); }
 }
 
 export const WIDGETS = {
