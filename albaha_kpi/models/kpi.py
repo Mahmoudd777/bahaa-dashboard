@@ -72,6 +72,9 @@ class AlbahaKPI(models.Model):
     frequency = fields.Selection([
         ('monthly', 'Monthly'),
         ('quarterly', 'Quarterly'),
+        # The client measures some indicators twice a year — recording those
+        # as quarterly or annual would misstate when a reading is due.
+        ('semiannual', 'Semi-annual'),
         ('annual', 'Annual')
     ], string='Frequency', default='quarterly')
     direction = fields.Selection([
