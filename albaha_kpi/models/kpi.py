@@ -27,6 +27,37 @@ class AlbahaKPI(models.Model):
     name_en = fields.Char(string='Name (English)')
     code = fields.Char(string='KPI Code')
     description = fields.Text(string='Description')
+    # The office numbers its indicators 1, 1.1, 1.2 — a headline indicator and
+    # the sub-indicators underneath it. `code` already carries our own internal
+    # reference, so their numbering gets its own field rather than overwriting
+    # it, and the level says which of the two a row is.
+    kpi_number = fields.Char(
+        string='Indicator Number',
+        help='The number used in the strategy documents, e.g. 1 or 1.2.')
+    kpi_level = fields.Selection([
+        ('main', 'Main'),
+        ('sub', 'Sub'),
+    ], string='Indicator Level', default='main')
+    objective_id = fields.Many2one(
+        'albaha.objective', string='Strategic Objective', ondelete='set null',
+        help='The objective this indicator measures progress against.')
+    # "Where did this number come from" is the first question asked of any
+    # figure on the dashboard; without it the answer lives only in the source
+    # documents.
+    data_source = fields.Text(
+        string='Data Source',
+        help='Authority, publication or report the actual value is read from.')
+    # Two independent flags in the source cards. Whether a period's value is
+    # added to the ones before it decides how a year is totalled, so recording
+    # them wrong produces figures that look plausible and are not.
+    cumulative_in_year = fields.Selection([
+        ('cumulative', 'Cumulative'),
+        ('non_cumulative', 'Non-cumulative'),
+    ], string='Cumulative Within Year')
+    cumulative_annual = fields.Selection([
+        ('cumulative', 'Cumulative'),
+        ('non_cumulative', 'Non-cumulative'),
+    ], string='Cumulative Across Years')
     kpi_type = fields.Selection([
         ('outcome', 'Outcome'),
         ('output', 'Output'),

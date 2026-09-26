@@ -44,6 +44,25 @@ class AlbahaInitiative(models.Model):
     rag_status = fields.Selection([('green', 'Green'), ('amber', 'Amber'), ('red', 'Red'), ('grey', 'Grey')], 
                                   string="RAG Status", default='grey')
     owner_id = fields.Many2one('res.partner', string="Owner", ondelete='set null')
+    # The initiative cards carry more than a name and a budget: who pays for
+    # it, which objective it serves, and the case for it. Held as text because
+    # that is how the office writes them — free prose and bulleted lists, not
+    # records to be related to.
+    funder = fields.Char(
+        string="Funding Body",
+        help="The entity paying for the initiative, which is not always its owner.")
+    economy_color = fields.Char(
+        string="Economy Colour",
+        help='The strategy\'s economy classification, e.g. "الاقتصاد البرتقالي".')
+    objective_id = fields.Many2one(
+        'albaha.objective', string="Strategic Objective", ondelete='set null')
+    problem_statement = fields.Text(string="Problem / Challenge")
+    contribution = fields.Text(string="Contribution to the Objective")
+    target_audience = fields.Text(string="Target Audience")
+    expected_impact = fields.Text(string="Expected Impact")
+    outputs = fields.Text(string="Outputs", help="One per line.")
+    operational_kpis = fields.Text(string="Operational Indicators", help="One per line.")
+    stakeholders = fields.Text(string="Stakeholders", help="One per line.")
     status = fields.Selection([('active', 'Active'), ('onhold', 'On Hold'), ('closed', 'Closed')], 
                                  string="Status", default='active')
     progress_ids = fields.One2many('albaha.initiative.progress', 'initiative_id', string="Progress History")
