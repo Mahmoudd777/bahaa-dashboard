@@ -1,12 +1,18 @@
 from odoo import models, fields, api
+from odoo.exceptions import ValidationError
+
 
 class AlbhaRisk(models.Model):
     _name = 'albaha.risk'
-    _description = 'A project-level risk (5x5 probability x impact)'
+    _description = 'A risk on a project or an initiative (probability x impact)'
 
     name = fields.Char(string="Risk Title", required=True)
     code = fields.Char(string="Risk Code")
-    project_id = fields.Many2one('albaha.project', string="Project", ondelete='cascade', required=True)
+    # The strategy documents carry a risk matrix per initiative, written long
+    # before any project exists to hang it on, so project_id can no longer be
+    # required. The constraint below keeps a risk from belonging to neither.
+    project_id = fields.Many2one('albaha.project', string="Project", ondelete='cascade')
+    initiative_id = fields.Many2one('albaha.initiative', string="Initiative", ondelete='cascade')
     category = fields.Selection([
         ('technical', 'Technical'),
         ('financial', 'Financial'),
@@ -39,6 +45,18 @@ class AlbhaRisk(models.Model):
         ('closed', 'Closed')
     ], string="Status", default='open')
     issue_ids = fields.One2many('albaha.issue', 'parent_risk_id', string="Issues")
+
+    @api.constrains('project_id', 'initiative_id')
+    def _check_owner(self):
+        """A risk belongs to a project or an initiative — never neither.
+
+        project_id used to be required, which was what kept orphans out.
+        Now that it is optional, this takes over that job.
+        """
+        for record in self:
+            if not record.project_id and not record.initiative_id:
+                raise ValidationError(
+                    "A risk must belong to either a project or an initiative.")
 
     @api.depends('probability', 'impact')
     def _compute_risk_score(self):

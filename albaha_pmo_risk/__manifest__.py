@@ -1,7 +1,7 @@
 {
     'name': 'Al-Baha PMO - Risks & Issues',
     'summary': 'Project risks, issues, change requests, cross-project dependencies',
-    'version': '19.0.1.0.0',
+    'version': '19.0.1.1.0',
     'depends': ['base', 'mail', 'albaha_pmo'],
     'data': [
         'security/ir.model.access.csv',
