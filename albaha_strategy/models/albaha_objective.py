@@ -7,11 +7,14 @@ class AlbhaObjective(models.Model):
     name = fields.Char(string='Name (Arabic)', required=True)
     name_en = fields.Char(string='Name (English)')
     code = fields.Char(string='Objective Code')
+    # Optional on purpose: the strategy's four top-level objectives are
+    # cross-cutting — they sit above the pillars rather than inside one, and
+    # requiring a pillar forced a false choice for every one of them.
+    # ondelete stays 'cascade' for objectives that do belong to a pillar.
     pillar_id = fields.Many2one(
-        'albaha.pillar', 
-        string='Pillar', 
-        ondelete='cascade', 
-        required=True
+        'albaha.pillar',
+        string='Pillar',
+        ondelete='cascade',
     )
     description = fields.Text(string='Description')
     target_value = fields.Float(string='Target Value')

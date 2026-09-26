@@ -9,7 +9,7 @@
     'author': 'Expert Developer',
     'website': 'http://www.example.com',
     'category': 'Business',
-    'version': '19.0.1.0.0',
+    'version': '19.0.1.1.0',
     'depends': ['base', 'mail'],
     'data': [
         # Security first — groups before the ACLs that reference them
