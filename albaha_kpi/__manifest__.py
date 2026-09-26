@@ -1,7 +1,7 @@
 {
     'name': 'Al-Baha Strategy - KPIs',
     'summary': 'KPI register, time-series KPI values, regional indicators, sector KPIs',
-    'version': '19.0.1.2.0',
+    'version': '19.0.1.3.0',
     'depends': ['base', 'mail', 'albaha_strategy'],
     'data': [
         'security/ir.model.access.csv',

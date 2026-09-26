@@ -47,6 +47,12 @@ class AlbahaKPI(models.Model):
     data_source = fields.Text(
         string='Data Source',
         help='Authority, publication or report the actual value is read from.')
+    # How each yearly target was arrived at — growth assumptions, the national
+    # model applied, the baseline it starts from. Without it a target is a
+    # number nobody can defend when it is questioned.
+    target_methodology = fields.Text(
+        string='Target Methodology',
+        help='How the targets for this indicator were derived.')
     # Two independent flags in the source cards. Whether a period's value is
     # added to the ones before it decides how a year is totalled, so recording
     # them wrong produces figures that look plausible and are not.
