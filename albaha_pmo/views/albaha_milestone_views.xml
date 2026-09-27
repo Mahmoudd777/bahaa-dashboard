@@ -38,6 +38,9 @@
                         <field name="deliverable_ref"/>
                         </group>
                     </group>
+                    <group string="Description">
+                        <field name="description" nolabel="1"/>
+                    </group>
 
                 </sheet>
             </form>

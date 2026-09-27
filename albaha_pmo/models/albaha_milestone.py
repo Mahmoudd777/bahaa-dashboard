@@ -28,6 +28,11 @@ class AlbahaMilestone(models.Model):
     # date once the initiative has a start.
     planned_start_label = fields.Char(string='Planned Start (as written)')
     planned_end_label = fields.Char(string='Planned End (as written)')
+
+    # Each card carries a second table giving every milestone a sentence or
+    # two explaining what the work actually is. Without it a milestone is a
+    # title and two dates, which says nothing about what is being delivered.
+    description = fields.Text(string='Description')
     budget_capital_sar = fields.Float(string='Capital Budget (SAR)')
     budget_operational_sar = fields.Float(string='Operational Budget (SAR)')
     milestone_type = fields.Selection([
