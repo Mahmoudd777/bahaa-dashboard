@@ -36,6 +36,7 @@ are listed below.
 | Investment portfolio | 5 stages, 14.83bn, 49 projects | المحفظة الاستثمارية القائمة |
 | GDP actuals | 4 years (2021–2024) | chart «النتائج الفعلية» |
 | Programme spend and return by year | 25 rows (5 programmes × 5 years) | charts «توزيع الميزانية» and «العائد المتوقع» |
+| Investment opportunities | 30, with feasibility studies | دراسات الجدوى الاقتصادية للفرص الاستثمارية |
 
 ## NOT in the client files
 
@@ -76,11 +77,37 @@ blank or a zero on the dashboard.
 - **Milestone budgets do not add up to initiative budgets** for 01.02, 01.04
   and 02.01 — the tables cover part of the work only. Five other initiatives
   reconcile exactly, which is what shows the extraction is sound.
-- **No project-level detail for the investment portfolio.** The 14.83bn across
-  49 projects is given only as totals per stage; the projects are not named.
+- **No project-level detail for the *existing* investment portfolio.** The
+  14.83bn across 49 projects is given only as totals per stage; those projects
+  are not named. This is not true of the *pipeline*: the thirty opportunities
+  the office markets to the private sector are each named and costed (see
+  below).
 - **No owners as people.** Ownership is written as an entity ("المكتب
   الاستراتيجي لتطوير منطقة الباحة"), never a named person, so no `res.partner`
   links could be made.
+
+## The investment opportunities
+
+The appendix of the detailed document sets out thirty opportunities offered
+to the private sector, two slides each — an overview and a feasibility study.
+Nothing indexes them and no table holds their figures, which is why a first
+pass over the tables missed them entirely.
+
+Each carries visitors, direct and indirect jobs, GDP contribution, NPV, IRR
+and payback period, and most carry a revenue line for 2028 to 2032. Together
+they account for 23,181 direct and 26,395 indirect jobs and 1,548 million in
+net present value. Every one names the programme it serves, and seventeen name
+an initiative; the pairings are consistent throughout (01.xx opportunities
+under الباحة 365, 02.xx under خيرات الباحة, and so on), which is the check
+that they were read off the right pages.
+
+They are deliberately **not** `albaha.project` records. The office does not
+deliver them and none of its 100 million pays for them, so counting them as
+its own work would distort every delivery figure on the dashboard.
+
+Thirteen have no initiative code on their page, and five give no visitor
+figure. Where a page plots revenue as a single label rather than a series,
+the revenue fields are left empty rather than guessed.
 
 ## What the charts hold
 
@@ -102,9 +129,10 @@ which is what shows it was read correctly:
   GDP contribution of 838 / 1,283 / 729 / 190 million adds to the stated 3.0
   billion. They are not loaded separately because the indicator targets they
   decompose are already in place.
-- **The remaining 79 charts are financial modelling** — discounted cash flow
-  curves per initiative, with no categories and no series names. They are
-  analysis behind the budgets, not records.
+- **The remaining 79 charts belong to the feasibility studies** — the revenue
+  and EBITDA curves behind the thirty opportunities, modelled to 2050 with no
+  categories and no series names. The figures that matter are stated as text
+  on the same pages and are loaded from there.
 
 ## In the decks but deliberately not loaded
 
