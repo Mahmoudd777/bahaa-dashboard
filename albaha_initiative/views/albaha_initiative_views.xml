@@ -24,6 +24,7 @@
                     </group>
                     <group string="Budget Details (SAR m)">
                         <group>
+                            <field name="zero_budget"/>
                             <field name="budget_total_sar_m"/>
                             <field name="budget_capital_sar_m"/>
                             <field name="budget_operational_sar_m"/>

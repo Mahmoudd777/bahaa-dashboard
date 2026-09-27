@@ -40,6 +40,16 @@ class AlbahaInitiative(models.Model):
     budget_capital_sar_m = fields.Float(string="Capital Budget (SAR m)")
     budget_operational_sar_m = fields.Float(string="Operational Budget (SAR m)")
     budget_consumed_sar_m = fields.Float(string="Budget Consumed (SAR m)")
+
+    # Ten of the nineteen initiatives are marked مبادرة صفرية in the
+    # programmes deck: they draw nothing from the strategy's hundred million
+    # and are delivered from the office's own operating budget. Without this
+    # flag their zero is indistinguishable from a budget nobody reported, and
+    # the dashboard would show a deliberate design decision as missing data.
+    zero_budget = fields.Boolean(
+        string="Zero-Budget Initiative",
+        help="Delivered from the office's operating budget rather than from "
+             "the strategy budget. A zero here is intended, not missing.")
     progress_pct = fields.Float(string="Progress %")
     rag_status = fields.Selection([('green', 'Green'), ('amber', 'Amber'), ('red', 'Red'), ('grey', 'Grey')], 
                                   string="RAG Status", default='grey')
