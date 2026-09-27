@@ -37,6 +37,14 @@ class AlbahaProjectCategory(models.Model):
     coming_soon = fields.Boolean(
         string='Coming Soon',
         help='Show the card greyed out with a "قيد التطوير" badge.')
+    # Existing government projects are recorded for visibility, not as work
+    # this office delivers. They are 6.6bn riyals against the strategy's ~97m,
+    # so counting them would make the health score, CPI and SPI describe
+    # someone else's portfolio. Their own card still shows them in full.
+    counts_toward_performance = fields.Boolean(
+        string='Counts Toward Performance', default=True,
+        help='Include this category in the portfolio health score and the '
+             'earned-value figures. Turn off for work delivered by others.')
     project_ids = fields.One2many('albaha.project', 'category_id', string='Projects')
     project_count = fields.Integer(string='Projects', compute='_compute_project_count')
 

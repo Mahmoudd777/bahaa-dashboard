@@ -1,7 +1,7 @@
 {
     'name': 'Al-Baha PMO - Core',
     'summary': 'Portfolio, programs, projects (central table) and milestones',
-    'version': '19.0.1.3.0',
+    'version': '19.0.1.4.0',
     'depends': ['base', 'mail', 'albaha_strategy'],
     'data': [
         'security/ir.model.access.csv',

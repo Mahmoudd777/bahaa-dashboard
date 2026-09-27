@@ -728,9 +728,12 @@ def fmt_million(val):
 def project_facts(env, domain=None):
     """One dict per project with every figure the executive summary needs.
 
-    Budget and spend are summed from albaha.budget rows — narrowed by the
-    header's date filter on period_year_month — rather than the project's own
-    baseline/actual fields, which are sparsely filled and not unit-safe.
+    Budget and spend come from albaha.budget rows — narrowed by the header's
+    date filter on period_year_month — because those carry the figure per
+    period. A project with no such rows falls back to its own baseline cost
+    and cost-to-date: the region's existing government projects are recorded
+    as a single total with no monthly breakdown, and reading zero for them
+    would understate the portfolio by billions.
     """
     projects = _recs(env, "albaha.project", domain=domain, order="id")
     if not projects:
@@ -747,16 +750,26 @@ def project_facts(env, domain=None):
         if r.severity in ("critical", "high"):
             risks[r.project_id.id][1] += 1
     has_category = "category_id" in projects._fields
+    has_flag = has_category and "counts_toward_performance" in env["albaha.project.category"]._fields
     facts = []
     for p in projects:
+        budget, spent = money[p.id]
+        if not budget:
+            # No period rows for this project: use the totals on the record.
+            budget = p.baseline_cost_sar_m or 0.0
+            spent = p.actual_cost_to_date or 0.0
         facts.append({
             "rec": p,
             "category_id": p.category_id.id if has_category else False,
+            # Whether this project counts toward the office's own performance.
+            # Work delivered by other entities is shown but not scored.
+            "counts": (p.category_id.counts_toward_performance
+                       if has_flag and p.category_id else True),
             "status": PROJECT_STATUS.get(p.health_status),
             "actual": p.progress_pct or 0.0,
             "planned": p.planned_pct or 0.0,
-            "budget": money[p.id][0],
-            "spent": money[p.id][1],
+            "budget": budget,
+            "spent": spent,
             "risks": risks[p.id][0],
             "critical": risks[p.id][1],
         })
@@ -792,8 +805,18 @@ def _signed(val, unit="%"):
     return "%s %.1f%s" % (arrow, abs(val), unit)
 
 
+def own_project_facts(env):
+    """Only the work this office is accountable for.
+
+    The region's existing government projects are recorded for visibility —
+    6.6bn riyals of them — and including them would make this score, and the
+    earned-value figures below, describe a portfolio the office does not run.
+    """
+    return [f for f in project_facts(env) if f.get("counts", True)]
+
+
 def portfolio_health(comp, cfg, env):
-    s = summarize_projects(project_facts(env))
+    s = summarize_projects(own_project_facts(env))
     score = s["score"]
     if score is None:
         level, label = "none", "لم يتم القياس"
@@ -839,7 +862,7 @@ def evm_panel(comp, cfg, env):
     spend. An index is left blank rather than shown as 0 when its denominator is
     zero — 0.00 would read as "catastrophically over budget", not "no data".
     """
-    s = summarize_projects(project_facts(env))
+    s = summarize_projects(own_project_facts(env))
     bac, ac = s["budget"], s["spent"]
     pv, ev = bac * s["planned"] / 100.0, bac * s["actual"] / 100.0
     cpi = ev / ac if ac else None
