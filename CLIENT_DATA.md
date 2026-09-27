@@ -20,7 +20,7 @@ are listed below.
 | Records | Count | Source |
 |---|---|---|
 | Pillars | 5 | البيت الاستراتيجي |
-| Objectives | 15 (4 top-level, 11 below) | الرؤية + البيت الاستراتيجي |
+| Objectives | 15 (4 vision-level, 11 under pillars) | الرؤية + البيت الاستراتيجي |
 | Programmes | 5 | البرامج والمبادرات |
 | Indicators | 24 | بطاقات المؤشرات |
 | Indicator targets | 156 periods | بطاقات المؤشرات + جدول الطموحات |
@@ -39,6 +39,7 @@ are listed below.
 | Investment opportunities | 30, with feasibility studies | دراسات الجدوى الاقتصادية للفرص الاستثمارية |
 | Challenges and their mitigation | 41, across 8 dimensions | آليات معالجة التحديات |
 | Initiative budgets | 19 (9 funded, 10 zero-budget) | البرامج والمبادرات + بطاقات المبادرات |
+| Objective descriptions and pillars | 11 | البيت الاستراتيجي |
 
 ## NOT in the client files
 
