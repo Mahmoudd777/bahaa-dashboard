@@ -8,12 +8,24 @@ class AlbahaProject(models.Model):
     name = fields.Char(string='Name (Arabic)', required=True)
     name_en = fields.Char(string='Name (English)')
     code = fields.Char(string='Project Code')
+    # Optional: the region's existing government projects belong to outside
+    # entities — the water authority, the municipality — and sit under no PMO
+    # programme of ours. Requiring one meant they could not be recorded at all.
     program_id = fields.Many2one(
-        'albaha.program.pmo', 
-        string='Program', 
-        ondelete='cascade', 
-        required=True
+        'albaha.program.pmo',
+        string='Program',
+        ondelete='cascade',
     )
+    # Projects delivered under a strategy initiative point back to it.
+    initiative_id = fields.Many2one(
+        'albaha.initiative',
+        string='Initiative',
+        ondelete='set null',
+    )
+    # Who is actually delivering it, for projects run outside this office.
+    owner_entity = fields.Char(
+        string='Delivering Entity',
+        help='The body running the project, e.g. شركة المياه الوطنية.')
     project_type = fields.Char(string='Project Type')
     category_id = fields.Many2one(
         'albaha.project.category',
