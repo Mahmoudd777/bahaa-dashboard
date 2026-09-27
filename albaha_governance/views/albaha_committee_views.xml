@@ -9,6 +9,7 @@
                 <field name="code"/>
                 <field name="tier"/>
                 <field name="chair_id"/>
+                <field name="chair_role"/>
                 <field name="member_ids"/>
                 <field name="members_count"/>
                 <field name="frequency"/>
@@ -29,6 +30,7 @@
                         <field name="code"/>
                         <field name="tier"/>
                         <field name="chair_id"/>
+                        <field name="chair_role"/>
                         </group>
                         <group>
                         <field name="member_ids"/>
@@ -54,6 +56,7 @@
                 <field name="name_en"/>
                 <field name="code"/>
                 <field name="chair_id"/>
+                <field name="chair_role"/>
                 <group>
                     <filter string="Tier" name="gb_tier" context="{'group_by':'tier'}"/>
                     <filter string="Chair" name="gb_chair_id" context="{'group_by':'chair_id'}"/>
