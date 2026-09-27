@@ -1,0 +1,53 @@
+<odoo>
+    <record id="view_albaha_challenge_list" model="ir.ui.view">
+        <field name="name">albaha.challenge.list</field>
+        <field name="model">albaha.challenge</field>
+        <field name="arch" type="xml">
+            <list string="Challenges">
+                <field name="dimension"/>
+                <field name="name"/>
+                <field name="initiative_ids" widget="many2many_tags"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_albaha_challenge_form" model="ir.ui.view">
+        <field name="name">albaha.challenge.form</field>
+        <field name="model">albaha.challenge</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="dimension"/>
+                    </group>
+                    <group string="Mitigation">
+                        <field name="mitigation" nolabel="1"/>
+                    </group>
+                    <group string="Planned Initiatives">
+                        <field name="initiative_ids" widget="many2many_tags" nolabel="1"/>
+                        <field name="initiatives_text" nolabel="1"/>
+                    </group>
+                    <group string="Existing Government Projects">
+                        <field name="government_projects" nolabel="1"/>
+                    </group>
+                    <group string="Expected Impact">
+                        <field name="expected_impact" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_albaha_challenge" model="ir.actions.act_window">
+        <field name="name">Challenges</field>
+        <field name="res_model">albaha.challenge</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_albaha_challenge"
+        name="Challenges"
+        parent="albaha_strategy.menu_albaha_root"
+        action="action_albaha_challenge"
+        sequence="46"/>
+</odoo>

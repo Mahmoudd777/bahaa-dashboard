@@ -10,6 +10,7 @@
         'views/albaha_vision_alignment_views.xml',
         'views/albaha_dependency_views.xml',
         'views/albaha_investment_opportunity_views.xml',
+        'views/albaha_challenge_views.xml',
     ],
     'installable': True,
     'application': True,
