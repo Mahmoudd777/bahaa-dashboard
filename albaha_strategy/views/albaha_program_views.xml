@@ -30,6 +30,20 @@
                     <group string="Ownership">
                         <field name="lead_owner_id"/>
                     </group>
+                    <notebook>
+                        <page string="Yearly Plan" name="plan">
+                            <field name="plan_ids">
+                                <list editable="bottom">
+                                    <field name="year_no"/>
+                                    <field name="year_label"/>
+                                    <field name="calendar_year"/>
+                                    <field name="budget_planned_sar_m" sum="Planned"/>
+                                    <field name="return_cumulative_sar_m"/>
+                                    <field name="return_annual_sar_m" sum="Return"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>

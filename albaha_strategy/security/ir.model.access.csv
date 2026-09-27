@@ -7,3 +7,5 @@ access_albaha_pillar_edit,albaha.pillar edit,model_albaha_pillar,albaha_strategy
 access_albaha_objective_edit,albaha.objective edit,model_albaha_objective,albaha_strategy.group_albaha_edit_objective,1,1,1,1
 access_albaha_program_edit,albaha.program edit,model_albaha_program,albaha_strategy.group_albaha_edit_program,1,1,1,1
 access_albaha_sector_edit,albaha.sector edit,model_albaha_sector,albaha_strategy.group_albaha_edit_program,1,1,1,1
+access_albaha_program_plan,albaha.program.plan read,model_albaha_program_plan,base.group_user,1,0,0,0
+access_albaha_program_plan_edit,albaha.program.plan edit,model_albaha_program_plan,albaha_strategy.group_albaha_edit_program,1,1,1,1
