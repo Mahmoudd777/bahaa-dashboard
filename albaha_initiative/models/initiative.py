@@ -63,6 +63,11 @@ class AlbahaInitiative(models.Model):
     outputs = fields.Text(string="Outputs", help="One per line.")
     operational_kpis = fields.Text(string="Operational Indicators", help="One per line.")
     stakeholders = fields.Text(string="Stakeholders", help="One per line.")
+    # "أهمية المبادرة للمنطقة" — the case for doing it at all, which the
+    # introductory deck states and the detailed card does not. Distinct from
+    # contribution, which is about one objective, and from expected_impact,
+    # which is about results.
+    regional_importance = fields.Text(string="Importance to the Region")
     status = fields.Selection([('active', 'Active'), ('onhold', 'On Hold'), ('closed', 'Closed')], 
                                  string="Status", default='active')
     progress_ids = fields.One2many('albaha.initiative.progress', 'initiative_id', string="Progress History")

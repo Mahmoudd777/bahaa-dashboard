@@ -1,7 +1,7 @@
 {
     'name': 'Al-Baha Strategy - Initiatives',
     'summary': 'Initiatives, their periodic progress, Vision-2030 alignment and dependencies',
-    'version': '19.0.1.1.0',
+    'version': '19.0.1.2.0',
     'depends': ['base', 'mail', 'albaha_strategy'],
     'data': [
         'security/ir.model.access.csv',
