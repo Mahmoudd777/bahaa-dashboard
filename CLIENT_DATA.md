@@ -6,8 +6,14 @@ what was taken from them, what was deliberately left, and — most importantly �
 **what the decks do not contain**, so that an empty figure on the dashboard is
 not mistaken for a bug.
 
-Extraction covered every table (274 of 274 classified) and every slide (796:
-364 carrying records, the rest prose or analysis).
+Extraction covered every table (274 of 274 classified), every slide (796:
+364 carrying records, the rest prose or analysis), all 584 note pages, all 88
+charts with their embedded workbooks, and a sample of the image layer. No part
+of the file format was left unread.
+
+Two things were found only inside charts, never in a table: the first actual
+values for any indicator, and each programme's spend and return by year. Both
+are listed below.
 
 ## Loaded
 
@@ -28,17 +34,24 @@ Extraction covered every table (274 of 274 classified) and every slide (796:
 | Directives and alignment | 114 | توجيهات وملاحظات اللجنة + نتائج المواءمة |
 | Sector indicators | 10 | الإنتاج الزراعي + مستهدفات السياحة |
 | Investment portfolio | 5 stages, 14.83bn, 49 projects | المحفظة الاستثمارية القائمة |
+| GDP actuals | 4 years (2021–2024) | chart «النتائج الفعلية» |
+| Programme spend and return by year | 25 rows (5 programmes × 5 years) | charts «توزيع الميزانية» and «العائد المتوقع» |
 
 ## NOT in the client files
 
 These are absent from the source, not lost in extraction. Each one explains a
 blank or a zero on the dashboard.
 
-- **No actual values for any indicator.** Every figure in the decks is a
-  target or a baseline. Nothing reports what has actually been achieved, so
-  all 24 indicators read "لم يتم القياس" and every achievement percentage is
-  zero. This is the single biggest gap: the dashboard cannot show performance
-  until the office reports actuals.
+- **No actual values for 23 of the 24 indicators.** Every figure on the cards
+  is a target or a baseline. The one exception is GDP, whose actuals for
+  2021–2024 are plotted in a chart of the detailed document and nowhere else;
+  its 2024 figure of 26,283 matches the baseline printed on its card, which is
+  what confirms the series was read correctly. Everything after 2024 is a
+  projection, including the 2025 figure, which the deck marks with an asterisk
+  and which is therefore not loaded. The other 23 indicators read
+  "لم يتم القياس" and their achievement percentages are zero. This remains the
+  biggest gap: the dashboard cannot show performance until the office reports
+  actuals.
 - **No progress percentages for the strategy's own projects.** The 11 projects
   named in the initiative tables have no reported progress, so the portfolio
   health score has nothing to score and reads "لم يتم القياس".
@@ -69,12 +82,42 @@ blank or a zero on the dashboard.
   الاستراتيجي لتطوير منطقة الباحة"), never a named person, so no `res.partner`
   links could be made.
 
+## What the charts hold
+
+The charts of the detailed document are the only place some figures appear.
+Each one that was loaded reconciles against a total the decks state in words,
+which is what shows it was read correctly:
+
+- **Spend by year.** 29.9, 35.4, 19.5 and 15.2 million over the strategy's
+  first four years, nothing in the fifth. Adds to the stated 100 million, and
+  each programme's four years add to the budget on its own card.
+- **Expected return by year.** Reported cumulatively, reaching 1,979.6 million
+  by 2030 — the figure the deck states — split 804 / 777 / 374 / 25 across the
+  four programmes that earn one.
+- **Phasing is by strategy year, not calendar year.** The source writes
+  "السنة الأولى", and the calendar year beside it assumes year one is 2026,
+  which is when the return chart starts counting. Both are stored.
+- **Jobs and GDP contribution by year** are breakdowns of targets already
+  loaded: 69 / 627 / 1,673 / 984 direct jobs adds to the stated 3,355, and the
+  GDP contribution of 838 / 1,283 / 729 / 190 million adds to the stated 3.0
+  billion. They are not loaded separately because the indicator targets they
+  decompose are already in place.
+- **The remaining 79 charts are financial modelling** — discounted cash flow
+  curves per initiative, with no categories and no series names. They are
+  analysis behind the budgets, not records.
+
 ## In the decks but deliberately not loaded
 
 Analysis and narrative rather than records: regional benchmarks against عسير,
 الرياض and جازان; the launch communications plan; guiding principles; the
 escalation matrix; sector competitiveness scoring; committee remark counts;
 and the historical resolutions establishing the office (ق1/ل ش 5/1444هـ).
+
+The note pages of all six decks carry page numbers only. The embedded
+workbooks behind the charts hold the same numbers as the charts themselves.
+The image layer — 1,324 images in the detailed document alone — is photography
+of the region, maps and illustration; a sample of the largest found no
+screenshot of a table, so nothing readable is believed to be hiding there.
 
 ## Rebuilding
 
