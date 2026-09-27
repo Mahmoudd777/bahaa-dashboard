@@ -8,6 +8,11 @@ class AlbahaStrategicRisk(models.Model):
     name = fields.Char(string="Risk Description", required=True)
     code = fields.Char(string="Risk Code")
     initiative_id = fields.Many2one('albaha.initiative', string="Initiative", ondelete='set null')
+    # The register groups the strategic risks by pillar and states which one
+    # each belongs to. Nothing held that, so a risk could not be read against
+    # the pillar it threatens.
+    pillar_id = fields.Many2one(
+        'albaha.pillar', string="Pillar", ondelete='set null')
     risk_category = fields.Selection([
         ('technical', 'Technical'),
         ('financial', 'Financial'),

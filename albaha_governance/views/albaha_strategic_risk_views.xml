@@ -7,6 +7,7 @@
                 <field name="name"/>
                 <field name="code"/>
                 <field name="initiative_id"/>
+                <field name="pillar_id"/>
                 <field name="risk_category"/>
                 <field name="likelihood"/>
                 <field name="impact"/>
@@ -27,6 +28,7 @@
                         <field name="name"/>
                         <field name="code"/>
                         <field name="initiative_id"/>
+                        <field name="pillar_id"/>
                         <field name="risk_category"/>
                         <field name="likelihood"/>
                         <field name="impact"/>

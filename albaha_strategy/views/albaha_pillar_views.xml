@@ -17,6 +17,7 @@
                             <field name="color_hex"/>
                             <field name="vision_2030_link"/>
                             <field name="owner_office"/>
+                            <field name="strategic_mitigation"/>
                         </group>
                     </group>
                     <notebook>
