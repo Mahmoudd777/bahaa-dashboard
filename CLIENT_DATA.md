@@ -38,6 +38,7 @@ are listed below.
 | Programme spend and return by year | 25 rows (5 programmes × 5 years) | charts «توزيع الميزانية» and «العائد المتوقع» |
 | Investment opportunities | 30, with feasibility studies | دراسات الجدوى الاقتصادية للفرص الاستثمارية |
 | Challenges and their mitigation | 41, across 8 dimensions | آليات معالجة التحديات |
+| Initiative budgets | 19 (9 funded, 10 zero-budget) | البرامج والمبادرات + بطاقات المبادرات |
 
 ## NOT in the client files
 
@@ -61,8 +62,13 @@ blank or a zero on the dashboard.
   period spend records (`albaha.budget` is empty), so budget cards, CPI and
   SPI have no actuals. Government projects are the exception: a completed one
   is taken as having spent its value.
-- **No budget for 11 of the 19 initiatives.** Their cards carry "-" in the
-  estimated-budget row. 02.04 has no budget line at all.
+- **Ten initiatives carry no budget on purpose.** Their cards show "-" in the
+  estimated-budget row, which reads like missing data. It is not: the
+  programmes deck marks each of them مبادرة صفرية — delivered from the
+  office's own operating budget rather than from the strategy's hundred
+  million. They are flagged `zero_budget` so the dashboard does not present a
+  deliberate decision as a gap. The other nine add to exactly a hundred
+  million, split 12 capital against 88 operational.
 - **No dates for initiative 02.04**, and no milestone table for it beyond six
   rows recovered from the detailed document.
 - **Four indicators have no targets at all**: ترتيب الباحة في مؤشر جودة
@@ -98,6 +104,24 @@ slide text, so a sweep that looked only at tables could never have found them.
 Every appendix is now accounted for. Sections 8 to 10 — governance, launch and
 activation — are the national strategy lifecycle framework and carry no
 Al-Baha records.
+
+## Where the budget figures come from, and how they check out
+
+No single page gives an initiative its budget. The programmes deck states
+each total and marks the ten zero-budget initiatives; the cards give the
+split between capital and operational. Read together they close three ways,
+and all three had to hold before the figures were written:
+
+- the nine funded initiatives add to 100 million, the stated strategy budget;
+- grouped by programme they give 57 / 38 / 5 / 0 / 0, matching each
+  programme's own budget;
+- the split comes to 12 capital against 88 operational, and every individual
+  initiative’s split equals its own total.
+
+Checking this way found three initiatives whose capital and operational
+figures were wrong — 01.02 had been recorded as 25 capital and 4.6
+operational against a total of 25, which reconciles with nothing. The totals
+themselves were already right.
 
 ## The challenges
 
