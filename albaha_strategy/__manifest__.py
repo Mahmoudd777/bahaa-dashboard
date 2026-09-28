@@ -16,6 +16,7 @@
         'security/albaha_groups.xml',
         'security/ir.model.access.csv',
         # Views and Menus (Order matters for dependencies)
+        'views/albaha_strategy_views.xml',
         'views/albaha_pillar_views.xml',
         'views/albaha_objective_views.xml',
         'views/albaha_program_views.xml',

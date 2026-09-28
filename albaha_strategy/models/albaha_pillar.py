@@ -7,6 +7,8 @@ class AlbhaPillar(models.Model):
     name = fields.Char(string='Name (Arabic)', required=True)
     name_en = fields.Char(string='Name (English)')
     code = fields.Char(string='Pillar Code')
+    strategy_id = fields.Many2one(
+        'albaha.strategy', string='Strategy', ondelete='set null')
     description = fields.Text(string='Description')
     sequence = fields.Integer(string='Sequence', default=10)
     color_hex = fields.Char(string='Color')

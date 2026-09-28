@@ -9,3 +9,5 @@ access_albaha_program_edit,albaha.program edit,model_albaha_program,albaha_strat
 access_albaha_sector_edit,albaha.sector edit,model_albaha_sector,albaha_strategy.group_albaha_edit_program,1,1,1,1
 access_albaha_program_plan,albaha.program.plan read,model_albaha_program_plan,base.group_user,1,0,0,0
 access_albaha_program_plan_edit,albaha.program.plan edit,model_albaha_program_plan,albaha_strategy.group_albaha_edit_program,1,1,1,1
+access_albaha_strategy,albaha.strategy read,model_albaha_strategy,base.group_user,1,0,0,0
+access_albaha_strategy_edit,albaha.strategy edit,model_albaha_strategy,albaha_strategy.group_albaha_edit_pillar,1,1,1,1

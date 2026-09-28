@@ -1,0 +1,68 @@
+<odoo>
+    <record id="view_albaha_strategy_form" model="ir.ui.view">
+        <field name="name">albaha.strategy.form</field>
+        <field name="model">albaha.strategy</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="owner_entity"/>
+                            <field name="start_year"/>
+                            <field name="end_year"/>
+                        </group>
+                        <group>
+                            <field name="budget_sar_m"/>
+                            <field name="pillars_count"/>
+                            <field name="objectives_count"/>
+                            <field name="source_reference"/>
+                        </group>
+                    </group>
+                    <group string="Vision">
+                        <field name="vision" nolabel="1"/>
+                    </group>
+                    <group string="Mission">
+                        <field name="mission" nolabel="1"/>
+                    </group>
+                    <notebook>
+                        <page string="Pillars" name="pillars">
+                            <field name="pillar_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="description"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_albaha_strategy_list" model="ir.ui.view">
+        <field name="name">albaha.strategy.list</field>
+        <field name="model">albaha.strategy</field>
+        <field name="arch" type="xml">
+            <list string="Strategy">
+                <field name="name"/>
+                <field name="owner_entity"/>
+                <field name="start_year"/>
+                <field name="end_year"/>
+                <field name="budget_sar_m"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_albaha_strategy" model="ir.actions.act_window">
+        <field name="name">Strategy</field>
+        <field name="res_model">albaha.strategy</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_albaha_strategy_record"
+        name="Strategy"
+        parent="menu_albaha_root"
+        action="action_albaha_strategy"
+        sequence="5"/>
+</odoo>
