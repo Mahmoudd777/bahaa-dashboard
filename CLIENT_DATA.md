@@ -40,6 +40,9 @@ are listed below.
 | Investment opportunities | 30, with feasibility studies | دراسات الجدوى الاقتصادية للفرص الاستثمارية |
 | Challenges and their mitigation | 41, across 8 dimensions | آليات معالجة التحديات |
 | Named investment projects | 20 (10 supported, 10 third-sector) | خرائط المشاريع الاستثمارية (صور) |
+| Infrastructure project progress | 10 named, real percentages | خريطة أبرز مشاريع البنية التحتية (صورة) |
+| Strategy record, vision and mission | 1 | البيت الاستراتيجي + بطاقة أداء (صور) |
+| Pillar focus areas | 7 | البيت الاستراتيجي (صورة) |
 | Initiative budgets | 19 (9 funded, 10 zero-budget) | البرامج والمبادرات + بطاقات المبادرات |
 | Objective descriptions and pillars | 11 | البيت الاستراتيجي |
 | Indicator formulas and cumulation rules | 24 | بطاقات المؤشرات |
@@ -63,6 +66,14 @@ blank or a zero on the dashboard.
 - **No progress percentages for the strategy's own projects.** The 11 projects
   named in the initiative tables have no reported progress, so the portfolio
   health score has nothing to score and reads "لم يتم القياس".
+- **The government register gives a status, not a percentage.** Each of its
+  145 projects is marked منجز or جاري and nothing more. An earlier import
+  turned منجز into 100% — which is what completed means — and جاري into
+  **50%**, which nobody reported. That invented figure sat on 68 projects and
+  pulled every aggregate toward the middle; it has been cleared, and the
+  status is now kept in words instead. Fourteen projects do have a real
+  percentage: ten named on a map slide, between 4.23% and 92.5%, and four
+  cooperative projects.
 - **No spend against budget.** Budgets are approved amounts only. There are no
   period spend records (`albaha.budget` is empty), so budget cards, CPI and
   SPI have no actuals. Government projects are the exception: a completed one
@@ -305,6 +316,11 @@ Both sets are other people’s delivery, so they sit in categories that do not
 count toward the office’s performance. One budget is printed malformed in the
 source itself — "18,000,00" — and is recorded with that noted rather than
 quietly corrected.
+
+A third slide mattered for a different reason: it names ten government
+infrastructure projects with their actual completion, and nine of the ten
+were already loaded carrying a flat 50%. That is what exposed the invented
+percentage described above.
 
 The rest of the screenshots are the current-state assessment, the
 competitiveness and benchmarking analysis, the vision options and their
