@@ -19,6 +19,11 @@ class AlbahaChallenge(models.Model):
     name = fields.Char(string='Challenge', required=True)
     # One of the eight dimensions the current-state assessment is built on.
     dimension = fields.Char(string='Dimension')
+    # The diagnostic pages set each challenge against what is actually
+    # causing it, which is a different thing from the mechanism chosen to
+    # answer it: the cause explains why the challenge exists, the mitigation
+    # says what will be done about it.
+    root_cause = fields.Text(string='Root Cause')
     mitigation = fields.Text(string='Mitigation Mechanism')
     initiative_ids = fields.Many2many(
         'albaha.initiative', string='Planned Initiatives')

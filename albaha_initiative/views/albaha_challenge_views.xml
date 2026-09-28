@@ -21,6 +21,9 @@
                         <field name="name"/>
                         <field name="dimension"/>
                     </group>
+                    <group string="Root Cause">
+                        <field name="root_cause" nolabel="1"/>
+                    </group>
                     <group string="Mitigation">
                         <field name="mitigation" nolabel="1"/>
                     </group>
