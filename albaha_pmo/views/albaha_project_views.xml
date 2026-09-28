@@ -9,6 +9,8 @@
                 <field name="code"/>
                 <field name="program_id"/>
                 <field name="project_type"/>
+                <field name="delivery_stage"/>
+                <field name="source_reference"/>
                 <field name="category_id"/>
                 <field name="manager_id"/>
                 <field name="sponsor_id"/>

@@ -27,6 +27,17 @@ class AlbahaProject(models.Model):
         string='Delivering Entity',
         help='The body running the project, e.g. شركة المياه الوطنية.')
     project_type = fields.Char(string='Project Type')
+
+    # Projects the office supports rather than runs are reported by where
+    # they have got to — "معتمد — قيد التطوير والطرح", "متعاقد عليها وتم
+    # تخصيص أراضيها" — which is a stage in the investment pipeline, not a
+    # health rating. Kept as written so it is not flattened into one.
+    delivery_stage = fields.Char(
+        string='Stage',
+        help="Where the project has reached, in the source's own words.")
+    source_reference = fields.Char(
+        string='Source',
+        help='Where the record was read from, so any figure can be checked.')
     category_id = fields.Many2one(
         'albaha.project.category',
         string='Category',
