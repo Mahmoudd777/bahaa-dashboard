@@ -21,6 +21,10 @@ class AlbahaStrategy(models.Model):
         help='The body that owns the strategy, as its registration names it.')
     vision = fields.Text(string='Vision')
     mission = fields.Text(string='Mission')
+    # The deck states both in English beside the Arabic, on the page where
+    # the three candidate wordings were compared and one was chosen.
+    vision_en = fields.Text(string='Vision (English)')
+    mission_en = fields.Text(string='Mission (English)')
     start_year = fields.Integer(string='Start Year')
     end_year = fields.Integer(string='End Year')
     budget_sar_m = fields.Float(string='Budget (SAR m)')

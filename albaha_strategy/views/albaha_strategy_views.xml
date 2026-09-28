@@ -21,9 +21,11 @@
                     </group>
                     <group string="Vision">
                         <field name="vision" nolabel="1"/>
+                        <field name="vision_en" nolabel="1"/>
                     </group>
                     <group string="Mission">
                         <field name="mission" nolabel="1"/>
+                        <field name="mission_en" nolabel="1"/>
                     </group>
                     <notebook>
                         <page string="Pillars" name="pillars">
