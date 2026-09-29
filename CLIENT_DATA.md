@@ -224,18 +224,40 @@ pass over the tables missed them entirely.
 Each carries visitors, direct and indirect jobs, GDP contribution, NPV, IRR
 and payback period, and most carry a revenue line for 2028 to 2032. Together
 they account for 23,181 direct and 26,395 indirect jobs and 1,548 million in
-net present value. Every one names the programme it serves, and seventeen name
-an initiative; the pairings are consistent throughout (01.xx opportunities
-under الباحة 365, 02.xx under خيرات الباحة, and so on), which is the check
-that they were read off the right pages.
+net present value.
+
+Every one names **both** the programme it serves and the initiative, and all
+thirty are now linked. An earlier draft of this document said only seventeen
+named an initiative, and that was wrong: the deck sets a code like 03.05 in
+four separate text boxes — "0", "3", ".0", "5" — so a parser reading runs one
+at a time sees four fragments and no code. Gluing the run tail back together
+before reading it finds a code on all thirty pages. The parser was checked
+before anything was written: on the seventeen already linked it agreed with
+the database seventeen times out of seventeen, which is why the remaining
+thirteen were trusted.
+
+The pairings then reconcile: for all thirty, the programme on the record is
+the programme the initiative code begins with — thirty agreements, no
+exceptions. That is the check that they were read off the right pages.
 
 They are deliberately **not** `albaha.project` records. The office does not
 deliver them and none of its 100 million pays for them, so counting them as
 its own work would distort every delivery figure on the dashboard.
 
-Thirteen have no initiative code on their page, and five give no visitor
-figure. Where a page plots revenue as a single label rather than a series,
-the revenue fields are left empty rather than guessed.
+One pairing had to be settled rather than read. Opportunity 18, منتجع العسل,
+writes its initiative code as **03.05**, and the strategy has no 03.05 —
+programme 03 ends at 03.03. It is linked to 02.05 instead, on three things
+agreeing: the initiative printed beside the code is تطوير وتفعيل تجارب سياحية
+زراعية وغذائية قائمة على التجربة في منطقة الباحة, which is 02.05 word for
+word; the programme printed on the same page is خيرات الباحة, which is
+programme 02; and the record's own programme was already 02. The written code
+is the only thing out of step, and the record says so in its source reference.
+
+Five give no visitor figure. Where a page plots revenue as a single label
+rather than a series, the revenue fields are left empty rather than guessed.
+The assets each opportunity lists — keys, floor area, number of outlets — and
+its market segment and visit type are on the pages but not loaded; they
+describe a scheme offered to an investor, not work the office delivers.
 
 ## What the charts hold
 
@@ -263,6 +285,18 @@ which is what shows it was read correctly:
   on the same pages and are loaded from there.
 
 ## In the decks but deliberately not loaded
+
+The **international benchmark** should have been on this list from the start
+and was not. Beyond the Saudi comparison, the detailed document carries six
+worked case studies of rural, landlocked regions that live on tourism and
+agriculture — Saxony-Anhalt, Vermont, Tuscany, Ardèche, South Bohemia and
+Salalah — indexed on slide 322 and running across roughly thirty slides, with
+a wider scan naming Idaho, Tennessee, Slavonia and Al Ain. Slide 290 draws the
+common lessons the strategy then claims to apply: enabling landowners as
+development partners, diversifying the offer, addressing seasonality, phasing
+the plan. None of it is loaded — it describes other regions, not Al-Baha — but
+it is the reasoning behind several choices in the strategy, so the office
+should know it is there and is not on the dashboard.
 
 Analysis and narrative rather than records: regional benchmarks against عسير,
 الرياض and جازان; the launch communications plan; guiding principles; the
