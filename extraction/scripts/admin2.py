@@ -1,0 +1,6 @@
+u = env['res.users'].sudo().browse(2)
+u.write({'login': 'admin', 'password': 'admin@odoo123'})
+env.cr.commit()
+print('ADMIN', u.id, u.login, u.name)
+mods = env['ir.module.module'].sudo().search([('state','=','installed'),('name','like','albaha%')])
+print('MODULES installed:', len(env['ir.module.module'].sudo().search([('state','=','installed')])))

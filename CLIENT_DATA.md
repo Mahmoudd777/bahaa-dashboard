@@ -381,7 +381,8 @@ Everything still empty is empty for a stated reason. In summary:
 
 ## Rebuilding
 
-The extraction scripts and the per-entity sheets live outside this repository,
-in the working scratchpad. The sheets are the intermediate form: one CSV per
-entity, with raw source values kept in `*_raw` columns next to the converted
-ones so any conversion can be checked against what the deck actually said.
+The extraction scripts and the per-entity sheets are in `extraction/`. The
+sheets are the intermediate form: one CSV per entity, with raw source values
+kept in `*_raw` columns next to the converted ones so any conversion can be
+checked against what the deck actually said. The six decks themselves are too
+large for this repository and are kept at `D:/APPS/project/client_source_files/`.
