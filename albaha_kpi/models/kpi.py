@@ -140,7 +140,9 @@ class AlbahaKPI(models.Model):
             last = vals[-1] if vals else False
             kpi.latest_value = last.actual_value if last else 0.0
             tgt = kpi.target_value or (last.target_value if last else 0.0)
-            kpi.achievement_pct = kpi.achievement_of(kpi.latest_value, tgt)
+            # Nothing reported yet means nothing achieved yet — not a zero
+            # actual to be scored against the 2030 target.
+            kpi.achievement_pct = kpi.achievement_of(kpi.latest_value, tgt) if last else 0.0
             # RAG is DERIVED from that achievement, not copied from the
             # hand-entered rag_status: a stored colour that disagrees with the
             # number next to it is exactly the confusion we are removing.
