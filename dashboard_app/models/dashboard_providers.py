@@ -87,8 +87,10 @@ def kpi_at(kpi, flt):
     if flt["mode"] == "all":
         return (kpi.latest_value, kpi.target_value, kpi.achievement_pct, kpi.rag)
     v = _series_pick(kpi.value_ids, "period", flt)
-    if not v:
-        return (0.0, kpi.target_value or 0.0, 0.0, "grey")
+    # A period with only its plan target is not a result; scoring its 0.0
+    # actual gave lower-is-better KPIs 999% for a year nobody reported.
+    if not v or not v.is_reported:
+        return (0.0, (v and v.target_value) or kpi.target_value or 0.0, 0.0, "grey")
     # The PERIOD's own target wins over the KPI's overall one. `target_value`
     # on the KPI is the end-of-strategy figure (2030), so preferring it scored
     # a Q2-2026 actual against a 2030 goal and made every in-flight indicator

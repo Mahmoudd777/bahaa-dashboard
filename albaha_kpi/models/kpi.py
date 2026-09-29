@@ -126,12 +126,17 @@ class AlbahaKPI(models.Model):
             pct = actual / target * 100.0
         return round(min(max(pct, 0.0), 999.0), 1)
 
-    @api.depends('value_ids.actual_value', 'value_ids.period',
+    @api.depends('value_ids.actual_value', 'value_ids.period', 'value_ids.reported_date',
                  'value_ids.rag_status', 'value_ids.target_value',
                  'target_value', 'direction')
     def _compute_latest(self):
         for kpi in self:
-            vals = kpi.value_ids.sorted(key=lambda v: v.period or '')
+            # Only periods that were actually reported. A period row also
+            # carries a plan target, and `actual_value` is required, so an
+            # unreported year holds 0.0 — which on a lower-is-better KPI reads
+            # as a perfect score. Unemployment showed 999% achieved because
+            # its latest row was a 2030 target nobody had reported against.
+            vals = kpi.value_ids.filtered('is_reported').sorted(key=lambda v: v.period or '')
             last = vals[-1] if vals else False
             kpi.latest_value = last.actual_value if last else 0.0
             tgt = kpi.target_value or (last.target_value if last else 0.0)
@@ -168,6 +173,16 @@ class AlbahaKPIValue(models.Model):
     reported_date = fields.Date(string='Reported Date')
     approved_by = fields.Char(string='Approved By')
     approval_date = fields.Date(string='Approval Date')
+    is_reported = fields.Boolean(
+        string='Reported', compute='_compute_is_reported',
+        help="A plan row carries only a target, and since the actual is "
+             "required it holds 0. A row counts as reported once it has a "
+             "reported date or a non-zero actual.")
+
+    @api.depends('reported_date', 'actual_value')
+    def _compute_is_reported(self):
+        for v in self:
+            v.is_reported = bool(v.reported_date or v.actual_value)
 
 class AlbahaRegionalIndicator(models.Model):
     _name = 'albaha.regional.indicator'
