@@ -181,6 +181,22 @@ every objective link implied by a code agreed with the one already stored.
 The nine vision-level impact indicators have no such code; the decks give
 them none.
 
+Two of the 24 are the same indicator. نسبة المواقع التراثية المعاد تأهيلها
+في منطقة الباحة is printed twice in the indicator deck, on slide 8 as KPI-08
+and on slide 20 as KPI-20, with the same unit, the same direction, the same
+formula and a definition that runs to the same paragraph word for word. What
+differs is the objective each is filed under — الحفاظ على الهوية المحلية
+وتعزيزها for one, ترسيخ هوية ثقافية وبصرية وعمرانية أصيلة for the other —
+and their baselines: KPI-08 is dated 2028, KPI-20 gives no baseline year at
+all. Only KPI-20 carries a K-code (K7.1).
+
+Both are kept, because each belongs to an objective and dropping one would
+silently cut an objective's only heritage measure. But they are one
+measurement, so a count of 24 indicators is a count of 23 distinct things,
+and neither has a baseline, a target or a single reported period. The office
+needs to say whether this is one indicator serving two objectives or two that
+were meant to differ.
+
 ## Where the budget figures come from, and how they check out
 
 No single page gives an initiative its budget. The programmes deck states
@@ -198,6 +214,25 @@ Checking this way found three initiatives whose capital and operational
 figures were wrong — 01.02 had been recorded as 25 capital and 4.6
 operational against a total of 25, which reconciles with nothing. The totals
 themselves were already right.
+
+A later pass suspected the milestone budgets of being wrong too. Thirty-six
+milestone rows carry a figure in the deck and zero in the database, 109.5
+million nominal against a strategy of 100 million, and six initiatives whose
+milestones sum to less than their own budget had already been reported to
+the client as a gap in their file. If those thirty-six had simply been
+dropped at load time, the gap would have been mine, not theirs.
+
+They were not dropped. Restoring every one of them and re-totalling gives,
+for eight of the nine initiatives concerned, **exactly twice** the
+initiative's budget: 12 becomes 24, 25 becomes 50, 20 becomes 40, 7 becomes
+14, 2 becomes 4, 1 becomes 2, 5 becomes 10. A doubling that exact is not a
+coincidence; those rows are the table's own project totals, printed above
+the milestones they are made of, and counting both sides adds every riyal
+twice. Zeroing them was right.
+
+So the shortfall stands where it was reported: in the source. The check is
+worth keeping because it is the kind of error that hides — a wrong figure
+that still looks like a budget.
 
 ## The challenges
 
