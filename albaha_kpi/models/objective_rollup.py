@@ -23,10 +23,13 @@ class AlbahaObjectiveRollup(models.Model):
         [('green', 'Green'), ('amber', 'Amber'), ('red', 'Red'), ('grey', 'Grey')],
         string="RAG", compute="_compute_progress")
 
-    @api.depends('kpi_ids.achievement_pct')
+    @api.depends('kpi_ids.achievement_pct', 'kpi_ids.value_ids.is_reported')
     def _compute_progress(self):
         for obj in self:
-            kpis = obj.kpi_ids
+            # Only indicators with a reported result. One measured indicator
+            # beside four unmeasured ones is not an objective at 20%: the four
+            # are unknown, not zero, and averaging them in painted it red.
+            kpis = obj.kpi_ids.filtered(lambda k: k.value_ids.filtered('is_reported'))
             obj.progress_pct = (
                 round(sum(kpis.mapped('achievement_pct')) / len(kpis), 1) if kpis else 0.0)
-            obj.rag = rag_of(obj.progress_pct)
+            obj.rag = rag_of(obj.progress_pct) if kpis else 'grey'

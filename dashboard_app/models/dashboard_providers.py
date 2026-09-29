@@ -110,12 +110,22 @@ def initiative_at(init, flt):
     return (0.0, "grey")
 
 
+def _kpi_reported_at(kpi, flt):
+    """Whether the KPI has a reported result for the active filter."""
+    if flt["mode"] == "all":
+        return bool(kpi.value_ids.filtered("is_reported"))
+    v = _series_pick(kpi.value_ids, "period", flt)
+    return bool(v and v.is_reported)
+
+
 def objective_at(obj, flt):
     if flt["mode"] == "all":
         return (obj.progress_pct or 0.0, obj.rag)
-    achs = [kpi_at(k, flt)[2] for k in obj.kpi_ids]
+    # Average only the indicators that have a result for the period; an
+    # unmeasured one comes back grey and would otherwise count as a zero.
+    achs = [kpi_at(k, flt)[2] for k in obj.kpi_ids if _kpi_reported_at(k, flt)]
     pct = round(sum(achs) / len(achs), 1) if achs else 0.0
-    return (pct, rag_of(pct))
+    return (pct, rag_of(pct) if achs else "grey")
 
 
 def _agg_at(env, model, link_field, rec_id, flt):
