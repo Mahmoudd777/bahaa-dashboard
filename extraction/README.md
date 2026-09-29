@@ -13,12 +13,14 @@ read against what the deck actually said.
 Numbered in the order they were extracted, which is also roughly the order the
 gaps were found — 01 to 21 from the first pass over tables and slides, 22 from
 the charts, 23 to 30 from the second pass, 31 to 47 from the field audit and
-the image sweep, 48 from the sweep of the speaker notes, and 49 from the run-level coverage
-audit, which is the one that found the thirty opportunity-to-initiative links.
-The notes were the last layer
-of the file format left unread. Nothing in 48 is loaded: all 33 notes carry
-the same jobs calculation, misplaced on the launch media plan and inconsistent
-with itself. CLIENT_DATA.md says why.
+the image sweep, 48 from the sweep of the speaker notes — the last layer of
+the file format left unread — and 49 from the run-level coverage audit.
+
+Nothing in 48 is loaded: all 33 notes carry the same jobs calculation,
+misplaced on the launch media plan and inconsistent with itself.
+CLIENT_DATA.md says why. 49 is the opposite: it holds the programme and
+initiative printed on each of the thirty investment opportunity pages, and
+it is what closed the last real gap in the load.
 
 ## `scripts/`
 
