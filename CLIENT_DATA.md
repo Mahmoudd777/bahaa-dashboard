@@ -461,6 +461,8 @@ Everything still empty is empty for a stated reason. In summary:
 | Record codes | The source numbers milestones, projects and operational risks not at all |
 | Baselines for 9 indicators, targets for 5 | Written as "-", "NA", or marked pending activation |
 | Dates for initiative 02.04 and its milestones | The card gives none |
+| Objective on initiatives 02.03 and 02.04 | The cards leave the objective row blank |
+| Objective on initiative 02.01 | The row holds a contribution sentence — "تسهم المبادرة في تعظيم إنتاج القطاع الزراعي…" — not the name of an objective, so there is nothing to match against the fifteen |
 | Budgets on 10 initiatives | Zero by design — مبادرة صفرية |
 | Programme and portfolio dates | Never stated |
 | Government project dates, codes, locations | The register gives name, owner, cost and progress only |
