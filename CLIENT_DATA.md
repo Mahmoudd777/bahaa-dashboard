@@ -284,7 +284,27 @@ Mall, one planned in Baha Mall for 2027. They are private ventures with no
 budget, dates or progress reported, so a project record would hold nothing but
 a name.
 
-The note pages of all six decks carry page numbers only. The embedded
+The note pages were read on the eighth sweep, and an earlier draft of this
+document was wrong to say they carry page numbers only. Thirty-three of them
+do not. Slides 213 to 245 of the detailed document — the whole launch media
+plan — each carry the *same* speaker note, a derivation of an employment
+figure from visitor numbers:
+
+> 200,000 extra visitors × SAR 1,000 average spend = SAR 200m. At SAR 200,000
+> per direct job, 200,000,000 ÷ 200,000 = 1,000 direct jobs. Indirect jobs are
+> 1.6 of direct: 1,000 × 0.6 = 600 indirect. Total ≈ 2,880 jobs.
+
+Nothing is loaded from it, for two reasons. It does not belong to the slides
+it sits on — a jobs calculation has no bearing on a media plan, and its being
+identical on all thirty-three pages says it rode along when a slide was
+duplicated. And it does not agree with itself: it names the indirect factor
+as 1.6, applies 0.6, and arrives at a total that neither factor yields from
+1,000 direct jobs. It is also not the source of anything already loaded — the
+thirty investment opportunities carry their own indirect-to-direct ratios,
+ranging from 0.35 to 7.5, so no single multiplier was ever applied to them.
+
+The remaining note pages, across all six decks, do carry page numbers only,
+and no slide in any deck contains an external hyperlink. The embedded
 workbooks behind the charts hold the same numbers as the charts themselves.
 The image layer — 1,324 images in the detailed document alone — is photography
 of the region, maps and illustration; a sample of the largest found no
