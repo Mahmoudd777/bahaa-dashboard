@@ -1561,6 +1561,9 @@ body.o_baha_dash_active {
     gap: 16px;
     height: 100%;
 
+    // One card per component (evm_panel:ev etc.): fill the grid cell.
+    &--single { grid-template-columns: minmax(0, 1fr); }
+
     // ⤢ sits beside the abbreviation badge, in the corner every other card
     // keeps its expand button.
     &__tools {

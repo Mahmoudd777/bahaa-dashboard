@@ -1472,7 +1472,8 @@ export class PortfolioHealth extends Component {
 // EvmPanel — earned value (EV), cost index (CPI) and schedule index (SPI).
 export class EvmPanel extends Component {
     static template = xml`
-        <div class="o_baha_evm">
+        <div class="o_baha_evm"
+             t-att-class="{ 'o_baha_evm--single': (props.comp.data.items or []).length === 1 }">
             <t t-foreach="props.comp.data.items or []" t-as="item" t-key="item.key">
                 <div class="o_baha_card o_baha_evm__card"
                      t-att-class="{ 'o_baha_clickable': isClickable(item) }"

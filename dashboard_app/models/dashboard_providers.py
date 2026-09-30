@@ -923,6 +923,11 @@ def evm_panel(comp, cfg, env):
             "columns": ["البند", "الرمز", "القيمة"],
             "rows": [{"cells": list(r)} for r in inputs[it["key"]]],
         }
+    # "evm_panel:cpi" binds the component to one card, so each index is its own
+    # grid item the layout editor can move and resize independently.
+    key = _arg(comp)
+    if key:
+        cfg["items"] = [it for it in cfg["items"] if it["key"] == key]
     return cfg
 
 
@@ -955,6 +960,13 @@ def _category_spent_detail(facts, s):
 def project_category_cards(comp, cfg, env):
     facts = project_facts(env)
     cats = _recs(env, "albaha.project.category", order="sequence, id")
+    # "project_category_cards:2" binds the component to the third category, so
+    # each card is its own grid item. An index — not a category id — because
+    # the ids differ between databases while the seed is shared.
+    arg = _arg(comp)
+    index = int(arg) if arg.isdigit() else None
+    if index is not None:
+        cats = cats[index:index + 1]
     items = []
     for cat in cats:
         cat_facts = [f for f in facts if f["category_id"] == cat.id]
@@ -998,7 +1010,9 @@ def project_category_cards(comp, cfg, env):
         })
     cfg["items"] = items
     # Projects nobody has classified yet would otherwise vanish from every card.
-    cfg["uncategorized"] = sum(1 for f in facts if not f["category_id"])
+    # Split into one component per card, the warning goes on the first only.
+    cfg["uncategorized"] = (sum(1 for f in facts if not f["category_id"])
+                            if index in (None, 0) else 0)
     return cfg
 
 

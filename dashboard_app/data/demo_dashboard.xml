@@ -225,18 +225,69 @@
         <field name="data_source">model</field><field name="source">portfolio_health</field>
         <field name="config">{"eyebrow": "صحة المحفظة", "title": "المؤشر العام للأداء", "desc": "مؤشر مركب مبني على حالة المشاريع ونسبة الإنجاز والصرف والمخاطر النشطة."}</field>
     </record>
+    <!-- One component per card (source "provider:arg"), so the layout editor
+         moves and resizes each card on its own instead of a whole row. -->
     <record id="ceo_proj_evm" model="dashboard.component">
-        <field name="name">مؤشرات القيمة المكتسبة</field><field name="section_id" ref="sec_ceo_projects"/>
+        <field name="name">القيمة المكتسبة</field><field name="section_id" ref="sec_ceo_projects"/>
         <field name="component_type">evm_panel</field><field name="sequence">20</field>
-        <field name="col_span">12</field><field name="row_span">22</field><field name="column">full</field>
-        <field name="data_source">model</field><field name="source">evm_panel</field>
+        <field name="col_span">4</field><field name="row_span">22</field><field name="column">full</field>
+        <field name="data_source">model</field><field name="source">evm_panel:ev</field>
+        <field name="config">{}</field>
+    </record>
+    <record id="ceo_proj_evm_cpi" model="dashboard.component">
+        <field name="name">انحراف التكلفة</field><field name="section_id" ref="sec_ceo_projects"/>
+        <field name="component_type">evm_panel</field><field name="sequence">21</field>
+        <field name="col_span">4</field><field name="row_span">22</field><field name="column">full</field>
+        <field name="data_source">model</field><field name="source">evm_panel:cpi</field>
+        <field name="config">{}</field>
+    </record>
+    <record id="ceo_proj_evm_spi" model="dashboard.component">
+        <field name="name">انحراف الجدول</field><field name="section_id" ref="sec_ceo_projects"/>
+        <field name="component_type">evm_panel</field><field name="sequence">22</field>
+        <field name="col_span">4</field><field name="row_span">22</field><field name="column">full</field>
+        <field name="data_source">model</field><field name="source">evm_panel:spi</field>
         <field name="config">{}</field>
     </record>
     <record id="ceo_proj_categories" model="dashboard.component">
-        <field name="name">تصنيفات المشاريع</field><field name="section_id" ref="sec_ceo_projects"/>
+        <field name="name">تصنيف المشاريع 1</field><field name="section_id" ref="sec_ceo_projects"/>
         <field name="component_type">project_category_cards</field><field name="sequence">30</field>
-        <field name="col_span">12</field><field name="row_span">60</field><field name="column">full</field>
-        <field name="data_source">model</field><field name="source">project_category_cards</field>
+        <field name="col_span">4</field><field name="row_span">47</field><field name="column">full</field>
+        <field name="data_source">model</field><field name="source">project_category_cards:0</field>
+        <field name="config">{}</field>
+    </record>
+    <record id="ceo_proj_categories_1" model="dashboard.component">
+        <field name="name">تصنيف المشاريع 2</field><field name="section_id" ref="sec_ceo_projects"/>
+        <field name="component_type">project_category_cards</field><field name="sequence">31</field>
+        <field name="col_span">4</field><field name="row_span">47</field><field name="column">full</field>
+        <field name="data_source">model</field><field name="source">project_category_cards:1</field>
+        <field name="config">{}</field>
+    </record>
+    <record id="ceo_proj_categories_2" model="dashboard.component">
+        <field name="name">تصنيف المشاريع 3</field><field name="section_id" ref="sec_ceo_projects"/>
+        <field name="component_type">project_category_cards</field><field name="sequence">32</field>
+        <field name="col_span">4</field><field name="row_span">47</field><field name="column">full</field>
+        <field name="data_source">model</field><field name="source">project_category_cards:2</field>
+        <field name="config">{}</field>
+    </record>
+    <record id="ceo_proj_categories_3" model="dashboard.component">
+        <field name="name">تصنيف المشاريع 4</field><field name="section_id" ref="sec_ceo_projects"/>
+        <field name="component_type">project_category_cards</field><field name="sequence">33</field>
+        <field name="col_span">4</field><field name="row_span">47</field><field name="column">full</field>
+        <field name="data_source">model</field><field name="source">project_category_cards:3</field>
+        <field name="config">{}</field>
+    </record>
+    <record id="ceo_proj_categories_4" model="dashboard.component">
+        <field name="name">تصنيف المشاريع 5</field><field name="section_id" ref="sec_ceo_projects"/>
+        <field name="component_type">project_category_cards</field><field name="sequence">34</field>
+        <field name="col_span">4</field><field name="row_span">47</field><field name="column">full</field>
+        <field name="data_source">model</field><field name="source">project_category_cards:4</field>
+        <field name="config">{}</field>
+    </record>
+    <record id="ceo_proj_categories_5" model="dashboard.component">
+        <field name="name">تصنيف المشاريع 6</field><field name="section_id" ref="sec_ceo_projects"/>
+        <field name="component_type">project_category_cards</field><field name="sequence">35</field>
+        <field name="col_span">4</field><field name="row_span">47</field><field name="column">full</field>
+        <field name="data_source">model</field><field name="source">project_category_cards:5</field>
         <field name="config">{}</field>
     </record>
 
@@ -255,17 +306,66 @@
         <field name="config">{"eyebrow": "صحة المحفظة", "title": "المؤشر العام للأداء", "desc": "مؤشر مركب مبني على حالة المشاريع ونسبة الإنجاز والصرف والمخاطر النشطة."}</field>
     </record>
     <record id="vp_proj_evm" model="dashboard.component">
-        <field name="name">مؤشرات القيمة المكتسبة</field><field name="section_id" ref="sec_vp_projects"/>
+        <field name="name">القيمة المكتسبة</field><field name="section_id" ref="sec_vp_projects"/>
         <field name="component_type">evm_panel</field><field name="sequence">20</field>
-        <field name="col_span">12</field><field name="row_span">22</field><field name="column">full</field>
-        <field name="data_source">model</field><field name="source">evm_panel</field>
+        <field name="col_span">4</field><field name="row_span">22</field><field name="column">full</field>
+        <field name="data_source">model</field><field name="source">evm_panel:ev</field>
+        <field name="config">{}</field>
+    </record>
+    <record id="vp_proj_evm_cpi" model="dashboard.component">
+        <field name="name">انحراف التكلفة</field><field name="section_id" ref="sec_vp_projects"/>
+        <field name="component_type">evm_panel</field><field name="sequence">21</field>
+        <field name="col_span">4</field><field name="row_span">22</field><field name="column">full</field>
+        <field name="data_source">model</field><field name="source">evm_panel:cpi</field>
+        <field name="config">{}</field>
+    </record>
+    <record id="vp_proj_evm_spi" model="dashboard.component">
+        <field name="name">انحراف الجدول</field><field name="section_id" ref="sec_vp_projects"/>
+        <field name="component_type">evm_panel</field><field name="sequence">22</field>
+        <field name="col_span">4</field><field name="row_span">22</field><field name="column">full</field>
+        <field name="data_source">model</field><field name="source">evm_panel:spi</field>
         <field name="config">{}</field>
     </record>
     <record id="vp_proj_categories" model="dashboard.component">
-        <field name="name">تصنيفات المشاريع</field><field name="section_id" ref="sec_vp_projects"/>
+        <field name="name">تصنيف المشاريع 1</field><field name="section_id" ref="sec_vp_projects"/>
         <field name="component_type">project_category_cards</field><field name="sequence">30</field>
-        <field name="col_span">12</field><field name="row_span">60</field><field name="column">full</field>
-        <field name="data_source">model</field><field name="source">project_category_cards</field>
+        <field name="col_span">4</field><field name="row_span">47</field><field name="column">full</field>
+        <field name="data_source">model</field><field name="source">project_category_cards:0</field>
+        <field name="config">{}</field>
+    </record>
+    <record id="vp_proj_categories_1" model="dashboard.component">
+        <field name="name">تصنيف المشاريع 2</field><field name="section_id" ref="sec_vp_projects"/>
+        <field name="component_type">project_category_cards</field><field name="sequence">31</field>
+        <field name="col_span">4</field><field name="row_span">47</field><field name="column">full</field>
+        <field name="data_source">model</field><field name="source">project_category_cards:1</field>
+        <field name="config">{}</field>
+    </record>
+    <record id="vp_proj_categories_2" model="dashboard.component">
+        <field name="name">تصنيف المشاريع 3</field><field name="section_id" ref="sec_vp_projects"/>
+        <field name="component_type">project_category_cards</field><field name="sequence">32</field>
+        <field name="col_span">4</field><field name="row_span">47</field><field name="column">full</field>
+        <field name="data_source">model</field><field name="source">project_category_cards:2</field>
+        <field name="config">{}</field>
+    </record>
+    <record id="vp_proj_categories_3" model="dashboard.component">
+        <field name="name">تصنيف المشاريع 4</field><field name="section_id" ref="sec_vp_projects"/>
+        <field name="component_type">project_category_cards</field><field name="sequence">33</field>
+        <field name="col_span">4</field><field name="row_span">47</field><field name="column">full</field>
+        <field name="data_source">model</field><field name="source">project_category_cards:3</field>
+        <field name="config">{}</field>
+    </record>
+    <record id="vp_proj_categories_4" model="dashboard.component">
+        <field name="name">تصنيف المشاريع 5</field><field name="section_id" ref="sec_vp_projects"/>
+        <field name="component_type">project_category_cards</field><field name="sequence">34</field>
+        <field name="col_span">4</field><field name="row_span">47</field><field name="column">full</field>
+        <field name="data_source">model</field><field name="source">project_category_cards:4</field>
+        <field name="config">{}</field>
+    </record>
+    <record id="vp_proj_categories_5" model="dashboard.component">
+        <field name="name">تصنيف المشاريع 6</field><field name="section_id" ref="sec_vp_projects"/>
+        <field name="component_type">project_category_cards</field><field name="sequence">35</field>
+        <field name="col_span">4</field><field name="row_span">47</field><field name="column">full</field>
+        <field name="data_source">model</field><field name="source">project_category_cards:5</field>
         <field name="config">{}</field>
     </record>
 </odoo>
