@@ -2,7 +2,7 @@
 
 import { Component, onMounted, onWillUnmount, onPatched, useRef, useState, xml } from "@odoo/owl";
 import { UnitContent } from "./unit_content";
-import { cloneUnits, effectiveRows, effectiveSpan } from "./grid_math";
+import { MAX_ROW_SPAN, cloneUnits, effectiveRows, effectiveSpan } from "./grid_math";
 
 const GS_COLS = 12;
 // Match the VIEW grid's vertical rhythm exactly. View uses `grid-auto-rows: 72px`
@@ -119,6 +119,9 @@ export class GridstackEditor extends Component {
             cell.setAttribute("gs-y", unit.grid_y ?? 0);
             cell.setAttribute("gs-w", effectiveSpan(unit));
             cell.setAttribute("gs-h", effectiveRows(unit));
+            // Same ceiling the save applies — without it Gridstack lets a card
+            // grow past what can be stored, and the resize "reverts" on save.
+            cell.setAttribute("gs-max-h", MAX_ROW_SPAN);
         }
         // float:true on init loads exact saved positions (entering edit never
         // silently dirties); the user's gravity is applied right after.

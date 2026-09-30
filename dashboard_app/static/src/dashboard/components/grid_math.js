@@ -48,8 +48,12 @@ export function gridSnapDelta(pixels, step) {
 }
 
 // Loose limits — only prevent invalid grid values, not widget-specific caps.
-/** Tallest allowed card, in 8px steps (= 12 legacy 88px rows). */
-export const MAX_ROW_SPAN = 132;
+/** Tallest allowed card, in 8px steps (600 = 4784px). High enough that no real
+ *  card reaches it — a long indicator list in a narrow column needs well over
+ *  1000px. Must equal MAX_ROW_SPAN in models/dashboard.py, and the editor sets
+ *  it as gs-max-h: if the editor allowed more than the save keeps, a resize
+ *  would be silently clamped on save and appear to "revert". */
+export const MAX_ROW_SPAN = 600;
 const RESIZE_LIMITS = { minW: 1, maxW: 12, minH: 1, maxH: MAX_ROW_SPAN };
 
 export function sanitizeSpan(value, fallback = DEFAULT_COL_SPAN) {
@@ -61,8 +65,8 @@ export function sanitizeSpan(value, fallback = DEFAULT_COL_SPAN) {
 export function sanitizeRows(value, fallback = DEFAULT_ROW_SPAN) {
     const n = parseInt(value, 10);
     if (!n || n < 1) return fallback;
-    // Rows are 8px steps, so the ceiling is the resize limit (132 = 12 legacy
-    // 88px rows), NOT 12 — that cap belongs to the 12-column axis only.
+    // Rows are 8px steps, so the ceiling is the resize limit (MAX_ROW_SPAN),
+    // NOT 12 — that cap belongs to the 12-column axis only.
     return Math.min(MAX_ROW_SPAN, n);
 }
 

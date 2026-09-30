@@ -20,8 +20,9 @@ STATUS_COLORS = {
 }
 
 # Row spans are 8px grid steps (the 12-column axis is unrelated and keeps its
-# own cap of 12). 132 steps = the legacy limit of 12 x 88px rows.
-MAX_ROW_SPAN = 132
+# own cap of 12). Must equal MAX_ROW_SPAN in grid_math.js, which the editor
+# also enforces as gs-max-h — a mismatch silently clamps a resize on save.
+MAX_ROW_SPAN = 600
 # Outer rows reserved for a grouped panel's title bar (11 steps = one legacy row).
 PANEL_HEAD_ROWS = 11
 
