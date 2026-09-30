@@ -65,7 +65,7 @@ export class UnitGrid extends Component {
 
 export class Dashboard extends Component {
     static template = xml`
-        <div class="o_baha_dash" dir="rtl" t-att-style="colorVars" t-att-data-theme="state.layout and state.layout.theme">
+        <div class="o_baha_dash" dir="rtl" t-ref="dashRoot" t-att-style="colorVars" t-att-data-theme="state.layout and state.layout.theme">
             <div t-if="state.layout.edit_user_id" class="o_baha_asuser">
                 <i class="fa fa-user-circle"/>
                 <span>أنت تعرّض وتحرّر لوحة المستخدم: <b t-esc="state.layout.edit_user_name"/></span>
@@ -497,6 +497,53 @@ export class Dashboard extends Component {
         };
         document.addEventListener("visibilitychange", this._onVisible);
         onWillUnmount(() => document.removeEventListener("visibilitychange", this._onVisible));
+
+        // Wheel over a card: a card that really scrolls keeps the wheel; any
+        // other card lets it through to the page. Non-passive so it can stop the
+        // scroll chaining at a scrolling card's edge.
+        this.dashRoot = useRef("dashRoot");
+        this._onDashWheel = (ev) => this.onDashWheel(ev);
+        onMounted(() => {
+            this.dashRoot.el?.addEventListener("wheel", this._onDashWheel, { passive: false });
+        });
+        onWillUnmount(() => {
+            this.dashRoot.el?.removeEventListener("wheel", this._onDashWheel);
+        });
+    }
+
+    /** Route a wheel event to the right scroller.
+     *
+     *  Walks up from the element under the pointer to the nearest ancestor that
+     *  is ACTUALLY scrollable (overflow auto/scroll AND content taller than the
+     *  box). If there is one, it owns the wheel: it scrolls, and at its top or
+     *  bottom edge the event is stopped so the page does not start moving
+     *  instead. If there is none — a card whose content fits — nothing is done
+     *  and the page scrolls normally, from anywhere on the card.
+     *
+     *  This replaces `overscroll-behavior: contain` in CSS, which Chrome applies
+     *  to every overflow container whether or not it scrolls, and so froze the
+     *  page whenever the pointer was over any card. */
+    onDashWheel(ev) {
+        const root = this.dashRoot.el;
+        // ctrl+wheel is browser zoom; horizontal wheels are left to the browser.
+        if (!root || ev.ctrlKey || !ev.deltaY) {
+            return;
+        }
+        for (let el = ev.target; el && el !== root; el = el.parentElement) {
+            const overflowY = getComputedStyle(el).overflowY;
+            if (overflowY !== "auto" && overflowY !== "scroll") {
+                continue;
+            }
+            if (el.scrollHeight - el.clientHeight < 1) {
+                continue;       // a scroll box with nothing to scroll: look further up
+            }
+            const atTop = el.scrollTop <= 0;
+            const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 1;
+            if ((ev.deltaY < 0 && atTop) || (ev.deltaY > 0 && atBottom)) {
+                ev.preventDefault();
+            }
+            return;
+        }
     }
 
     // Manual refresh (wire to a button / the ⋮ menu).

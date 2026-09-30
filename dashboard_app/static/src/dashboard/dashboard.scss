@@ -145,7 +145,11 @@ body.o_baha_dash_active {
     // than having the fixed-height cell clip it.
     overflow-y: auto;
     overflow-x: hidden;
-    overscroll-behavior: contain;
+    // No `overscroll-behavior: contain` here: Chrome applies it to every scroll
+    // container, including a panel whose content fits and never scrolls, so the
+    // wheel over ANY panel was swallowed and the page only scrolled from the gaps
+    // between cards. Containment for panels that really scroll is done in JS
+    // (Dashboard.onDashWheel), which can tell the two apart.
 
     &__head {
         display: flex;
@@ -565,7 +569,8 @@ body.o_baha_dash_active {
     // same way. Edit mode overrides this back to `visible` (cards auto-grow).
     overflow-y: auto;
     overflow-x: hidden;
-    overscroll-behavior: contain;
+    // Deliberately no `overscroll-behavior: contain` — it blocked page
+    // scrolling over every card, scrollable or not. See .o_baha_panel.
 
     // The head (title + legend + tools) stays pinned while the body scrolls.
     &__head {
