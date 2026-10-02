@@ -182,13 +182,13 @@ The nine vision-level impact indicators have no such code; the decks give
 them none.
 
 Two of the 24 are the same indicator. نسبة المواقع التراثية المعاد تأهيلها
-في منطقة الباحة is printed twice in the indicator deck, on slide 8 as KPI-08
-and on slide 20 as KPI-20, with the same unit, the same direction, the same
+في منطقة الباحة is printed twice in the indicator deck, on slide 8 as KPI-07
+and on slide 20 as KPI-18, with the same unit, the same direction, the same
 formula and a definition that runs to the same paragraph word for word. What
 differs is the objective each is filed under — الحفاظ على الهوية المحلية
 وتعزيزها for one, ترسيخ هوية ثقافية وبصرية وعمرانية أصيلة for the other —
-and their baselines: KPI-08 is dated 2028, KPI-20 gives no baseline year at
-all. Only KPI-20 carries a K-code (K7.1).
+and their baselines: KPI-07 is dated 2028, KPI-18 gives no baseline year at
+all. Only KPI-18 carries a K-code (K7.1).
 
 Both are kept, because each belongs to an objective and dropping one would
 silently cut an objective's only heritage measure. But they are one
@@ -469,6 +469,39 @@ Everything still empty is empty for a stated reason. In summary:
 | `albaha.project.program_id` | Points at the PMO programme model, which this strategy does not use |
 | `albaha.sector.kpi.sector_id` | The `domain` field already records tourism or agriculture; a sector record would duplicate a pillar |
 | 26 models with no records | Contracts, deliverables, lessons, issues, change requests and the rest of the delivery machinery — none of it exists yet |
+
+## The office's comments of 30 September 2026
+
+The office reviewed the dashboard and returned nine points in
+`Dashboard Comments 30092026.pptx`. All nine are applied.
+
+| # | Comment | What was done |
+|---|---|---|
+| 1 | Remove five project-category cards; only the 19 initiatives under the 5 programmes | Hidden through the editor's own remove path (`visible`), on both dashboards that carry them. The 166 projects stay as records and were already excluded from the performance figures. The strategic-projects card, which the office did not mark, stays. |
+| 2 | Fix the word مليون | The figure and its unit «ر.س» were printed with nothing between them. |
+| 3 | Risks all read 1 and 1 with no score | See below. |
+| 4 | Remove the technical-KPI box | Hidden the same way; nothing in the strategy feeds it. |
+| 5 | Why does numbering start at KPI-02 | The codes followed slide numbers in the indicator deck, whose first slide is a cover, and skipped 11 for the same reason. Renumbered KPI-01 to KPI-24 in the same order; sheet 50 maps old to new. The column was also headed «المصدر» and now reads «الرمز». |
+| 6–8 | Three titles | Renamed as given. |
+| 9 | 02.04 should end 31/03/2029 | Set. It still has no start date, so its twelve milestones remain undated. |
+
+The risk comment was a miss in the load, not in their files. Slide 147 of the
+detailed document draws the twelve risks on a 3×3 matrix of probability and
+impact. The names and pillars were read from the table beside it; the matrix
+was not, so every risk kept the field default of 1 and 1. The positions were
+read from the numbered circles on the original slide: five risks score 9
+(3, 6, 9, 11, 12 — the same five the table colours red), six score 6, and
+one, risk 2, scores 4.
+
+Two faults in the code sat behind the same screen. The score never
+calculated, because the method that multiplies the two numbers was never
+attached to the field. And the register's first column printed the risk
+category — a default that reads "Operational" on all twelve — under a header
+that said pillar.
+
+Renumbering the indicators changes the key the export sheets match on: a
+sheet exported before 2 October 2026 carries the old codes and must not be
+re-imported.
 
 ## Rebuilding
 

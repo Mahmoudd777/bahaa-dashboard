@@ -5,7 +5,7 @@ checked or rerun without starting again from the decks.
 
 ## `sheets/`
 
-49 CSVs, one per entity, in the order they were produced. They are the
+50 CSVs, one per entity, in the order they were produced. They are the
 intermediate form between the decks and the database: raw source values are
 kept in `*_raw` columns beside the converted ones, so any conversion can be
 read against what the deck actually said.
