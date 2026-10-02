@@ -1610,10 +1610,18 @@ body.o_baha_dash_active {
         color: var(--dash-text-primary, #181d27);
         margin: 8px 0 4px;
 
+        // The figure and its unit sit on one baseline with a real gap. At this
+        // weight the final ن of «مليون» overhangs its box, and with only 4px
+        // it ran into the «ر.س» beside it.
+        display: flex;
+        align-items: baseline;
+        flex-wrap: wrap;
+        gap: 0 10px;
+
         small {
             font-size: 11px;
             font-weight: 600;
-            margin-inline-start: 4px;
+            margin-inline-start: 0;
             color: var(--dash-text-tertiary, #535862);
         }
     }

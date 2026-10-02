@@ -1497,7 +1497,7 @@ export class EvmPanel extends Component {
                         </span>
                     </div>
                     <div class="o_baha_evm__nm">
-                        <t t-esc="item.value"/><small t-esc="item.unit"/>
+                        <span class="o_baha_evm__val" t-esc="item.value"/><small t-esc="item.unit"/>
                     </div>
                     <div class="o_baha_evm__desc" t-esc="item.desc"/>
                     <div class="o_baha_evm__note" t-att-class="'o_baha_level--' + (item.level or 'none')" t-esc="item.note"/>

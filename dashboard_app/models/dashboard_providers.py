@@ -255,7 +255,7 @@ def kpi_grid(comp, cfg, env):
 
 
 def kpi_table(comp, cfg, env):
-    """Columns: الجودة | اسم المؤشر | الحالي | المستهدف | التقدم | التغير | المصدر.
+    """Columns: الجودة | اسم المؤشر | الحالي | المستهدف | التقدم | التغير | الرمز.
 
     The التغير column answers the same question the strategic objectives
     already answered — is this moving the right way — by comparing the last
@@ -268,7 +268,7 @@ def kpi_table(comp, cfg, env):
     # cells below carried another, which is exactly how the "الجهة" column
     # ended up labelling the wrong data. Defined here, they cannot disagree.
     cfg["columns"] = ["الجودة", "اسم المؤشر", "الحالي", _target_header(flt),
-                      "التقدم", "التغير", "المصدر"]
+                      "التقدم", "التغير", "الرمز"]
     rows = []
     for k in _recs(env, "albaha.kpi", order="id"):
         val, tgt, ach, lvl = kpi_at(k, flt)
@@ -379,17 +379,49 @@ def initiatives_table(comp, cfg, env):
     return cfg
 
 
+def _risk_pillar(r):
+    """The pillar a strategic risk threatens, else its category.
+
+    The register files every risk under a pillar. The category is a field
+    default — every risk reads "Operational" — so it says nothing.
+    """
+    pillar = r.pillar_id if "pillar_id" in r._fields else False
+    return (pillar and pillar.name) or _sel_label(r, "risk_category")
+
+
+def _risk_mitigation(r):
+    """A risk's own mitigation, else the steps set against its pillar.
+
+    The strategy sets its mitigation steps against a pillar's risks as a
+    group, so a risk with none of its own shows its pillar's.
+    """
+    if r.mitigation_action:
+        return r.mitigation_action
+    pillar = r.pillar_id if "pillar_id" in r._fields else False
+    if pillar and "strategic_mitigation" in pillar._fields:
+        return pillar.strategic_mitigation or ""
+    return ""
+
+
+# The strategy scores risks 1 to 3 on each axis.
+_AXIS_LVL = {3: "high", 2: "mid", 1: "low"}
+
+
 def risks_table(comp, cfg, env):
+    # Headers are owned here, as in kpi_table, so they cannot drift from the
+    # cells: the stored ones called the risk itself "المبادرة".
+    cfg["columns"] = ["الركيزة", "الخطر", "المالك", "الاحتمالية", "التأثير",
+                      "الخطورة", "اجراءات للتخفيف"]
     rows = []
-    for r in _frecs(env, "albaha.strategic.risk", "identified_date", "date", order="risk_score desc"):
+    for r in _frecs(env, "albaha.strategic.risk", "identified_date", "date", order="risk_score desc, id"):
         lvl = r.rag_status or "amber"
         rows.append({"cells": [
-            {"type": "tag", "label": _sel_label(r, "risk_category")},
+            {"type": "tag", "label": _risk_pillar(r)},
             r.name, r.owner_id.name or "",
-            {"type": "badge", "label": str(r.likelihood or ""), "level": "high" if (r.likelihood or 0) >= 4 else "mid"},
-            {"type": "badge", "label": str(r.impact or ""), "level": "high" if (r.impact or 0) >= 4 else "mid"},
-            {"type": "badge", "label": str(r.risk_score or ""), "level": lvl if lvl in ("high", "mid", "low") else "mid"},
-            r.mitigation_action or "",
+            {"type": "badge", "label": str(r.likelihood or ""), "level": _AXIS_LVL.get(r.likelihood, "mid")},
+            {"type": "badge", "label": str(r.impact or ""), "level": _AXIS_LVL.get(r.impact, "mid")},
+            {"type": "badge", "label": str(r.risk_score or ""), "level": _SEV_LVL.get(lvl, "mid")},
+            _risk_mitigation(r),
         ], "status": "ok", "record": _record("albaha.strategic.risk", r)})
     cfg["rows"] = rows
     return cfg
@@ -406,7 +438,7 @@ def risks_cards(comp, cfg, env):
         lvl = r.rag_status or "amber"
         items.append({
             "severity": _SEV_AR.get(lvl, ""), "level": _SEV_LVL.get(lvl, "mid"),
-            "tag": _sel_label(r, "risk_category"),
+            "tag": _risk_pillar(r),
             "date": str(r.identified_date or ""), "text": r.name,
             "decision": ("القرار/الدعم المطلوب: " + r.mitigation_action) if r.mitigation_action else "",
             "record": _record("albaha.strategic.risk", r),
