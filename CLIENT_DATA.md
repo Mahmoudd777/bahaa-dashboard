@@ -85,8 +85,9 @@ blank or a zero on the dashboard.
   million. They are flagged `zero_budget` so the dashboard does not present a
   deliberate decision as a gap. The other nine add to exactly a hundred
   million, split 12 capital against 88 operational.
-- **No dates for initiative 02.04**, and no milestone table for it beyond six
-  rows recovered from the detailed document.
+- **No dates for initiative 02.04** in the decks. The office has since given
+  them — it ends 31/03/2029 and starts 31/03/2027, like its siblings 02.03
+  and 02.05 — and they are loaded; see the comments of 30 September below.
 - **Four indicators have no targets at all**: ترتيب الباحة في مؤشر جودة
   الحياة, نسبة المواقع التراثية المعاد تأهيلها (both entries), عدد خريجي
   برامج التدريب, عدد الكيانات المجتمعية المرخصة. The decks mark them as
@@ -448,8 +449,9 @@ of which any earlier pass had noticed:
   fall back to.
 - **Six milestones carried dates derived from the wrong initiative** — a side
   effect of moving them to the initiative whose card they appear on. Milestone
-  dates are computed from the initiative's start, and 02.04 has none, so the
+  dates are computed from the initiative's start, and 02.04 had none, so the
   dates were cleared: one derived from the wrong anchor is worse than none.
+  They were filled in on 2 October 2026, once the office confirmed the start.
 
 Everything still empty is empty for a stated reason. In summary:
 
@@ -460,7 +462,6 @@ Everything still empty is empty for a stated reason. In summary:
 | English names | The decks are Arabic only |
 | Record codes | The source numbers milestones, projects and operational risks not at all |
 | Baselines for 9 indicators, targets for 5 | Written as "-", "NA", or marked pending activation |
-| Dates for initiative 02.04 and its milestones | The card gives none |
 | Objective on initiatives 02.03 and 02.04 | The cards leave the objective row blank |
 | Objective on initiative 02.01 | The row holds a contribution sentence — "تسهم المبادرة في تعظيم إنتاج القطاع الزراعي…" — not the name of an objective, so there is nothing to match against the fifteen |
 | Budgets on 10 initiatives | Zero by design — مبادرة صفرية |
@@ -483,7 +484,7 @@ The office reviewed the dashboard and returned nine points in
 | 4 | Remove the technical-KPI box | Hidden the same way; nothing in the strategy feeds it. |
 | 5 | Why does numbering start at KPI-02 | The codes followed slide numbers in the indicator deck, whose first slide is a cover, and skipped 11 for the same reason. Renumbered KPI-01 to KPI-24 in the same order; sheet 50 maps old to new. The column was also headed «المصدر» and now reads «الرمز». |
 | 6–8 | Three titles | Renamed as given. |
-| 9 | 02.04 should end 31/03/2029 | Set. It still has no start date, so its twelve milestones remain undated. |
+| 9 | 02.04 should end 31/03/2029 | Set. Asked for the start as well, the office confirmed 31/03/2027, the same as 02.03 and 02.05. Its twelve milestones are now dated by the rule every other initiative uses, and the last of them falls in March 2029 — the end month the office gave, which is the check that the two dates agree. No milestone anywhere is undated now: 165 of 165. |
 
 The risk comment was a miss in the load, not in their files. Slide 147 of the
 detailed document draws the twelve risks on a 3×3 matrix of probability and
