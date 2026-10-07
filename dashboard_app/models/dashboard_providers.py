@@ -172,6 +172,20 @@ def pillars_bar(comp, cfg, env):
     return cfg
 
 
+def initiatives_bar(comp, cfg, env):
+    """Each initiative's progress as a bar, in code order."""
+    flt = _flt(env)
+    items = []
+    for i in _recs(env, "albaha.initiative", order="code, id"):
+        pct, rag = initiative_at(i, flt)
+        items.append({"label": "%s %s" % (i.code or "", i.name or "") if i.code else (i.name or ""),
+                      "value": int(round(pct)), "color": rag_color(rag),
+                      "record": _record("albaha.initiative", i)})
+    cfg["items"] = items
+    cfg.setdefault("max", 100)
+    return cfg
+
+
 def _program_spend(env, program):
     """(spent, total) for a programme, summed from its initiatives.
 
@@ -476,6 +490,25 @@ def meetings_cards(comp, cfg, env):
 
 
 # ---- count / ratio panels ----------------------------------------------------
+def _fill_by_key(cfg, computed):
+    """Write computed figures onto the config's items, matched by key.
+
+    Matching by position meant an item could not be removed from a card: the
+    figures below it shifted up onto the wrong labels. Each item names its
+    figure in aggregate.key; an item without one falls back to its position.
+    """
+    by_key = {c["aggregate"]["key"]: c for c in computed if c.get("aggregate")}
+    items = cfg.get("items") or []
+    for i, item in enumerate(items):
+        key = (item.get("aggregate") or {}).get("key")
+        if key in by_key:
+            item.update(by_key[key])
+        elif not key and i < len(computed):
+            item.update(computed[i])
+    cfg["items"] = items
+    return cfg
+
+
 def path_indicators(comp, cfg, env):
     flt = _flt(env)
     kpis = _recs(env, "albaha.kpi")
@@ -496,12 +529,7 @@ def path_indicators(comp, cfg, env):
         {"value": "%d/%d" % (init_ok, len(inits)), "delta": "%d متأخر" % (len(inits) - init_ok), "delta_dir": "down", "since": "",
          "aggregate": _aggregate("path_initiatives_attention", "مبادرات تحتاج متابعة")},
     ]
-    items = cfg.get("items") or []
-    for i, c in enumerate(computed):
-        if i < len(items):
-            items[i].update(c)
-    cfg["items"] = items
-    return cfg
+    return _fill_by_key(cfg, computed)
 
 
 def _init_status_vals(env, flt):
@@ -552,19 +580,33 @@ def quality_summary(comp, cfg, env):
     projs = _recs(env, "albaha.project")
     late = len(projs.filtered(lambda p: getattr(p, "health_status", "") == "red"))
     no_owner = len(_recs(env, "albaha.objective").filtered(lambda o: not o.owner_id))
-    items = cfg.get("items") or []
-    keys = [
-        ("quality_low_kpi_values", "نقاط بيانات بجودة منخفضة"),
-        ("quality_delayed_initiatives", "مبادرات بتأخير متوقع"),
-        ("quality_late_projects", "مشاريع باحصائيات متأخرة"),
-        ("quality_no_owner_objectives", "اهداف/مؤشرات بدون مالك"),
+    kpis = _recs(env, "albaha.kpi")
+    # Complete data for an indicator is what the office lists for the third
+    # level: a baseline, annual targets and a data source. The baseline year
+    # stands for the baseline, because a baseline of 0 is a real value.
+    incomplete = len(kpis.filtered(lambda k: not k.baseline_year or not k.target_value
+                                   or not k.data_source
+                                   or not k.value_ids.filtered("target_value")))
+    # Impact indicators measure the vision-level objectives, which sit under
+    # no pillar; strategic indicators measure the pillar-level ones.
+    impact = kpis.filtered(lambda k: k.objective_id and not k.objective_id.pillar_id)
+    strategic = kpis.filtered(lambda k: k.objective_id and k.objective_id.pillar_id)
+
+    def on_track(group):
+        ok = sum(1 for k in group if kpi_at(k, flt)[3] == "green")
+        return {"value": _pct(ok, len(group)) if group else "—",
+                "delta": "%d من %d على المسار" % (ok, len(group)), "since": ""}
+
+    computed = [
+        {"value": str(low), "aggregate": _aggregate("quality_low_kpi_values", "نقاط بيانات بجودة منخفضة")},
+        {"value": str(delayed), "aggregate": _aggregate("quality_delayed_initiatives", "عدد المبادرات المتأخرة")},
+        {"value": str(late), "aggregate": _aggregate("quality_late_projects", "مشاريع باحصائيات متأخرة")},
+        {"value": str(no_owner), "aggregate": _aggregate("quality_no_owner_objectives", "اهداف/مؤشرات بدون مالك")},
+        {"value": str(incomplete), "aggregate": _aggregate("quality_incomplete_kpis", "عدد المؤشرات غير مكتملة البيانات")},
+        dict(on_track(impact), aggregate=_aggregate("quality_impact_on_track", "نسبة مؤشرات الأثر الكلي على المسار")),
+        dict(on_track(strategic), aggregate=_aggregate("quality_strategic_on_track", "نسبة المؤشرات الاستراتيجية على المسار")),
     ]
-    for i, v in enumerate([low, delayed, late, no_owner]):
-        if i < len(items):
-            items[i]["value"] = str(v)
-            items[i]["aggregate"] = _aggregate(keys[i][0], keys[i][1])
-    cfg["items"] = items
-    return cfg
+    return _fill_by_key(cfg, computed)
 
 
 def completion_stat(comp, cfg, env):
@@ -957,9 +999,10 @@ def evm_panel(comp, cfg, env):
         }
     # "evm_panel:cpi" binds the component to one card, so each index is its own
     # grid item the layout editor can move and resize independently.
-    key = _arg(comp)
-    if key:
-        cfg["items"] = [it for it in cfg["items"] if it["key"] == key]
+    # "evm_panel:cpi,spi" keeps a subset on one component.
+    keys = {k.strip() for k in _arg(comp).split(",") if k.strip()}
+    if keys:
+        cfg["items"] = [it for it in cfg["items"] if it["key"] in keys]
     return cfg
 
 
@@ -1055,6 +1098,7 @@ PROVIDERS = {
     "banner": banner,
     "objectives_gauges": objectives_gauges,
     "pillars_bar": pillars_bar,
+    "initiatives_bar": initiatives_bar,
     "programs_planned": programs_planned,
     "budget_variance": budget_variance,
     "goals_list": goals_list,
