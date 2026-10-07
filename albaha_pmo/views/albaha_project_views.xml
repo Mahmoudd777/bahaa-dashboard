@@ -54,7 +54,12 @@
                         <field name="last_status_update"/>
                         </group>
                     </group>
-
+                    <group string="ملخص حالة المشروع">
+                        <field name="progress_summary" placeholder="ما الذي تقدّم في المشروع خلال الفترة"/>
+                        <field name="achievements"/>
+                        <field name="challenges"/>
+                        <field name="delay_reason"/>
+                    </group>
                 </sheet>
             </form>
         </field>

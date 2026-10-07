@@ -643,6 +643,16 @@ export class BarChartH extends Component {
     // beat its target, e.g. 118%) cannot render a fill wider than its track.
     // The label still shows the true value; only the drawing is capped.
     pct(v) { return Math.max(0, Math.min(100, Math.round(((v || 0) / this.max) * 100))); }
+    // With per_item_scale each item's bars are scaled to that item alone, for
+    // series whose units differ from one item to the next (billions of riyals
+    // beside percentages). The figure is then printed on the bar instead.
+    barPct(item, v) {
+        if (!this.props.comp.data.per_item_scale) {
+            return this.pct(v);
+        }
+        const top = Math.max(0, ...(item.bars || []).map((b) => Math.abs(b.value || 0)));
+        return top ? Math.max(0, Math.min(100, Math.round((Math.abs(v || 0) / top) * 85))) : 0;
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -652,8 +662,13 @@ export class BarChartV extends Component {
     static template = xml`
         <div class="o_baha_card o_baha_barv">
             <div class="o_baha_card__title" t-if="props.comp.title and !props.comp.data.hide_head" t-esc="props.comp.title"/>
-            <div class="o_baha_barv__plot">
-                <div class="o_baha_barv__yaxis">
+            <div class="o_baha_barv__legend" t-if="props.comp.data.legend">
+                <t t-foreach="props.comp.data.legend" t-as="lg" t-key="lg_index">
+                    <span class="o_baha_barv__legend-item"><i t-attf-style="background:{{lg.color}};"/><t t-esc="lg.label"/></span>
+                </t>
+            </div>
+            <div class="o_baha_barv__plot" t-att-class="{ 'o_baha_barv__plot--noaxis': props.comp.data.hide_axis }">
+                <div class="o_baha_barv__yaxis" t-if="!props.comp.data.hide_axis">
                     <span>100%</span><span>80%</span><span>60%</span><span>40%</span><span>20%</span>
                 </div>
                 <div class="o_baha_barv__cols">
@@ -667,7 +682,9 @@ export class BarChartV extends Component {
                             <div class="o_baha_barv__bars">
                                 <t t-if="item.bars">
                                     <t t-foreach="item.bars" t-as="b" t-key="b_index">
-                                        <div class="o_baha_barv__bar" t-attf-style="height:{{pct(b.value)}}%;background:{{b.color or colorAccent}};"/>
+                                        <div class="o_baha_barv__bar" t-attf-style="height:{{barPct(item, b.value)}}%;background:{{b.color or colorAccent}};">
+                                            <span class="o_baha_barv__val" t-if="b.label" t-esc="b.label"/>
+                                        </div>
                                     </t>
                                 </t>
                                 <div t-else="" class="o_baha_barv__bar" t-attf-style="height:{{pct(item.value)}}%;background:{{item.color or colorAccent}};"/>

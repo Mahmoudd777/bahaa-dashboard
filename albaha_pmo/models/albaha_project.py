@@ -90,6 +90,13 @@ class AlbahaProject(models.Model):
         string='Phase', default='initiating')
     geo_location = fields.Char(string='Geo Location')
     last_status_update = fields.Date(string='Last Status Update')
+    # The written status the office asked to see on the projects page: what
+    # moved, what was achieved, what is in the way, and why anything is late.
+    # Written by the office; nothing in the strategy files supplies it.
+    progress_summary = fields.Text(string='ملخص التقدم')
+    achievements = fields.Text(string='أبرز الإنجازات')
+    challenges = fields.Text(string='التحديات')
+    delay_reason = fields.Text(string='أسباب التأخير')
     milestone_ids = fields.One2many(
         'albaha.milestone', 
         'project_id', 

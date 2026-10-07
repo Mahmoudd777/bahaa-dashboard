@@ -518,7 +518,9 @@ def path_indicators(comp, cfg, env):
                      base_domain=[("domain", "=", "investment")]).mapped("value"))
     kpi_met = sum(1 for k in kpis if kpi_at(k, flt)[3] == "green")
     obj_ok = sum(1 for o in objs if objective_at(o, flt)[1] == "green")
-    init_ok = sum(1 for i in inits if initiative_at(i, flt)[1] == "green")
+    init_rags = [initiative_at(i, flt)[1] for i in inits]
+    init_ok = init_rags.count("green")
+    init_late = init_rags.count("red")
     computed = [
         {"value": fmt_num(inv) or "0", "delta": "", "since": "",
          "aggregate": _aggregate("path_investment_kpis", "مؤشرات الاستثمار")},
@@ -526,7 +528,9 @@ def path_indicators(comp, cfg, env):
          "aggregate": _aggregate("path_kpis_below_target", "مؤشرات دون المستهدف")},
         {"value": "%d/%d" % (obj_ok, len(objs)), "delta": "%d تحتاج متابعة" % (len(objs) - obj_ok), "delta_dir": "down", "since": "",
          "aggregate": _aggregate("path_objectives_attention", "أهداف تحتاج متابعة")},
-        {"value": "%d/%d" % (init_ok, len(inits)), "delta": "%d متأخر" % (len(inits) - init_ok), "delta_dir": "down", "since": "",
+        # Only initiatives actually late count as late; one not yet started
+        # is neither on track nor delayed, and "19 متأخر" said otherwise.
+        {"value": "%d/%d" % (init_ok, len(inits)), "delta": "%d متأخر" % init_late, "delta_dir": "down", "since": "",
          "aggregate": _aggregate("path_initiatives_attention", "مبادرات تحتاج متابعة")},
     ]
     return _fill_by_key(cfg, computed)
@@ -901,6 +905,95 @@ def own_project_facts(env):
     return [f for f in project_facts(env) if f.get("counts", True)]
 
 
+def project_counts(comp, cfg, env):
+    """The four project counts the office asked for on the projects page.
+
+    Only the office's own projects. "Active" means work has begun: an actual
+    start date, reported progress, or a phase past planning.
+    """
+    facts = own_project_facts(env)
+    recs = [f["rec"] for f in facts]
+    active = [p for p in recs if p.actual_start or (p.progress_pct or 0) > 0
+              or p.phase in ("executing", "monitoring", "closing")]
+    computed = [
+        {"value": str(len(recs)), "aggregate": _aggregate("proj_total", "إجمالي عدد المشاريع")},
+        {"value": str(len(active)), "aggregate": _aggregate("proj_active", "إجمالي عدد المشاريع المفعلة")},
+        {"value": str(sum(1 for p in recs if p.health_status == "green")),
+         "aggregate": _aggregate("proj_on_track", "إجمالي عدد المشاريع على المسار")},
+        {"value": str(sum(1 for p in recs if p.health_status == "red")),
+         "aggregate": _aggregate("proj_delayed", "إجمالي عدد المشاريع المتأخرة")},
+    ]
+    return _fill_by_key(cfg, computed)
+
+
+def projects_summary(comp, cfg, env):
+    """One row per project: where it sits, who owns it, how it stands, what it
+    has spent, and the office's written summary of it."""
+    cfg["columns"] = ["البرنامج", "المبادرة", "المشروع", "مالك المشروع", "الحالة",
+                      "المنصرف من الميزانية", "ملخص"]
+    rows = []
+    for f in own_project_facts(env):
+        p = f["rec"]
+        init = p.initiative_id
+        owner = (p.manager_id.name or p.owner_entity
+                 or (init.owner_id.name if init and "owner_id" in init._fields else "") or "")
+        parts = [(label, p[field]) for field, label in (
+            ("progress_summary", "التقدم"), ("achievements", "الإنجازات"),
+            ("challenges", "التحديات"), ("delay_reason", "أسباب التأخير")) if field in p._fields and p[field]]
+        summary = " — ".join("%s: %s" % (label, text) for label, text in parts) or "لم يُدخل ملخص بعد"
+        status = PROJECT_STATUS.get(p.health_status)
+        rows.append({"cells": [
+            {"type": "tag", "label": init.program_id.name if init and init.program_id else ""},
+            ("%s %s" % (init.code or "", init.name or "")).strip() if init else "",
+            p.name,
+            owner or "—",
+            {"type": "badge", "label": PROJECT_STATUS_AR.get(status, "لم يتم القياس"),
+             "level": {"on": "low", "st": "mid", "de": "high"}.get(status, "none")},
+            "%s ر.س" % fmt_million(f["spent"]) if f["spent"] else "—",
+            summary,
+        ], "status": "delayed" if status == "de" else "ok", "record": _record("albaha.project", p)})
+    cfg["rows"] = rows
+    return cfg
+
+
+def impact_bars(comp, cfg, env):
+    """The impact indicators against their baseline and target.
+
+    Impact indicators measure the four vision-level objectives. Their units
+    differ — billions of riyals beside percentages — so each indicator's
+    three bars are scaled to that indicator alone, and the figures are printed
+    on the bars rather than read off a shared axis.
+    """
+    flt = _flt(env)
+    kpis = _recs(env, "albaha.kpi", order="code, id").filtered(
+        lambda k: k.objective_id and not k.objective_id.pillar_id)
+
+    def lab(v, k):
+        if v is None:
+            return "—"
+        pct = "%" if (k.unit or "").strip() in ("نسبة مئوية", "%") else ""
+        return "%s%s" % (fmt_num(v), pct)
+
+    items = []
+    for k in kpis:
+        reported = k.value_ids.filtered("is_reported")
+        current = kpi_at(k, flt)[0] if reported else None
+        base = k.baseline_value if k.baseline_year else None
+        target = k.target_value or None
+        items.append({"label": k.name, "record": _record("albaha.kpi", k), "bars": [
+            {"value": base or 0, "label": lab(base, k), "color": "#B5BCC2"},
+            {"value": current or 0, "label": lab(current, k), "color": "#F0974F"},
+            {"value": target or 0, "label": lab(target, k), "color": "#00AB9D"},
+        ]})
+    cfg["items"] = items
+    cfg["per_item_scale"] = True
+    cfg["hide_axis"] = True
+    cfg["legend"] = [{"label": "خط الأساس", "color": "#B5BCC2"},
+                     {"label": "القيمة الحالية", "color": "#F0974F"},
+                     {"label": "المستهدف", "color": "#00AB9D"}]
+    return cfg
+
+
 def portfolio_health(comp, cfg, env):
     s = summarize_projects(own_project_facts(env))
     score = s["score"]
@@ -1098,6 +1191,9 @@ PROVIDERS = {
     "banner": banner,
     "objectives_gauges": objectives_gauges,
     "pillars_bar": pillars_bar,
+    "project_counts": project_counts,
+    "projects_summary": projects_summary,
+    "impact_bars": impact_bars,
     "initiatives_bar": initiatives_bar,
     "programs_planned": programs_planned,
     "budget_variance": budget_variance,
