@@ -536,20 +536,36 @@ taken first (sheet 51):
 a baseline, annual targets and a data source. Impact indicators are those
 measuring the four vision-level objectives, which sit under no pillar.
 
-Not done, because each needs something only the office can supply or a
-decision from it:
+Then the rest, on 7 October:
 
-- **The projects page**, CEO p.3 and VP p.4. The office wants the summary strip
-  replaced by four counts (total, active, on track, delayed), and the category
-  cards replaced by a per-project summary box: programme, initiative, project,
-  owner, status, spend, and a written summary of progress, achievements,
-  challenges and the reasons for any delay. The written summary needs fields
-  that do not exist and text the office has to write, and none of the eleven
-  strategic projects has an owner, a status or any spend recorded.
-- **The Prince's board** lacks three things the office lists for it: the
-  impact indicators against baseline and target, pillar progress, and the
-  decisions needing his support. The figures in the office's illustrative
-  example are design, not data, and are not loaded.
+- **The projects page**, CEO p.3 and VP p.4. The summary strip is now the four
+  counts the office named — total, active, on track, delayed — over the
+  office's own eleven projects; "active" means work has begun (an actual start,
+  reported progress, or a phase past planning). The category cards are now a
+  row per project: programme, initiative, project, owner, status, spend and a
+  written summary. The summary draws on four new fields on the project form —
+  progress, achievements, challenges, reasons for delay — which the office has
+  to write; until it does, every row says so, and owner, status and spend read
+  "—" because none is recorded for any of the eleven.
+- **The Prince's board** now opens with the nine impact indicators against
+  baseline and target, as in the office's example, and shows pillar progress.
+  Their units differ, so each indicator's bars are scaled to that indicator and
+  the figures are printed on them. The example's own figures are design and
+  were not loaded. **Decisions needing his support are not shown**: nothing on
+  the system holds such decisions — the 114 records in the decisions model are
+  the strategy's directives, and showing them under that heading would say
+  something untrue. Risks needing his support are covered by the critical-risk
+  card, the five that score 9.
+- «مؤشرات عامة» said "19 متأخر" for nineteen initiatives that have not begun;
+  it counts late ones now.
+
+A tenth contradiction in the office's files turned up while checking the
+impact chart: the indicator card for **مساهمة الباحة في الإيرادات غير النفطية**
+(slide 6 of the indicator deck) repeats the GDP card's figures exactly — 26.3
+for 2024, then 27.9, 29.6, 30.9, 31.2, 31.6 — yet its unit is millions of
+riyals where GDP's is billions, and its formula (VAT at 15% plus zakat at 2.5%
+plus fees) cannot produce a GDP figure. The figures are loaded as written and
+the office has been asked for the right ones.
 
 The shared dashboards 2 and 3 and the seed have **not** been changed this
 round. If the script that made the personal copies on 4 October is run again,
