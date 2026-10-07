@@ -980,7 +980,9 @@ def impact_bars(comp, cfg, env):
         current = kpi_at(k, flt)[0] if reported else None
         base = k.baseline_value if k.baseline_year else None
         target = k.target_value or None
-        items.append({"label": k.name, "record": _record("albaha.kpi", k), "bars": [
+        items.append({"label": k.name, "record": _record("albaha.kpi", k),
+                      "baseline": lab(base, k), "value": lab(current, k), "target": lab(target, k),
+                      "bars": [
             {"value": base or 0, "label": lab(base, k), "color": "#B5BCC2"},
             {"value": current or 0, "label": lab(current, k), "color": "#F0974F"},
             {"value": target or 0, "label": lab(target, k), "color": "#00AB9D"},

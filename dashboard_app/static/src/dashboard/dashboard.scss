@@ -1120,14 +1120,6 @@ body.o_baha_dash_active {
         .o_baha_barv__bar { width: 16px; }
         .o_baha_barv__label { text-align: center; line-height: 1.3; }
     }
-    &__legend {
-        display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 2px 0 8px;
-        font-size: 11px; color: var(--dash-text-tertiary);
-    }
-    &__legend-item {
-        display: inline-flex; align-items: center; gap: 5px;
-        i { width: 9px; height: 9px; border-radius: 2px; display: inline-block; }
-    }
 }
 
 // ---- Data table ----

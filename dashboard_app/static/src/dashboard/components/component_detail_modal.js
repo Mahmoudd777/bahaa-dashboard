@@ -25,6 +25,7 @@ function cellText(cell) {
 const ITEM_COLUMNS = [
     { keys: ["_group"], label: "المجموعة" },
     { keys: ["label", "text"], label: "العنصر" },
+    { keys: ["baseline"], label: "خط الأساس" },
     { keys: ["value"], label: "القيمة", unitKey: "unit" },
     { keys: ["target"], label: "المستهدف" },
     { keys: ["pct"], label: "النسبة", suffix: "%" },

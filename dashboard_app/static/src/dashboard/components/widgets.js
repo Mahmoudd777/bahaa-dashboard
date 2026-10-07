@@ -661,12 +661,10 @@ export class BarChartH extends Component {
 export class BarChartV extends Component {
     static template = xml`
         <div class="o_baha_card o_baha_barv">
-            <div class="o_baha_card__title" t-if="props.comp.title and !props.comp.data.hide_head" t-esc="props.comp.title"/>
-            <div class="o_baha_barv__legend" t-if="props.comp.data.legend">
-                <t t-foreach="props.comp.data.legend" t-as="lg" t-key="lg_index">
-                    <span class="o_baha_barv__legend-item"><i t-attf-style="background:{{lg.color}};"/><t t-esc="lg.label"/></span>
-                </t>
-            </div>
+            <t t-if="props.comp.data.legend">
+                <div class="o_baha_card__head" t-if="props.comp.title and !props.comp.data.hide_head"><span class="o_baha_card__title" t-esc="props.comp.title"/><div class="o_baha_card__tools"><span class="o_baha_legend"><t t-foreach="props.comp.data.legend" t-as="lg" t-key="lg_index"><span class="o_baha_legend__item"><i class="o_baha_legend__dot" t-attf-style="background:{{lg.color}};"/><t t-esc="lg.label"/></span></t></span><button t-if="props.onOpenComponent" class="o_baha_expand_btn" title="عرض كامل البيانات" t-on-click="() => props.onOpenComponent(props.comp)"><i class="fa fa-expand"/></button></div></div>
+            </t>
+            <div t-else="" class="o_baha_card__title" t-if="props.comp.title and !props.comp.data.hide_head" t-esc="props.comp.title"/>
             <div class="o_baha_barv__plot" t-att-class="{ 'o_baha_barv__plot--noaxis': props.comp.data.hide_axis }">
                 <div class="o_baha_barv__yaxis" t-if="!props.comp.data.hide_axis">
                     <span>100%</span><span>80%</span><span>60%</span><span>40%</span><span>20%</span>

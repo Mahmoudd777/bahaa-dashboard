@@ -153,6 +153,16 @@ class DashboardDashboard(models.Model):
             "strategy_objectives": self._aggregate_strategy_objectives,
             "projects_all": self._aggregate_projects,
             "projects_by_category": self._aggregate_projects,
+            # The VP's summary figures and the projects-page counts asked for
+            # on 5 October. Every stat item opens its list through this map; a
+            # key missing here is a card that errors when clicked.
+            "quality_incomplete_kpis": self._aggregate_incomplete_kpis,
+            "quality_impact_on_track": lambda params: self._aggregate_kpi_group(False),
+            "quality_strategic_on_track": lambda params: self._aggregate_kpi_group(True),
+            "proj_total": lambda params: self._aggregate_own_projects("total"),
+            "proj_active": lambda params: self._aggregate_own_projects("active"),
+            "proj_on_track": lambda params: self._aggregate_own_projects("on_track"),
+            "proj_delayed": lambda params: self._aggregate_own_projects("delayed"),
         }
 
     @api.model
@@ -322,7 +332,69 @@ class DashboardDashboard(models.Model):
         records = self._search_records("albaha.initiative", order="id").filtered(
             lambda r: initiative_at(r, flt)[1] == "red"
         )
-        return self._initiative_rows(records, "مبادرات بتأخير متوقع")
+        return self._initiative_rows(records, "عدد المبادرات المتأخرة")
+
+    def _aggregate_incomplete_kpis(self, params):
+        """Indicators missing any of a baseline, annual targets or a data
+        source, with what each one lacks."""
+        records = self._search_records("albaha.kpi", order="code, id")
+
+        def missing(k):
+            gaps = []
+            if not k.baseline_year:
+                gaps.append("خط الأساس")
+            if not k.target_value or not k.value_ids.filtered("target_value"):
+                gaps.append("المستهدفات السنوية")
+            if not k.data_source:
+                gaps.append("مصدر البيانات")
+            return gaps
+
+        records = records.filtered(missing)
+        return self._line_rows(records, ["الرمز", "المؤشر", "البيانات الناقصة"], lambda r: [
+            r.code, r.name, "، ".join(missing(r)),
+        ], "عدد المؤشرات غير مكتملة البيانات")
+
+    def _aggregate_kpi_group(self, strategic):
+        """Impact indicators (vision-level objectives, no pillar) or strategic
+        indicators (pillar-level objectives), with where each one stands."""
+        from .dashboard_helpers import QUALITY_AR, fmt_num
+        from .dashboard_providers import _flt, kpi_at
+
+        flt = _flt(self.env)
+        records = self._search_records("albaha.kpi", order="code, id").filtered(
+            lambda k: k.objective_id and bool(k.objective_id.pillar_id) == strategic)
+        title = "نسبة المؤشرات الاستراتيجية على المسار" if strategic else "نسبة مؤشرات الأثر الكلي على المسار"
+        return self._line_rows(records, ["الرمز", "المؤشر", "القيمة", "المستهدف", "الحالة"], lambda r: [
+            r.code, r.name,
+            fmt_num(kpi_at(r, flt)[0]),
+            fmt_num(kpi_at(r, flt)[1]),
+            QUALITY_AR.get(kpi_at(r, flt)[3], kpi_at(r, flt)[3]),
+        ], title)
+
+    def _aggregate_own_projects(self, which):
+        """The office's own projects behind each of the four project counts —
+        the same set and the same tests project_counts uses."""
+        from .dashboard_providers import PROJECT_STATUS, PROJECT_STATUS_AR, own_project_facts
+
+        recs = [f["rec"] for f in own_project_facts(self.env(su=True))]
+        tests = {
+            "total": lambda p: True,
+            "active": lambda p: p.actual_start or (p.progress_pct or 0) > 0
+                                or p.phase in ("executing", "monitoring", "closing"),
+            "on_track": lambda p: p.health_status == "green",
+            "delayed": lambda p: p.health_status == "red",
+        }
+        titles = {"total": "إجمالي عدد المشاريع", "active": "إجمالي عدد المشاريع المفعلة",
+                  "on_track": "إجمالي عدد المشاريع على المسار", "delayed": "إجمالي عدد المشاريع المتأخرة"}
+        ids = [p.id for p in recs if tests[which](p)]
+        records = self.env["albaha.project"].sudo().browse(ids)
+        return self._line_rows(records, ["المشروع", "البرنامج", "المبادرة", "الحالة", "الإنجاز"], lambda r: [
+            r.name,
+            r.initiative_id.program_id.name if r.initiative_id else "",
+            r.initiative_id.code or "",
+            PROJECT_STATUS_AR.get(PROJECT_STATUS.get(r.health_status)),
+            "%d%%" % int(round(r.progress_pct or 0)),
+        ], titles[which])
 
     def _aggregate_late_projects(self, params):
         from .dashboard_helpers import fmt_num
@@ -506,7 +578,13 @@ class DashboardDashboard(models.Model):
                 {
                     "title": "بيانات المشروع",
                     "items": [
-                        {"label": "البرنامج", "value": project.program_id.name or "—"},
+                        # Strategy projects reach their programme through their
+                        # initiative; program_id is the unused PMO programme.
+                        {"label": "البرنامج", "value": (project.initiative_id.program_id.name
+                                                        if project.initiative_id else "")
+                                                       or project.program_id.name or "—"},
+                        {"label": "المبادرة", "value": " ".join(filter(None, [
+                            project.initiative_id.code, project.initiative_id.name])) or "—"},
                         {"label": "التصنيف", "value": project.category_id.name or "—"},
                         {"label": "نوع المشروع", "value": project.project_type or "—"},
                         {"label": "مدير المشروع", "value": project.manager_id.name or "—"},
@@ -521,6 +599,17 @@ class DashboardDashboard(models.Model):
                         {"label": "النهاية المخططة", "value": str(project.planned_end or "—")},
                         {"label": "البداية الفعلية", "value": str(project.actual_start or "—")},
                         {"label": "النهاية الفعلية", "value": str(project.actual_end or "—")},
+                    ],
+                },
+                {
+                    # The written status the office enters on the project form.
+                    "title": "ملخص حالة المشروع",
+                    "items": [
+                        {"label": label, "value": (project[field] if field in project._fields else "") or "لم يُدخل بعد"}
+                        for field, label in (("progress_summary", "ملخص التقدم"),
+                                             ("achievements", "أبرز الإنجازات"),
+                                             ("challenges", "التحديات"),
+                                             ("delay_reason", "أسباب التأخير"))
                     ],
                 },
             ],
