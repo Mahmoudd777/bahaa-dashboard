@@ -504,6 +504,57 @@ Renumbering the indicators changes the key the export sheets match on: a
 sheet exported before 2 October 2026 carries the old codes and must not be
 re-imported.
 
+## The office's comments of 5 October 2026
+
+`Dashboard Comments 05102026.pptx` is organised by dashboard and opens with
+the three-level structure the office approved at the start: one board for the
+Prince, two pages for the CEO, three for the VP, each level adding to the one
+above it.
+
+It was made against three **personal dashboards** (4 Prince, 5 CEO, 6 VP)
+that a script created on 4 October from an older layout — so the 30 September
+changes, which were made on the shared dashboards 2 and 3, had not reached what
+the users actually see. Those changes are now on the personal copies as well.
+
+Done, through the editor's own save function, with a snapshot of every card
+taken first (sheet 51):
+
+| Dashboard | Comment | Done |
+|---|---|---|
+| Prince | One board only | The second page, «الملخص التنفيذي للمشاريع», is removed |
+| Prince | (30 Sept) remove the technical-KPI box | Removed; the cards below moved up into its place |
+| CEO p.1 | Remove the transformation figure | Off «مؤشرات عامة»; the card now has three figures |
+| CEO p.1 | Pillar and goal progress on top, objective gauges below | Moved; a goals card was added, as page 1 had none |
+| CEO p.2 | Programme progress on top, critical risks below | Moved |
+| CEO, VP projects page | Remove earned value | Off; the cost and schedule indices stay |
+| VP p.1 | Four new summary figures | Incomplete-data indicators, delayed initiatives, % impact indicators on track, % strategic indicators on track |
+| VP p.1 | Alerts → pillar performance with programme progress below | Swapped |
+| VP p.2 | Pillar performance → initiative performance | Swapped, with a new per-initiative bar |
+| VP p.3 | Remove the target-achievement chart | Removed; meetings moved up |
+
+"Incomplete data" uses the office's own definition from the structure slide:
+a baseline, annual targets and a data source. Impact indicators are those
+measuring the four vision-level objectives, which sit under no pillar.
+
+Not done, because each needs something only the office can supply or a
+decision from it:
+
+- **The projects page**, CEO p.3 and VP p.4. The office wants the summary strip
+  replaced by four counts (total, active, on track, delayed), and the category
+  cards replaced by a per-project summary box: programme, initiative, project,
+  owner, status, spend, and a written summary of progress, achievements,
+  challenges and the reasons for any delay. The written summary needs fields
+  that do not exist and text the office has to write, and none of the eleven
+  strategic projects has an owner, a status or any spend recorded.
+- **The Prince's board** lacks three things the office lists for it: the
+  impact indicators against baseline and target, pillar progress, and the
+  decisions needing his support. The figures in the office's illustrative
+  example are design, not data, and are not loaded.
+
+The shared dashboards 2 and 3 and the seed have **not** been changed this
+round. If the script that made the personal copies on 4 October is run again,
+it will overwrite all of this.
+
 ## Rebuilding
 
 The extraction scripts and the per-entity sheets are in `extraction/`. The
