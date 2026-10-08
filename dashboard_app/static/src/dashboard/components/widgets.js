@@ -643,16 +643,6 @@ export class BarChartH extends Component {
     // beat its target, e.g. 118%) cannot render a fill wider than its track.
     // The label still shows the true value; only the drawing is capped.
     pct(v) { return Math.max(0, Math.min(100, Math.round(((v || 0) / this.max) * 100))); }
-    // With per_item_scale each item's bars are scaled to that item alone, for
-    // series whose units differ from one item to the next (billions of riyals
-    // beside percentages). The figure is then printed on the bar instead.
-    barPct(item, v) {
-        if (!this.props.comp.data.per_item_scale) {
-            return this.pct(v);
-        }
-        const top = Math.max(0, ...(item.bars || []).map((b) => Math.abs(b.value || 0)));
-        return top ? Math.max(0, Math.min(100, Math.round((Math.abs(v || 0) / top) * 85))) : 0;
-    }
 }
 
 // ---------------------------------------------------------------------------
@@ -706,6 +696,18 @@ export class BarChartV extends Component {
     // Clamped for the same reason as BarChartH — a value over `max` must not
     // draw a column taller than the plot area.
     pct(v) { return Math.max(0, Math.min(100, Math.round(((v || 0) / this.max) * 100))); }
+    // With per_item_scale each item's bars are scaled to that item alone, for
+    // series whose units differ from one item to the next (billions of riyals
+    // beside percentages). The figure is then printed on the bar instead.
+    // Lives here because it is this template that calls it; it was once
+    // defined on BarChartH, and every vertical chart then failed to render.
+    barPct(item, v) {
+        if (!this.props.comp.data.per_item_scale) {
+            return this.pct(v);
+        }
+        const top = Math.max(0, ...(item.bars || []).map((b) => Math.abs(b.value || 0)));
+        return top ? Math.max(0, Math.min(100, Math.round((Math.abs(v || 0) / top) * 85))) : 0;
+    }
 }
 
 // ---------------------------------------------------------------------------
