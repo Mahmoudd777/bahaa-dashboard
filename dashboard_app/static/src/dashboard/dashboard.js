@@ -30,6 +30,31 @@ import { UnitContent } from "./components/unit_content";
 import { dispatchCloseOverlays } from "./components/click_helpers";
 import { useReveal } from "./anim";
 
+// How long a dashboard request may run before the page says so. The server
+// answers these in well under a second (get_layout: 0.03-0.4s in the logs);
+// what pushed requests past the old 8s limit was the client side — a first
+// visit on a slow link or device, still fetching and parsing the bundle. Long
+// enough not to fail those, short enough that a truly hung request still gets
+// a message instead of an endless spinner.
+const RPC_TIMEOUT_MS = 20000;
+
+// Race a request against RPC_TIMEOUT_MS. A timeout only stops the waiting; the
+// request itself keeps going, so callers hold on to `call` and use its answer
+// if it still arrives (see lateAnswer).
+function withTimeout(call) {
+    return Promise.race([
+        call,
+        new Promise((_, reject) =>
+            setTimeout(() => reject(new Error("انتهت مهلة الاتصال بالخادم")), RPC_TIMEOUT_MS)),
+    ]);
+}
+
+// After a timeout, apply the request's answer if and when it turns up, rather
+// than leaving an error on screen over data the server did send.
+function lateAnswer(call, apply) {
+    call.then(apply).catch(() => {});
+}
+
 const INTERACTIVE_WIDGETS = new Set([
     "data_table", "gauge_card", "gauge_semi", "kpi_gauge_card", "stat_card",
     "progress_card", "budget_split_bar", "bar_h", "bar_h_planned", "bar_v",
@@ -459,16 +484,14 @@ export class Dashboard extends Component {
         // coming back shows fresh numbers without a manual reload. Race a timeout so
         // a hung request never leaves the page blank.
         this._loadingLayout = false;
+        // Bumped on every load, so a late answer from an older load can tell it
+        // has been overtaken and must not overwrite newer data.
+        this._layoutSeq = 0;
         this.loadLayout = async (replay = false) => {
             if (this._loadingLayout) return;
             this._loadingLayout = true;
-            try {
-                const layout = await Promise.race([
-                    rpc("/web/dataset/call_kw/dashboard.dashboard/get_layout",
-                        { model: "dashboard.dashboard", method: "get_layout", args: [],
-                          kwargs: { dashboard_filter: this.state.filter || null, target_user_id: this.editUserId || null } }),
-                    new Promise((_, rej) => setTimeout(() => rej(new Error("RPC timeout (8s)")), 8000)),
-                ]);
+            const seq = ++this._layoutSeq;
+            const apply = (layout) => {
                 this.state.layout = layout;
                 this.state.errorMsg = "";
                 if (this.state.editing) {
@@ -477,10 +500,23 @@ export class Dashboard extends Component {
                 if (replay) {
                     this._revealKey = null;     // force the onPatched entrance replay
                 }
+            };
+            const call = rpc("/web/dataset/call_kw/dashboard.dashboard/get_layout",
+                { model: "dashboard.dashboard", method: "get_layout", args: [],
+                  kwargs: { dashboard_filter: this.state.filter || null, target_user_id: this.editUserId || null } });
+            try {
+                apply(await withTimeout(call));
             } catch (e) {
                 if (this.state.loading) {
                     this.state.errorMsg = "تعذّر تحميل البيانات: " + (e.message || e);
                 }
+                // A slow first load used to strand the user on this error even
+                // though the layout arrived a moment later; show it when it does.
+                lateAnswer(call, (layout) => {
+                    if (seq === this._layoutSeq) {
+                        apply(layout);
+                    }
+                });
             } finally {
                 this.state.loading = false;
                 this._loadingLayout = false;
@@ -1220,25 +1256,27 @@ export class Dashboard extends Component {
         };
         this.state.detailPanels.push(panel);
 
-        try {
-            const detail = await Promise.race([
-                rpc("/web/dataset/call_kw/dashboard.dashboard/get_record_detail",
-                    { model: "dashboard.dashboard", method: "get_record_detail",
-                      args: [record.model, record.id],
-                      kwargs: { dashboard_filter: this.state.filter || null } }),
-                new Promise((_, rej) => setTimeout(() => rej(new Error("RPC timeout (8s)")), 8000)),
-            ]);
-            // The panel may have been closed while the request was in flight.
+        // The panel may have been closed while the request was in flight.
+        const showDetail = (detail) => {
             const live = this.state.detailPanels.find((p) => p.id === id);
             if (live) {
                 live.detail = detail;
+                live.error = "";
             }
+        };
+        const call = rpc("/web/dataset/call_kw/dashboard.dashboard/get_record_detail",
+            { model: "dashboard.dashboard", method: "get_record_detail",
+              args: [record.model, record.id],
+              kwargs: { dashboard_filter: this.state.filter || null } });
+        try {
+            showDetail(await withTimeout(call));
         } catch (e) {
             const live = this.state.detailPanels.find((p) => p.id === id);
             if (live) {
                 live.error = "تعذّر تحميل تفاصيل السجل";
             }
             this.notification.add(e.message || "تعذّر تحميل تفاصيل السجل", { type: "danger" });
+            lateAnswer(call, showDetail);
         } finally {
             const live = this.state.detailPanels.find((p) => p.id === id);
             if (live) {
@@ -1298,18 +1336,25 @@ export class Dashboard extends Component {
         this.state.aggregateList.loading = true;
         this.state.aggregateList.error = "";
         this.state.aggregateList.detail = null;
+        // Identifies this drill-down, so a late answer cannot land in a list
+        // that has since been closed or reopened on another card.
+        const token = (this._aggregateSeq = (this._aggregateSeq || 0) + 1);
+        const showList = (detail) => {
+            if (token === this._aggregateSeq && this.state.aggregateList.open) {
+                this.state.aggregateList.detail = detail;
+                this.state.aggregateList.error = "";
+            }
+        };
+        const call = rpc("/web/dataset/call_kw/dashboard.dashboard/get_aggregate_records",
+            { model: "dashboard.dashboard", method: "get_aggregate_records",
+              args: [aggregate],
+              kwargs: { dashboard_filter: this.state.filter || null } });
         try {
-            const detail = await Promise.race([
-                rpc("/web/dataset/call_kw/dashboard.dashboard/get_aggregate_records",
-                    { model: "dashboard.dashboard", method: "get_aggregate_records",
-                      args: [aggregate],
-                      kwargs: { dashboard_filter: this.state.filter || null } }),
-                new Promise((_, rej) => setTimeout(() => rej(new Error("RPC timeout (8s)")), 8000)),
-            ]);
-            this.state.aggregateList.detail = detail;
+            showList(await withTimeout(call));
         } catch (e) {
             this.state.aggregateList.error = "تعذّر تحميل قائمة السجلات";
             this.notification.add(e.message || "تعذّر تحميل قائمة السجلات", { type: "danger" });
+            lateAnswer(call, showList);
         } finally {
             this.state.aggregateList.loading = false;
         }
