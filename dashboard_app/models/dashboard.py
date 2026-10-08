@@ -1245,8 +1245,200 @@ class DashboardDashboard(models.Model):
         return applied
 
     @api.model
+    def _resolve_editable_dashboard(self, dashboard_id, target_user_id=None):
+        """The dashboard the acting user may edit right now, or raise.
+
+        Shared by save_layout_edits and the catalog endpoints so every write
+        path applies the same rule: an admin edits another user's personal copy
+        (never a shared template), anyone else only the dashboard get_layout
+        resolves for them.
+        """
+        acting_user = self.env.user.sudo()
+        if not self._user_can_edit_layout(acting_user):
+            raise AccessError("Dashboard layout edit permission is required.")
+
+        if target_user_id:
+            # Admin editing another user's own dashboard (its personal copy).
+            target = self.env["res.users"].sudo().browse(int(target_user_id)).exists()
+            if not target:
+                raise UserError("Invalid target user.")
+            return self._personal_dashboard_for(target)
+
+        dashboard = self.browse(int(dashboard_id or 0)).exists()
+        if not dashboard:
+            raise UserError("Invalid dashboard.")
+        # Editors may only touch the dashboard they are assigned to (the same
+        # one get_layout resolves for them) — not arbitrary dashboards by id.
+        allowed_dashboard = (
+            acting_user.dashboard_id
+            or self.search([("is_default", "=", True)], limit=1)
+            or self.search([], limit=1)
+        )
+        if dashboard != allowed_dashboard:
+            raise AccessError("You can only edit the layout of your own dashboard.")
+        return dashboard
+
+    @api.model
+    def _layout_token(self, dashboard):
+        self.env.flush_all()
+        return fields.Datetime.to_string(self._layout_version_dt(dashboard)) or ""
+
+    # --- layout catalog ------------------------------------------------------
+    # The editor's "+" used to offer only what had been removed from THIS
+    # dashboard, so a board could never gain a card that lived on another one —
+    # the Prince's could not receive any of the eighteen kinds on the CEO's and
+    # VP's. The catalog lists every live card and every page in the system.
+    #
+    # Adding never writes a visible change straight away: the copy is created
+    # HIDDEN, and the editor reveals it through its existing remove/re-add
+    # draft. Saving shows it; discarding leaves it hidden on the board, where
+    # the "+" panel offers it back. One mechanism, not two.
+
+    CARD_TYPE_LABELS = {
+        "gauge_grid": "لوحة مؤشرات دائرية", "stat_grid": "بطاقات أرقام",
+        "kpi_grid": "بطاقات مؤشرات أداء", "semi_grid": "مؤشرات نصف دائرية",
+        "gauge_card": "مؤشر دائري", "gauge_semi": "مؤشر نصف دائري",
+        "kpi_gauge_card": "بطاقة مؤشر أداء", "stat_card": "بطاقة رقم",
+        "progress_card": "بطاقة تقدم", "budget_split_bar": "شريط الميزانية",
+        "bar_h": "أعمدة أفقية", "bar_h_planned": "أعمدة مخطط وفعلي",
+        "bar_v": "أعمدة رأسية", "data_table": "جدول", "goals_list": "قائمة أهداف",
+        "list_cards": "قائمة بطاقات", "alerts_panel": "تنبيهات",
+        "portfolio_health": "صحة المحفظة", "evm_panel": "القيمة المكتسبة",
+        "project_category_cards": "تصنيفات المشاريع",
+    }
+
+    @api.model
+    def _catalog_cards(self):
+        """One representative per kind of live card, keyed by (type, source).
+
+        Only provider-backed cards: a seed card has no data of its own
+        (get_data strips its values), so offering it would add an empty box.
+        """
+        Component = self.env["dashboard.component"].sudo()
+        best = {}
+        for comp in Component.search([
+            ("data_source", "=", "model"), ("source", "!=", False),
+            ("component_type", "!=", "banner"),
+        ], order="id"):
+            key = (comp.component_type, comp.source)
+            rank = (
+                bool(comp.visible and comp.section_id.visible),
+                not comp.section_id.dashboard_id.owner_user_id,  # prefer shared templates
+            )
+            if key not in best or rank > best[key][0]:
+                best[key] = (rank, comp)
+        return [comp for _rank, comp in best.values()]
+
+    @api.model
+    def get_layout_catalog(self, dashboard_id=None, target_user_id=None):
+        dashboard = self._resolve_editable_dashboard(dashboard_id, target_user_id)
+        on_board = {
+            (c.component_type, c.source)
+            for s in dashboard.section_ids.filtered("visible")
+            for c in s.component_ids.filtered("visible")
+        }
+        cards = [{
+            "source_id": c.id,
+            "name": c.name,
+            "type": c.component_type,
+            "type_label": self.CARD_TYPE_LABELS.get(c.component_type, c.component_type),
+            "origin": c.section_id.name,
+            "on_board": (c.component_type, c.source) in on_board,
+        } for c in self._catalog_cards()]
+        cards.sort(key=lambda c: (c["origin"], c["name"]))
+
+        # Pages: one per distinct name, the fullest copy standing for it.
+        visible_names = set(dashboard.section_ids.filtered("visible").mapped("name"))
+        pages = {}
+        for sec in self.env["dashboard.section"].sudo().search([("dashboard_id", "!=", dashboard.id)]):
+            count = len(sec.component_ids.filtered(
+                lambda c: c.visible and c.component_type != "banner"))
+            if count and (sec.name not in pages or count > pages[sec.name][1]):
+                pages[sec.name] = (sec, count)
+        tabs = [{
+            "source_id": sec.id, "name": name, "count": count,
+            "on_board": name in visible_names,
+        } for name, (sec, count) in sorted(pages.items())]
+        return {"cards": cards, "tabs": tabs}
+
+    @api.model
+    def layout_add_component(self, source_component_id, section_id, dashboard_id=None,
+                             target_user_id=None):
+        """Copy a catalog card, hidden, onto a section of the edited dashboard."""
+        dashboard = self._resolve_editable_dashboard(dashboard_id, target_user_id)
+        section = self.env["dashboard.section"].sudo().browse(int(section_id or 0)).exists()
+        if not section or section.dashboard_id != dashboard:
+            raise UserError("Invalid dashboard section.")
+        # The source is resolved by id and must be one of the catalog's own
+        # records — never a type or provider name taken from the browser.
+        source = self.env["dashboard.component"].sudo().browse(int(source_component_id or 0)).exists()
+        if not source or source not in self._catalog_cards():
+            raise UserError("هذه البطاقة غير متاحة للإضافة.")
+
+        bottom = 0
+        for sibling in section.component_ids.filtered("visible"):
+            top = sibling.group_grid_y if sibling.group_key else sibling.grid_y
+            height = sibling.group_row_span if sibling.group_key else sibling.row_span
+            bottom = max(bottom, (top or 0) + (height or 0))
+        copy = source.copy({
+            "section_id": section.id,
+            "visible": False,
+            "grid_x": 0,
+            "grid_y": bottom,
+            "group_grid_x": 0,
+            "group_grid_y": bottom,
+            "sequence": max(section.component_ids.mapped("sequence") or [0]) + 10,
+        })
+        if source.group_key:
+            # Keep its titled frame, but never merge into a panel that happens
+            # to share the key on the target page.
+            copy.group_key = "%s_%s" % (source.group_key, copy.id)
+        unit = self._build_units([copy._serialize()])
+        return {"unit": unit[0] if unit else None, "layout_version": self._layout_token(dashboard)}
+
+    @api.model
+    def layout_add_section(self, name=None, source_section_id=None, dashboard_id=None,
+                           target_user_id=None):
+        """Add a page to the edited dashboard, hidden: empty and named, or a
+        copy of a catalog page with its visible cards."""
+        dashboard = self._resolve_editable_dashboard(dashboard_id, target_user_id)
+        Section = self.env["dashboard.section"].sudo()
+        source = False
+        if source_section_id:
+            source = Section.browse(int(source_section_id)).exists()
+            if not source or source.dashboard_id == dashboard:
+                raise UserError("هذا التبويب غير متاح للإضافة.")
+        name = (name or (source and source.name) or "").strip()
+        if not name:
+            raise UserError("اكتب اسماً للتبويب الجديد.")
+        if len(name) > 60:
+            raise UserError("اسم التبويب طويل جداً.")
+
+        section = Section.create({
+            "name": name,
+            "dashboard_id": dashboard.id,
+            "visible": False,
+            "sequence": max(dashboard.section_ids.mapped("sequence") or [0]) + 1,
+        })
+        if source:
+            for comp in source.component_ids.filtered(
+                    lambda c: c.visible and c.component_type != "banner"):
+                comp.copy({"section_id": section.id})
+        comps = [c._serialize() for c in section.component_ids]
+        return {
+            "section": {
+                "id": section.id,
+                "name": section.name,
+                "components": comps,
+                "units": self._build_units(comps),
+                "removed_units": [],
+            },
+            "layout_version": self._layout_token(dashboard),
+        }
+
+    @api.model
     def save_layout_edits(self, dashboard_id, sections, layout_version=None, visibility=None,
-                          moves=None, target_user_id=None):
+                          moves=None, target_user_id=None, section_names=None):
         """Persist component order and grid layout from dashboard edit mode.
 
         ``sections`` is a list of ``{"section_id": id, "items": [...]}``
@@ -1263,30 +1455,10 @@ class DashboardDashboard(models.Model):
         ``visibility`` (optional) removes/re-adds cards and tabs:
         ``{"components": {id: bool}, "sections": {id: bool}}`` — written to the
         ``visible`` field BEFORE the layout items so a re-added card is editable.
-        """
-        acting_user = self.env.user.sudo()
-        if not self._user_can_edit_layout(acting_user):
-            raise AccessError("Dashboard layout edit permission is required.")
 
-        if target_user_id:
-            # Admin editing another user's own dashboard (its personal copy).
-            target = self.env["res.users"].sudo().browse(int(target_user_id)).exists()
-            if not target:
-                raise UserError("Invalid target user.")
-            dashboard = self._personal_dashboard_for(target)
-        else:
-            dashboard = self.browse(int(dashboard_id)).exists()
-            if not dashboard:
-                raise UserError("Invalid dashboard.")
-            # Editors may only touch the dashboard they are assigned to (the same
-            # one get_layout resolves for them) — not arbitrary dashboards by id.
-            allowed_dashboard = (
-                acting_user.dashboard_id
-                or self.search([("is_default", "=", True)], limit=1)
-                or self.search([], limit=1)
-            )
-            if dashboard != allowed_dashboard:
-                raise AccessError("You can only edit the layout of your own dashboard.")
+        ``section_names`` (optional) renames tabs: ``{section_id: name}``.
+        """
+        dashboard = self._resolve_editable_dashboard(dashboard_id, target_user_id)
 
         if layout_version:
             current = self._layout_version_dt(dashboard)
@@ -1358,7 +1530,22 @@ class DashboardDashboard(models.Model):
                 })
             self.env.flush_all()
 
-        if not sections and not visibility and not moves:
+        if section_names:
+            for sid, new_name in section_names.items():
+                sec = Section.sudo().browse(int(sid)).exists()
+                if not sec or sec.dashboard_id != dashboard:
+                    raise UserError("Invalid dashboard section.")
+                new_name = (new_name or "").strip()
+                if not new_name or len(new_name) > 60:
+                    raise UserError("اسم التبويب مطلوب ولا يزيد عن 60 حرفاً.")
+                # name is a translated field: writing it in the editor's own
+                # language would rename the tab for the admin and leave the old
+                # name in front of a user reading in Arabic.
+                sec.update_field_translations("name", {
+                    code: new_name for code, _label in self.env["res.lang"].get_installed()
+                })
+
+        if not sections and not visibility and not moves and not section_names:
             raise UserError("No layout changes to save.")
 
         saved = 0

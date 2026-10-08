@@ -169,27 +169,76 @@ export class Dashboard extends Component {
                             </div>
                         </t>
                         <t t-else="">
-                            <div t-if="state.addPanelOpen" class="o_baha_add_panel">
-                                <div class="o_baha_add_panel__title">إضافة عنصر محذوف</div>
-                                <div class="o_baha_add_panel__group" t-if="removedTabsForAdd.length">
-                                    <div class="o_baha_add_panel__label">التبويبات</div>
-                                    <t t-foreach="removedTabsForAdd" t-as="tab" t-key="'t'+tab.id">
-                                        <button class="o_baha_add_item" t-on-click="() => this.onAddTab(tab.id)">
-                                            <i class="fa fa-plus"/> <span t-esc="tab.name"/>
-                                        </button>
+                            <div t-if="state.addPanelOpen" class="o_baha_add_panel o_baha_add_panel--catalog">
+                                <div class="o_baha_add_panel__title">إضافة إلى اللوحة</div>
+
+                                <t t-if="removedTabsForAdd.length or removedCardsForAdd.length">
+                                    <div class="o_baha_add_panel__section">محذوف من هذه اللوحة</div>
+                                    <div class="o_baha_add_panel__group" t-if="removedTabsForAdd.length">
+                                        <div class="o_baha_add_panel__label">التبويبات</div>
+                                        <t t-foreach="removedTabsForAdd" t-as="tab" t-key="'t'+tab.id">
+                                            <button class="o_baha_add_item" t-on-click="() => this.onAddTab(tab.id)">
+                                                <i class="fa fa-plus"/> <span t-esc="tab.name"/>
+                                            </button>
+                                        </t>
+                                    </div>
+                                    <div class="o_baha_add_panel__group" t-if="removedCardsForAdd.length">
+                                        <div class="o_baha_add_panel__label">البطاقات (هذا التبويب)</div>
+                                        <t t-foreach="removedCardsForAdd" t-as="card" t-key="'c'+card.key">
+                                            <button class="o_baha_add_item" t-on-click="() => this.onAddUnit(card.key)">
+                                                <i class="fa fa-plus"/> <span t-esc="card.name"/>
+                                            </button>
+                                        </t>
+                                    </div>
+                                </t>
+
+                                <div class="o_baha_add_panel__section">تبويب جديد فارغ</div>
+                                <div class="o_baha_add_panel__newtab">
+                                    <input class="o_baha_add_panel__input" placeholder="اسم التبويب"
+                                           t-model="state.newTabName" t-on-keydown="onNewTabKeydown"/>
+                                    <button class="o_baha_btn o_baha_btn--primary"
+                                            t-att-disabled="!state.newTabName.trim() or state.addingItem"
+                                            t-on-click="onCreateEmptyTab">إنشاء</button>
+                                </div>
+
+                                <div t-if="state.catalogLoading" class="o_baha_add_panel__empty">
+                                    <i class="fa fa-spinner fa-spin"/> جارٍ تحميل العناصر...
+                                </div>
+                                <t t-elif="state.catalog">
+                                    <div class="o_baha_add_panel__section">تبويب من لوحة أخرى</div>
+                                    <div class="o_baha_add_panel__group">
+                                        <t t-foreach="state.catalog.tabs" t-as="tab" t-key="'ct'+tab.source_id">
+                                            <button class="o_baha_add_item" t-att-disabled="state.addingItem"
+                                                    t-on-click="() => this.onCatalogAddTab(tab.source_id)">
+                                                <i class="fa fa-plus"/> <span t-esc="tab.name"/>
+                                                <small class="o_baha_add_item__meta"><t t-esc="tab.count"/> بطاقة</small>
+                                                <span t-if="tab.on_board" class="o_baha_add_item__badge">موجود</span>
+                                            </button>
+                                        </t>
+                                    </div>
+
+                                    <div class="o_baha_add_panel__section">
+                                        بطاقة — تُضاف إلى «<t t-esc="activeSection.name"/>»
+                                    </div>
+                                    <input class="o_baha_add_panel__input" placeholder="بحث عن بطاقة..."
+                                           t-model="state.catalogQuery"/>
+                                    <t t-foreach="catalogCardGroups" t-as="group" t-key="'cg'+group.origin">
+                                        <div class="o_baha_add_panel__group">
+                                            <div class="o_baha_add_panel__label" t-esc="group.origin"/>
+                                            <t t-foreach="group.cards" t-as="card" t-key="'cc'+card.source_id">
+                                                <button class="o_baha_add_item" t-att-disabled="state.addingItem"
+                                                        t-on-click="() => this.onCatalogAddCard(card.source_id)">
+                                                    <i class="fa fa-plus"/> <span t-esc="card.name"/>
+                                                    <small class="o_baha_add_item__meta" t-esc="card.type_label"/>
+                                                    <span t-if="card.on_board" class="o_baha_add_item__badge">موجودة</span>
+                                                </button>
+                                            </t>
+                                        </div>
                                     </t>
-                                </div>
-                                <div class="o_baha_add_panel__group" t-if="removedCardsForAdd.length">
-                                    <div class="o_baha_add_panel__label">البطاقات (هذا التبويب)</div>
-                                    <t t-foreach="removedCardsForAdd" t-as="card" t-key="'c'+card.key">
-                                        <button class="o_baha_add_item" t-on-click="() => this.onAddUnit(card.key)">
-                                            <i class="fa fa-plus"/> <span t-esc="card.name"/>
-                                        </button>
-                                    </t>
-                                </div>
-                                <div class="o_baha_add_panel__empty" t-if="!removedTabsForAdd.length and !removedCardsForAdd.length">
-                                    لا توجد عناصر محذوفة
-                                </div>
+                                    <div t-if="!catalogCardGroups.length" class="o_baha_add_panel__empty">
+                                        لا توجد بطاقات مطابقة
+                                    </div>
+                                </t>
                             </div>
                             <span class="o_baha_edit_toolbar__hint">
                                 <t t-if="state.editDirty" t-esc="labels.dirtyHint"/>
@@ -367,9 +416,19 @@ export class Dashboard extends Component {
             saving: false,
             confirmDiscard: null,
             addPanelOpen: false,
+            // Layout catalog in the "+" panel (every card and page in the system).
+            catalog: null,
+            catalogLoading: false,
+            catalogQuery: "",
+            newTabName: "",
+            addingItem: false,
         });
         this._editLayoutDraft = null;
         this._editDraftsBySection = {};
+        this._editSectionNames = {};
+        // Set once anything was created on the server this edit session, so a
+        // discard reloads and the hidden leftovers show in the "+" panel.
+        this._catalogTouched = false;
         // Cards queued to change page on the next save: {componentId: sectionId}.
         this._pendingMoves = {};
         // Stacking counter for floating record panels. Starts above the modal
@@ -418,6 +477,14 @@ export class Dashboard extends Component {
 
         this._onGlobalKeyDown = (ev) => {
             if (ev.key === "Escape") {
+                // This listener runs in the capture phase, ahead of any field's
+                // own handler, so stopPropagation there cannot protect it. A
+                // field that cancels itself on Esc (tab rename, a note being
+                // written) opts out here instead of losing the edit session or
+                // the whole detail window.
+                if (ev.target && ev.target.closest && ev.target.closest("[data-owns-escape]")) {
+                    return;
+                }
                 if (this.state.importOpen) {
                     ev.preventDefault();
                     this.closeImport();
@@ -453,6 +520,11 @@ export class Dashboard extends Component {
                 }
                 if (dispatchCloseOverlays()) {
                     ev.preventDefault();
+                    return;
+                }
+                if (this.state.addPanelOpen) {
+                    ev.preventDefault();
+                    this.state.addPanelOpen = false;
                     return;
                 }
                 if (this.state.editing) {
@@ -677,8 +749,16 @@ export class Dashboard extends Component {
         this.state.activeTab = index;
     }
 
+    // Tab visibility, renames and cross-tab moves are changes too. Counting only
+    // the card drafts meant hiding or restoring a tab, on its own, reset the
+    // dirty flag the moment the tab switch reloaded a draft — and Save then had
+    // nothing to send.
     _syncGlobalEditDirty() {
-        this.state.editDirty = Object.values(this._editDraftsBySection).some((draft) => draft.dirty);
+        this.state.editDirty =
+            Object.values(this._editDraftsBySection).some((draft) => draft.dirty)
+            || Object.keys(this._editSectionVis || {}).length > 0
+            || Object.keys(this._editSectionNames || {}).length > 0
+            || Object.keys(this._pendingMoves || {}).length > 0;
     }
 
     /** Layout-only signature of a tab's server units (positions/sizes/order,
@@ -771,8 +851,13 @@ export class Dashboard extends Component {
         const { units: normalized, repaired } = normalizeEditUnitsWithMeta(this.activeUnits);
         this._editDraftsBySection = {};
         this._editSectionVis = {};
+        this._editSectionNames = {};
         this._pendingMoves = {};
+        this._catalogTouched = false;
         this.state.addPanelOpen = false;
+        this.state.catalog = null;
+        this.state.catalogQuery = "";
+        this.state.newTabName = "";
         this.state.editing = true;
         this.state.editDirty = repaired;
         this.state.editSession = Date.now();
@@ -836,6 +921,15 @@ export class Dashboard extends Component {
         this._editSectionVis = {};
         this._pendingMoves = {};
         document.body.classList.remove("o_baha_edit_mode");
+        // A rename was shown immediately on the in-memory tab, and catalog
+        // additions exist on the server (hidden). Reload so the names revert and
+        // the leftovers appear in the "+" panel's removed list.
+        const renamed = Object.keys(this._editSectionNames || {}).length > 0;
+        this._editSectionNames = {};
+        if (renamed || this._catalogTouched) {
+            this._catalogTouched = false;
+            this.loadLayout();
+        }
     }
 
     _doResetEditDraft() {
@@ -896,6 +990,157 @@ export class Dashboard extends Component {
 
     toggleAddPanel() {
         this.state.addPanelOpen = !this.state.addPanelOpen;
+        if (this.state.addPanelOpen && !this.state.catalog && !this.state.catalogLoading) {
+            this.loadCatalog();
+        }
+    }
+
+    // ---- Layout catalog: any card or page in the system ----------------------
+    // Additions are created on the server HIDDEN and then revealed through the
+    // same draft path as re-adding a removed card or tab, so Save shows them and
+    // a discard leaves them hidden — never half-applied.
+
+    _layoutRpcKwargs() {
+        return {
+            dashboard_id: this.state.layout.dashboard_id || null,
+            target_user_id: this.editUserId || null,
+        };
+    }
+
+    // Creating a record moves the dashboard's concurrency token; without the
+    // new one the next save would be refused as another session's edit.
+    _acceptLayoutToken(token) {
+        if (token) {
+            this.state.layout.layout_version = token;
+        }
+    }
+
+    async loadCatalog() {
+        this.state.catalogLoading = true;
+        try {
+            this.state.catalog = await withTimeout(rpc("/web/dataset/call_kw/dashboard.dashboard/get_layout_catalog", {
+                model: "dashboard.dashboard", method: "get_layout_catalog",
+                args: [], kwargs: this._layoutRpcKwargs(),
+            }));
+        } catch (e) {
+            this.notification.add((e && e.data && e.data.message) || e.message || _t("تعذّر تحميل قائمة العناصر"),
+                { type: "danger" });
+        } finally {
+            this.state.catalogLoading = false;
+        }
+    }
+
+    /** Catalog cards matching the search box, grouped by the page they come from. */
+    get catalogCardGroups() {
+        const q = (this.state.catalogQuery || "").trim();
+        const groups = new Map();
+        for (const card of (this.state.catalog && this.state.catalog.cards) || []) {
+            if (q && !(card.name + " " + card.type_label + " " + card.origin).includes(q)) {
+                continue;
+            }
+            if (!groups.has(card.origin)) {
+                groups.set(card.origin, []);
+            }
+            groups.get(card.origin).push(card);
+        }
+        return [...groups.entries()].map(([origin, cards]) => ({ origin, cards }));
+    }
+
+    async onCatalogAddCard(sourceId) {
+        const section = this.activeSection;
+        const draft = this._editDraftsBySection[section && section.id];
+        if (!section || !section.id || !draft || this.state.addingItem) {
+            return;
+        }
+        this.state.addingItem = true;
+        try {
+            const res = await rpc("/web/dataset/call_kw/dashboard.dashboard/layout_add_component", {
+                model: "dashboard.dashboard", method: "layout_add_component",
+                args: [sourceId, section.id], kwargs: this._layoutRpcKwargs(),
+            });
+            this._acceptLayoutToken(res.layout_version);
+            this._catalogTouched = true;
+            const [unit] = normalizeEditUnits(res.unit ? [res.unit] : []);
+            if (!unit) {
+                return;
+            }
+            unit._wasVisible = false;      // created hidden: the save reveals it
+            draft.units.push(unit);
+            draft.dirty = true;
+            this._editLayoutDraft = cloneUnits(draft.units);
+            this.state.draftUnits = this._editLayoutDraft;
+            this.state.editSession = Date.now();     // remount the grid with it
+            this.state.addPanelOpen = false;
+            this._syncGlobalEditDirty();
+            this.notification.add(_t('أُضيفت البطاقة إلى "%s" — احفظ التخطيط لتثبيتها', section.name),
+                { type: "info" });
+        } catch (e) {
+            this.notification.add((e && e.data && e.data.message) || e.message || _t("تعذّر إضافة البطاقة"),
+                { type: "danger" });
+        } finally {
+            this.state.addingItem = false;
+        }
+    }
+
+    async _addSection(kwargs) {
+        if (this.state.addingItem) {
+            return;
+        }
+        this.state.addingItem = true;
+        try {
+            const res = await rpc("/web/dataset/call_kw/dashboard.dashboard/layout_add_section", {
+                model: "dashboard.dashboard", method: "layout_add_section",
+                args: [], kwargs: { ...kwargs, ...this._layoutRpcKwargs() },
+            });
+            this._acceptLayoutToken(res.layout_version);
+            this._catalogTouched = true;
+            // It exists hidden, exactly like a removed tab — re-add it the same way.
+            this.state.layout.removed_sections = [...(this.state.layout.removed_sections || []), res.section];
+            this.onAddTab(res.section.id);
+            this.notification.add(_t('أُضيف التبويب "%s" — احفظ التخطيط لتثبيته', res.section.name),
+                { type: "info" });
+        } catch (e) {
+            this.notification.add((e && e.data && e.data.message) || e.message || _t("تعذّر إضافة التبويب"),
+                { type: "danger" });
+        } finally {
+            this.state.addingItem = false;
+        }
+    }
+
+    onCatalogAddTab(sourceId) {
+        return this._addSection({ source_section_id: sourceId });
+    }
+
+    onCreateEmptyTab() {
+        const name = (this.state.newTabName || "").trim();
+        if (!name) {
+            return;
+        }
+        this.state.newTabName = "";
+        return this._addSection({ name });
+    }
+
+    onNewTabKeydown(ev) {
+        if (ev.key === "Enter") {
+            ev.preventDefault();
+            this.onCreateEmptyTab();
+        }
+    }
+
+    /** Rename a tab (from the banner). Shown at once; persisted on save. */
+    onRenameTab(sectionId, name) {
+        name = (name || "").trim();
+        if (!name) {
+            return;
+        }
+        const all = [...(this.state.layout.sections || []), ...(this.state.layout.removed_sections || [])];
+        const section = all.find((s) => s.id === sectionId);
+        if (!section || section.name === name) {
+            return;
+        }
+        section.name = name;
+        this._editSectionNames[sectionId] = name;
+        this._syncGlobalEditDirty();
     }
 
     /** All dashboard.component ids under a unit (a panel wraps several). */
@@ -1067,9 +1312,11 @@ export class Dashboard extends Component {
                 }));
             const visibility = this._collectVisibilityChanges();
             const moves = { ...this._pendingMoves };
+            const sectionNames = { ...this._editSectionNames };
             const hasVis = Object.keys(visibility.components).length || Object.keys(visibility.sections).length;
             const hasMoves = Object.keys(moves).length;
-            if (!sections.length && !hasVis && !hasMoves) {
+            const hasNames = Object.keys(sectionNames).length;
+            if (!sections.length && !hasVis && !hasMoves && !hasNames) {
                 return;
             }
             await rpc("/web/dataset/call_kw/dashboard.dashboard/save_layout_edits", {
@@ -1080,10 +1327,13 @@ export class Dashboard extends Component {
                     layout_version: this.state.layout.layout_version || null,
                     visibility,
                     moves,
+                    section_names: sectionNames,
                     target_user_id: this.editUserId || null,
                 },
             });
             this._pendingMoves = {};
+            this._editSectionNames = {};
+            this._catalogTouched = false;
             for (const section of sections) {
                 const draft = this._editDraftsBySection[section.section_id];
                 if (draft) {
@@ -1125,6 +1375,7 @@ export class Dashboard extends Component {
             props.onFilter = this.onFilter.bind(this);
             props.editing = this.state.editing;
             props.onRemoveTab = this.onRemoveTab.bind(this);
+            props.onRenameTab = this.onRenameTab.bind(this);
         }
         return props;
     }

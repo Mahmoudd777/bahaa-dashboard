@@ -3355,6 +3355,27 @@ body.o_baha_dash_active {
     &:hover { opacity: 1; color: var(--dash-danger, #ff5147); }
 }
 
+.o_baha_tab__rename-btn {
+    margin-inline-start: 6px;
+    font-size: 11px;
+    opacity: 0.6;
+    cursor: pointer;
+    &:hover { opacity: 1; color: var(--dash-accent, #00ab9d); }
+}
+
+.o_baha_tab__rename {
+    width: 170px;
+    padding: 2px 6px;
+    border: 1px solid var(--dash-accent, #00ab9d);
+    border-radius: 6px;
+    font: inherit;
+    font-size: 12px;
+    color: var(--dash-text-primary, #181d27);
+    background: #fff;
+
+    &:focus { outline: none; }
+}
+
 .o_baha_gs_add--on {
     background: var(--dash-accent, #00ab9d);
     color: #fff;
@@ -3421,6 +3442,69 @@ body.o_baha_dash_active {
         overflow: hidden;
         text-overflow: ellipsis;
     }
+    &:disabled {
+        opacity: 0.55;
+        cursor: wait;
+    }
+    // Card type / card count after the name.
+    &__meta {
+        flex: none;
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--dash-text-tertiary, #717680);
+    }
+    // "Already on this board" — a hint, not a block: a card can be added twice.
+    span.o_baha_add_item__badge {
+        flex: none;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 1px 6px;
+        border-radius: 999px;
+        color: var(--dash-accent, #00ab9d);
+        background: rgba(0, 171, 157, 0.1);
+    }
+}
+
+// The "+" panel grew from "restore what was removed here" into a catalog of
+// every card and page in the system, so it needs room and its own scroll.
+.o_baha_add_panel--catalog {
+    width: 380px;
+    max-width: calc(100vw - 32px);
+    max-height: 70vh;
+}
+.o_baha_add_panel__section {
+    margin: 14px 2px 6px;
+    padding-top: 10px;
+    border-top: 1px solid var(--dash-border, #e9eaeb);
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--dash-text-primary, #181d27);
+
+    .o_baha_add_panel__title + & {
+        margin-top: 4px;
+        padding-top: 0;
+        border-top: 0;
+    }
+}
+.o_baha_add_panel__input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 7px 10px;
+    border: 1px solid var(--dash-border, #d5d7da);
+    border-radius: 8px;
+    font: inherit;
+    font-size: 12px;
+
+    &:focus {
+        outline: none;
+        border-color: var(--dash-accent, #00ab9d);
+    }
+}
+.o_baha_add_panel__newtab {
+    display: flex;
+    gap: 6px;
+
+    .o_baha_add_panel__input { flex: 1; }
 }
 
 .o_baha_edit_cell {

@@ -96,13 +96,31 @@ export class Banner extends Component {
                 </div>
 
                 <div class="o_baha_header__controls">
-                    <div class="o_baha_header__tabs" t-if="props.tabs and props.tabs.length > 1">
+                    <!-- One visible tab means a single page with no tab bar. In
+                         edit mode the bar stays, so even a lone tab can be
+                         renamed. -->
+                    <div class="o_baha_header__tabs" t-if="props.tabs and (props.tabs.length > 1 or (props.editing and props.tabs.length))">
                         <t t-foreach="props.tabs" t-as="tab" t-key="tab.id">
-                            <button class="o_baha_tab"
+                            <!-- The rename field replaces the tab button rather
+                                 than sitting inside it: an input nested in a
+                                 button cannot be typed into in Firefox, and a
+                                 space would click the tab in Chrome. -->
+                            <div t-if="state.renamingTab === tab.id"
+                                 class="o_baha_tab o_baha_tab--renaming"
+                                 t-att-class="{ 'o_baha_tab--active': tab_index === props.activeIndex }">
+                                <input class="o_baha_tab__rename" t-att-value="tab.name" t-ref="renameInput"
+                                       data-owns-escape="1"
+                                       t-on-keydown="(ev) => this.onRenameKeydown(ev, tab)"
+                                       t-on-blur="(ev) => this.commitRename(ev, tab)"/>
+                            </div>
+                            <button t-else="" class="o_baha_tab"
                                     t-att-class="{ 'o_baha_tab--active': tab_index === props.activeIndex }"
                                     t-on-click="() => this.props.onSelectTab(tab_index)">
                                 <span class="o_baha_tab__ico" t-out="tab_index === 0 ? tabIconActive : tabIconInactive"/>
                                 <span class="o_baha_tab__label" t-esc="tab.name"/>
+                                <i t-if="props.editing and props.onRenameTab"
+                                   class="fa fa-pencil o_baha_tab__rename-btn" title="تغيير اسم التبويب"
+                                   t-on-click.stop="() => this.startRename(tab)"/>
                                 <i t-if="props.editing and props.tabs.length > 1"
                                    class="fa fa-times o_baha_tab__remove" title="إزالة التبويب"
                                    t-on-click.stop="() => this.props.onRemoveTab(tab.id)"/>
@@ -147,7 +165,40 @@ export class Banner extends Component {
                 </div>
             </div>
         </div>`;
-    static props = ["comp", "colors", "onAction?", "canAdvancedImport?", "tabs?", "activeIndex?", "onSelectTab?", "filter?", "onFilter?", "editing?", "onRemoveTab?"];
+    static props = ["comp", "colors", "onAction?", "canAdvancedImport?", "tabs?", "activeIndex?", "onSelectTab?", "filter?", "onFilter?", "editing?", "onRemoveTab?", "onRenameTab?"];
+
+    // ---- inline tab rename (edit mode) ----
+    startRename(tab) {
+        this.state.renamingTab = tab.id;
+        // The input only exists after this render; focus it once it does.
+        setTimeout(() => {
+            const el = this.renameInput.el;
+            if (el) {
+                el.focus();
+                el.select();
+            }
+        });
+    }
+    commitRename(ev, tab) {
+        if (this.state.renamingTab !== tab.id) {
+            return;     // already handled (Enter/Escape fire before blur)
+        }
+        this.state.renamingTab = null;
+        const name = (ev.target.value || "").trim();
+        if (name && name !== tab.name && this.props.onRenameTab) {
+            this.props.onRenameTab(tab.id, name);
+        }
+    }
+    onRenameKeydown(ev, tab) {
+        if (ev.key === "Enter") {
+            ev.preventDefault();
+            this.commitRename(ev, tab);
+        } else if (ev.key === "Escape") {
+            ev.preventDefault();
+            ev.stopPropagation();       // keep Esc from leaving edit mode
+            this.state.renamingTab = null;
+        }
+    }
 
     setup() {
         const f = this.props.filter || { mode: "uptodate", date: todayISO() };
@@ -163,8 +214,10 @@ export class Banner extends Component {
             from: f.from || f.date || todayISO(),
             to: f.to || f.date || todayISO(),
             qnum, year,
+            renamingTab: null,
         });
         this.dateInput = useRef("dateInput");
+        this.renameInput = useRef("renameInput");
         this.fp = null;
         this._fpMode = null;
         this._onDocPointerDown = null;

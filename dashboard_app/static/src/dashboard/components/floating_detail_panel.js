@@ -128,6 +128,7 @@ export class FloatingDetailPanel extends Component {
 
                     <div t-if="state.adding" class="o_baha_notes__editor">
                         <textarea class="o_baha_notes__input" t-ref="noteInput"
+                                  data-owns-escape="1"
                                   placeholder="اكتب الملاحظة ثم اضغط Enter للحفظ (Shift+Enter لسطر جديد)"
                                   t-att-disabled="state.saving"
                                   t-on-keydown="onNoteKeydown"/>
