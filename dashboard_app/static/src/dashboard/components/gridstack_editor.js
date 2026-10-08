@@ -152,9 +152,15 @@ export class GridstackEditor extends Component {
         // grid's row pitch (72 row + 16 gap), so a card of R rows is the same
         // height in both modes — no content measuring, no surprises.
         this.grid.on("change", () => this._emit());
+        // Gridstack may already have moved cards while loading them — pushing a
+        // re-added card off one now sitting in its old spot, or packing the tab
+        // up under the user's compact gravity — and the listener above was not
+        // attached yet. Report the settled positions once, so the draft (and so
+        // the save) matches the screen instead of the pre-mount snapshot.
+        this._emit(true);
     }
 
-    _emit() {
+    _emit(initial = false) {
         if (!this.grid || !this.gridRef.el) {
             return;
         }
@@ -176,7 +182,7 @@ export class GridstackEditor extends Component {
                 badge.textContent = `${node.w}×${node.h}`;
             }
         }
-        this.props.onChange(layout);
+        this.props.onChange(layout, { initial });
     }
 
     _destroy() {

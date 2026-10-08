@@ -947,7 +947,7 @@ export class Dashboard extends Component {
      *  move/resize. Fold it back into the active section's draft (positions
      *  only) and mark dirty. We update the persisted draft array in place and
      *  DON'T touch state.draftUnits, so the editor never re-renders mid-drag. */
-    onGsChange(layout) {
+    onGsChange(layout, { initial = false } = {}) {
         const sectionId = this.activeSection?.id;
         if (!sectionId) {
             return;
@@ -973,6 +973,11 @@ export class Dashboard extends Component {
                 unit.comp.col_span = p.col_span;
                 unit.comp.row_span = p.row_span;
             }
+        }
+        if (initial) {
+            // The grid settling on mount keeps the draft equal to the screen,
+            // but it is not an edit — only the user's own changes dirty it.
+            return;
         }
         draft.dirty = true;
         if (!this.state.editDirty) {

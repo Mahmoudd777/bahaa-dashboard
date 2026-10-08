@@ -113,7 +113,13 @@ function _spanValue(unit) {
 }
 
 function _rowValue(unit) {
-    if (unit.kind === "panel" && (unit.components || []).length) {
+    // A panel's height is the user's to choose (the editor resizes it like any
+    // card, and its content scrolls when taller). Deriving it from the inner
+    // components threw every panel resize away on save — and when another card
+    // had been moved into the freed space, the "restored" height overlapped it
+    // and the whole tab was reflowed. Only a panel with no stored height falls
+    // back to the computed one.
+    if (unit.kind === "panel" && !(unit.row_span > 0) && (unit.components || []).length) {
         return panelOuterRowSpan(unit.components);
     }
     if (unit.row_span != null && unit.row_span > 0) {
@@ -192,7 +198,7 @@ function sanitizePanelUnit(unit) {
         comp.grid_x = outerX;
         comp.grid_y = outerY;
     }
-    unit.row_span = panelOuterRowSpan(unit.components);
+    unit.row_span = unit.row_span > 0 ? sanitizeRows(unit.row_span) : panelOuterRowSpan(unit.components);
 }
 
 export function effectiveSpan(unit) {
