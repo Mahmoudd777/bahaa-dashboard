@@ -1,6 +1,6 @@
 /** @odoo-module **/
 
-import { Component, markup, onMounted, onPatched, onWillUnmount, useRef, useState, xml } from "@odoo/owl";
+import { Component, markup, onMounted, onPatched, onWillUnmount, useEffect, useRef, useState, xml } from "@odoo/owl";
 import { user } from "@web/core/user";
 import {
     BAHA_CLOSE_OVERLAYS,
@@ -170,14 +170,6 @@ export class Banner extends Component {
     // ---- inline tab rename (edit mode) ----
     startRename(tab) {
         this.state.renamingTab = tab.id;
-        // The input only exists after this render; focus it once it does.
-        setTimeout(() => {
-            const el = this.renameInput.el;
-            if (el) {
-                el.focus();
-                el.select();
-            }
-        });
     }
     commitRename(ev, tab) {
         if (this.state.renamingTab !== tab.id) {
@@ -218,6 +210,19 @@ export class Banner extends Component {
         });
         this.dateInput = useRef("dateInput");
         this.renameInput = useRef("renameInput");
+        // The rename field only exists after the render that follows a click on
+        // the pencil — OWL renders on the next animation frame, so focusing from
+        // the click (or a setTimeout) finds nothing. Focus once it is patched in.
+        useEffect(
+            (renaming) => {
+                const el = this.renameInput.el;
+                if (renaming && el) {
+                    el.focus();
+                    el.select();
+                }
+            },
+            () => [this.state.renamingTab]
+        );
         this.fp = null;
         this._fpMode = null;
         this._onDocPointerDown = null;
