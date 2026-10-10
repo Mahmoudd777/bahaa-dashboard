@@ -1118,7 +1118,35 @@ body.o_baha_dash_active {
     &__plot--noaxis {
         padding-top: 16px;
         .o_baha_barv__bar { width: 16px; }
-        .o_baha_barv__label { text-align: center; line-height: 1.3; }
+        // The names under the bars run to one, two or more lines. Laid out as
+        // they were, each column's label pushed its bars up by its own height,
+        // so neither the bars' baseline nor the labels lined up. Every label
+        // now takes the same box, read from the top, and the bars stand on
+        // one baseline above it. There is no shared axis in this chart, so the
+        // gridlines go as well — they also ran through the labels.
+        .o_baha_barv__cols {
+            height: 270px;
+            padding-bottom: 0;
+            align-items: stretch;
+            background: none;
+        }
+        .o_baha_barv__col { justify-content: flex-end; gap: 6px; }
+        .o_baha_barv__bars {
+            flex: 1 1 auto;
+            height: auto;
+            min-height: 0;
+            border-bottom: 1px solid var(--dash-border, #d5d7da);
+        }
+        .o_baha_barv__label {
+            flex: 0 0 auto;
+            height: calc(6 * 1.3em);
+            line-height: 1.3;
+            text-align: center;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 6;
+            overflow: hidden;
+        }
     }
 }
 

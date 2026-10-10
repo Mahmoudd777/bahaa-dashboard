@@ -735,7 +735,7 @@ export class BarChartV extends Component {
                                 </t>
                                 <div t-else="" class="o_baha_barv__bar" t-attf-style="height:{{pct(item.value)}}%;background:{{item.color or colorAccent}};"/>
                             </div>
-                            <span class="o_baha_barv__label" t-esc="item.label"/>
+                            <span class="o_baha_barv__label" t-att-title="item.label" t-esc="item.label"/>
                         </div>
                     </t>
                 </div>
