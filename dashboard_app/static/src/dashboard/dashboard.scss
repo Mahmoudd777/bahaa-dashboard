@@ -1674,6 +1674,7 @@ body.o_baha_dash_active {
 }
 
 .o_baha_pcat {
+    .o_baha_expand_btn:disabled { opacity: 1; cursor: default; }
     position: relative;
     display: flex;
     flex-direction: column;
@@ -1848,6 +1849,10 @@ body.o_baha_dash_active {
         cursor: pointer;
 
         &:hover span { text-decoration: underline; }
+        // In the editor the link is kept, inert, so the card is the same
+        // height there as on the page. It must also look the same.
+        &:disabled { opacity: 1; color: var(--pc-color, #00ab9d); cursor: default; }
+        &:disabled:hover span { text-decoration: none; }
         i { transition: transform 0.15s ease; }
         &:hover i { transform: translateX(-3px); }
         &:focus { outline: none; }

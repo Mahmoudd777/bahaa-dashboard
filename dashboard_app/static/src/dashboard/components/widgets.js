@@ -1612,8 +1612,9 @@ export class ProjectCategoryCards extends Component {
                                 <small>مشروع</small>
                             </div>
                             <div class="o_baha_pcat__tools">
-                                <button t-if="props.onOpenComponent and cat.detail" class="o_baha_expand_btn"
+                                <button t-if="cat.detail" class="o_baha_expand_btn"
                                         title="عرض كامل البيانات"
+                                        t-att-disabled="!props.onOpenComponent"
                                         t-on-click="() => this.expandItem(cat.detail, cat.name)">
                                     <i class="fa fa-expand"/>
                                 </button>
@@ -1664,8 +1665,9 @@ export class ProjectCategoryCards extends Component {
                             <span><i class="o_baha_pcat__dot o_baha_pcat__dot--st"/><t t-esc="cat.st"/> تحت المراقبة</span>
                             <span><i class="o_baha_pcat__dot o_baha_pcat__dot--de"/><t t-esc="cat.de"/> متأخر</span>
                         </div>
-                        <button t-if="cat.count and props.onOpenComponent and cat.detail"
+                        <button t-if="cat.count and cat.detail"
                                 type="button" class="o_baha_pcat__foot"
+                                t-att-disabled="!props.onOpenComponent"
                                 t-on-click="() => this.expandItem(cat.detail, cat.name)">
                             <span>عرض تفاصيل <t t-esc="cat.count"/> مشروع</span>
                             <i class="fa fa-angle-left"/>
@@ -1683,7 +1685,11 @@ export class ProjectCategoryCards extends Component {
     onItemKeydown(ev, item) { onItemKeydown(ev, item, this.props.onOpenRecord, this.props.onOpenDrilldown); }
     /** Open one table in the wizard: the project list (⤢ and the footer
      *  link), or the budget / spend breakdown behind a tile. */
-    expandItem(detail, title) { this.props.onOpenComponent({ title, data: detail }); }
+    expandItem(detail, title) {
+        if (this.props.onOpenComponent) {
+            this.props.onOpenComponent({ title, data: detail });
+        }
+    }
     /** A tile only acts as a button when there is something to show. */
     canOpen(detail, cat) {
         return Boolean(this.props.onOpenComponent && detail && cat.count);
